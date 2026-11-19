@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftDrop Logistics - النظام الشامل</title>
+    <style>
+        :root {
+            --primary-blue: #0A192F;
+            --accent-orange: #FF6B00;
+            --light-bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-dark: #1E293B;
+            --gray-text: #64748B;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--light-bg); color: var(--text-dark); padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; }
+        
+        /* شاشة تسجيل الدخول */
+        #login-screen {
+            background: var(--card-bg); padding: 30px; border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-top: 50px; text-align: center;
+        }
+        h2 { color: var(--primary-blue); margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; text-align: right; }
+        .input-group label { display: block; margin-bottom: 5px; color: var(--gray-text); font-weight: 600; }
+        .input-group input {
+            width: 100%; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 16px;
+        }
+        button {
+            background: var(--accent-orange); color: white; border: none; padding: 12px 20px;
+            width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background: #E05E00; }
+
+        /* لوحات التحكم */
+        .dashboard-screen { display: none; }
+        .header-box {
+            background: var(--primary-blue); color: white; padding: 20px; border-radius: 16px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+        }
+        .wallet-card {
+            background: linear-gradient(135deg, #FF6B00, #FF8833); color: white; padding: 20px;
+            border-radius: 16px; text-align: center; margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+        }
+        .wallet-card h3 { font-size: 14px; opacity: 0.9; margin-bottom: 5px; }
+        .wallet-card .amount { font-size: 32px; font-weight: bold; }
+        
+        .section { background: var(--card-bg); padding: 20px; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .section h4 { margin-bottom: 15px; color: var(--primary-blue); border-bottom: 2px solid #F1F5F9; padding-bottom: 8px; }
+        
+        .item-card {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; background: #F8FAFC; border-radius: 8px; margin-bottom: 10px;
+            border-right: 4px solid var(--accent-orange);
+        }
+        .status-badge {
+            background: #E2E8F0; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;
+        }
+        .status-delivered { background: #DCFCE7; color: #166534; }
+        .status-pending { background: #FEF9C3; color: #854D0E; }
+        
+        .logout-btn { background: #EF4444; margin-top: 20px; }
+        .logout-btn:hover { background: #DC2626; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        th, td { padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; }
+        th { color: var(--primary-blue); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- شاشة تسجيل الدخول الموحدة -->
+    <div id="login-screen">
+        <h2>SwiftDrop Logistics</h2>
+        <p style="color: #64748B; margin-bottom: 20px;">تسجيل الدخول للنظام</p>
+        <div class="input-group">
+            <label>اسم المستخدم (Username)</label>
+            <input type="text" id="username" placeholder="أدخل اسم المستخدم">
+        </div>
+        <div class="input-group">
+            <label>كلمة المرور (Password)</label>
+            <input type="password" id="password" placeholder="أدخل كلمة المرور">
+        </div>
+        <button onclick="login()">دخول</button>
+        <p id="error-msg" style="color: red; margin-top: 10px; font-size: 14px;"></p>
+    </div>
+
+    <!-- 1. لوحة تحكم المدير (ADMIN DASHBOARD) -->
+    <div id="admin-dashboard" class="dashboard-screen">
+        <div class="header-box">
+            <div>
+                <h3>لوحة تحكم المدير (Admin)</h3>
+                <p style="font-size: 12px; opacity: 0.8;">إدارة العملاء والبوالص بالكامل</p>
+            </div>
+            <button style="width: auto; padding: 6px 12px; font-size: 12px; background: #EF4444;" onclick="logout()">خروج</button>
+        </div>
+
+        <!-- إضافة عميل جديد برقم ID تلقائي -->
+        <div class="section">
+            <h4>إضافة عميل جديد للنظام</h4>
+            <div class="input-group">
+                <input type="text" id="new-client-name" placeholder="اسم الشركة أو التاجر">
+            </div>
+            <div class="input-group">
+                <input type="text" id="new-client-user" placeholder="اسم المستخدم للدخول (Username)">
+            </div>
+            <div class="input-group">
+                <input type="password" id="new-client-pass" placeholder="كلمة المرور (Password)">
+            </div>
+            <button onclick="addNewClient()">إضافة العميل وتوليد ID</button>
+        </div>
+
+        <!-- إضافة أوردر/بوليصة جديدة للعميل باستخدام الـ ID -->
+        <div class="section">
+            <h4>إضافة بوليصة / أوردر جديد لعميل</h4>
+            <div class="input-group">
+                <input type="text" id="order-client-id" placeholder="رقم ID العميل (مثلاً: CUST-101)">
+            </div>
+            <div class="input-group">
+                <input type="text" id="order-recipient" placeholder="اسم المستلم وعنوانه ورقم تليفونه">
+            </div>
+            <div class="input-group">
+                <input type="number" id="order-price" placeholder="مبلغ التحصيل (COD)">
+            </div>
+            <button onclick="addOrderAsAdmin()">إضافة الأوردر للعميل</button>
+        </div>
+
+        <!-- قائمة العملاء المسجلين وأكوادهم -->
+        <div class="section">
+            <h4>قائمة العملاء وأكواد الـ ID الخاصة بهم</h4>
+            <div id="admin-clients-list"></div>
+        </div>
+
+        <!-- متابعة كل الشحنات الكلية -->
+        <div class="section">
+            <h4>متابعة كافة شحنات الشركة</h4>
+            <div id="admin-shipments-list"></div>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+    <!-- 2. لوحة تحكم العميل (CLIENT DASHBOARD) -->
+    <div id="client-dashboard" class="dashboard-screen">
+        <div class="header-box">
+            <div>
+                <h3 id="client-welcome">مرحباً، يا عَميل</h3>
+                <p id="client-id-display" style="font-size: 12px; opacity: 0.8;"></p>
+            </div>
+            <button style="width: auto; padding: 6px 12px; font-size: 12px; background: #EF4444;" onclick="logout()">خروج</button>
+        </div>
+
+        <div class="wallet-card">
+            <h3>رصيد المحفظة المتاح</h3>
+            <div class="amount" id="wallet-balance">0.00 EGP</div>
+        </div>
+
+        <div class="section">
+            <h4>شحناتك وبوالصك الحالية</h4>
+            <div id="client-shipments-list">
+                <p style="color: var(--gray-text); text-align: center;">لا توجد شحنات حتى الآن.</p>
+            </div>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+    </div>
+</div>
+
+<script>
+    // قاعدة البيانات المخزنة في المتصفح لتنحفظ مؤقتاً
+    let systemData = JSON.parse(localStorage.getItem('swift_data')) || {
+        users: {
+            "admin": { pass: "admin123", name: "مدير النظام", role: "admin" },
+            "youssef": { pass: "1234", name: "شركة الأضواء", id: "CUST-101", balance: 0, shipments: [] }
+        },
+        shipments: []
+    };
+
+    let currentLoggedInUser = null;
+
+    function saveData() {
+        localStorage.setItem('swift_data', JSON.stringify(systemData));
+    }
+
+    function login() {
+        let u = document.getElementById('username').value.trim();
+        let p = document.getElementById('password').value.trim();
+        let err = document.getElementById('error-msg');
+
+        if(systemData.users[u] && systemData.users[u].pass === p) {
+            currentLoggedInUser = u;
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            err.innerText = '';
+
+            if(systemData.users[u].role === "admin") {
+                document.getElementById('admin-dashboard').style.display = 'block';
+                updateAdminDashboard();
+            } else {
+                document.getElementById('client-dashboard').style.display = 'block';
+                updateClientDashboard();
+            }
+        } else {
+            err.innerText = "اسم المستخدم أو كلمة المرور غير صحيحة!";
+        }
+    }
+
+    function logout() {
+        currentLoggedInUser = null;
+        document.getElementById('admin-dashboard').style.display = 'none';
+        document.getElementById('client-dashboard').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'block';
+    }
+
+    // وظائف المدير: إضافة عميل جديد برقم ID
+    function addNewClient() {
+        let name = document.getElementById('new-client-name').value.trim();
+        let user = document.getElementById('new-client-user').value.trim();
+        let pass = document.getElementById('new-client-pass').value.trim();
+
+        if(!name || !user || !pass) {
+            alert("برجاء ملء جميع بيانات العميل.");
+            return;
+        }
+
+        if(systemData.users[user]) {
+            alert("اسم المستخدم هذا موجود بالفعل، اختر اسماً آخر.");
+            return;
+        }
+
+        let randomId = "CUST-" + Math.floor(100 + Math.random() * 900);
+
+        systemData.users[user] = {
+            pass: pass,
+            name: name,
+            id: randomId,
+            balance: 0,
+            shipments: []
+        };
+
+        saveData();
+        document.getElementById('new-client-name').value = '';
+        document.getElementById('new-client-user').value = '';
+        document.getElementById('new-client-pass').value = '';
+        alert("تم إضافة العميل بنجاح برقم ID: " + randomId);
+        updateAdminDashboard();
+    }
+
+    // وظائف المدير: إضافة أوردر للعميل باستخدام الـ ID
+    function addOrderAsAdmin() {
+        let clientId = document.getElementById('order-client-id').value.trim();
+        let recipient = document.getElementById('order-recipient').value.trim();
+        let price = parseFloat(document.getElementById('order-price').value);
+
+        if(!clientId || !recipient || isNaN(price)) {
+            alert("برجاء التأكد من الـ ID وبيانات الأوردر والمبلغ.");
+            return;
+        }
+
+        // البحث عن العميل بواسطة الـ ID الخاص به
+        let targetUserKey = null;
+        for(let key in systemData.users) {
+            if(systemData.users[key].id === clientId) {
+                targetUserKey = key;
+                break;
+            }
+        }
+
+        if(!targetUserKey) {
+            alert("رقم الـ ID غير صحيح أو غير موجود!");
+            return;
+        }
+
+        let newOrder = {
+            id: Math.floor(1000 + Math.random() * 9000),
+            recipient: recipient,
+            price: price,
+            status: "قيد التوصيل",
+            owner: targetUserKey
+        };
+
+        // إضافة الأوردر للعميل وللقائمة العامة
+        systemData.users[targetUserKey].shipments.push(newOrder);
+        systemData.shipments.push(newOrder);
+
+        saveData();
+        document.getElementById('order-client-id').value = '';
+        document.getElementById('order-recipient').value = '';
+        document.getElementById('order-price').value = '';
+        alert("تم إضافة البوليصة بنجاح للعميل!");
+        updateAdminDashboard();
+    }
+
+    // تأكيد التسليم من جانب المدير وتحديث رصيد العميل تلقائياً
+    function adminDeliverOrder(orderIndex) {
+        let order = systemData.shipments[orderIndex];
+        if(order.status !== "تم التسليم") {
+            order.status = "تم التسليم";
+            
+            // تحديث حالة الأوردر جوه قايمة العميل نفسه أيضاً
+            let clientKey = order.owner;
+            let clientOrders = systemData.users[clientKey].shipments;
+            let found = clientOrders.find(o => o.id === order.id);
+            if(found) {
+                found.status = "تم التسليم";
+            }
+
+            // زيادة رصيد العميل تلقائياً
+            systemData.users[clientKey].balance += order.price;
+
+            saveData();
+            updateAdminDashboard();
+        }
+    }
+
+    function updateAdminDashboard() {
+        // تحديث جدول العملاء
+        let clientsHtml = `<table><tr><th>اسم العميل</th><th>اليوزر</th><th>الـ ID</th></tr>`;
+        for(let key in systemData.users) {
+            if(systemData.users[key].role !== "admin") {
+                let u = systemData.users[key];
+                clientsHtml += `<tr><td>${u.name}</td><td>${key}</td><td><b>${u.id}</b></td></tr>`;
+            }
+        }
+        clientsHtml += `</table>`;
+        document.getElementById('admin-clients-list').innerHTML = clientsHtml;
+
+        // تحديث قايمة الشحنات العامة
+        let shipmentsHtml = '';
+        if(systemData.shipments.length === 0) {
+            shipmentsHtml = '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص مسجلة.</p>';
+        } else {
+            systemData.shipments.forEach((s, idx) => {
+                let isDelivered = s.status === "تم التسليم";
+                shipmentsHtml += `
+                    <div class="item-card">
+                        <div>
+                            <strong>بوليصة #${s.id} - ${s.recipient}</strong><br>
+                            <small style="color: var(--gray-text);">للعميل: ${s.owner} | المبلغ: ${s.price} ج.م</small>
+                        </div>
+                        <div>
+                            <span class="status-badge ${isDelivered ? 'status-delivered' : 'status-pending'}">${s.status}</span>
+                            ${!isDelivered ? `<br><button style="margin-top:5px; padding:4px 8px; font-size:11px;" onclick="adminDeliverOrder(${idx})">تأكيد التسليم</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        document.getElementById('admin-shipments-list').innerHTML = shipmentsHtml;
+    }
+
+    function updateClientDashboard() {
+        let user = systemData.users[currentLoggedInUser];
+        document.getElementById('client-welcome').innerText = "مرحباً، " + user.name;
+        document.getElementById('client-id-display').innerText = "رقم التعريف (ID): " + user.id;
+        document.getElementById('wallet-balance').innerText = user.balance.toFixed(2) + " EGP";
+
+        let listContainer = document.getElementById('client-shipments-list');
+        if(user.shipments.length === 0) {
+            listContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد شحنات حتى الآن.</p>';
+            return;
+        }
+
+        let html = '';
+        user.shipments.forEach((s) => {
+            let isDelivered = s.status === "تم التسليم";
+            html += `
+                <div class="item-card">
+                    <div>
+                        <strong>بوليصة #${s.id} - ${s.recipient}</strong><br>
+                        <small style="color: var(--gray-text);">مبلغ التحصيل: ${s.price} جنيه</small>
+                    </div>
+                    <div>
+                        <span class="status-badge ${isDelivered ? 'status-delivered' : 'status-pending'}">${s.status}</span>
+                    </div>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>

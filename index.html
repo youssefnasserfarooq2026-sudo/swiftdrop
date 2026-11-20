@@ -16,11 +16,17 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--light-bg); color: var(--text-dark); padding: 20px; }
         .container { max-width: 700px; margin: 0 auto; }
-        
+
+        .sync-bar {
+            background: #E2E8F0; color: #0F172A; padding: 8px 14px; border-radius: 10px;
+            font-size: 12px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #16A34A; margin-left: 6px; }
+
         /* شاشة تسجيل الدخول */
         #login-screen {
             background: var(--card-bg); padding: 30px; border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-top: 50px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-top: 30px; text-align: center;
         }
         h2 { color: var(--primary-blue); margin-bottom: 20px; }
         .input-group { margin-bottom: 15px; text-align: right; }
@@ -33,7 +39,8 @@
             width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;
             transition: 0.3s;
         }
-        button:hover { background: #E05E00; }
+        button:hover:not(:disabled) { background: #E05E00; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
 
         /* لوحات التحكم */
         .dashboard-screen { display: none; }
@@ -48,12 +55,12 @@
         }
         .wallet-card h3 { font-size: 14px; opacity: 0.9; margin-bottom: 5px; }
         .wallet-card .amount { font-size: 32px; font-weight: bold; }
-        
+
         .section { background: var(--card-bg); padding: 20px; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
         .section h4 { margin-bottom: 15px; color: var(--primary-blue); border-bottom: 2px solid #F1F5F9; padding-bottom: 8px; }
-        
+
         .item-card {
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between; align-items: center; gap: 10px;
             padding: 12px; background: #F8FAFC; border-radius: 8px; margin-bottom: 10px;
             border-right: 4px solid var(--accent-orange);
         }
@@ -62,10 +69,10 @@
         }
         .status-delivered { background: #DCFCE7; color: #166534; }
         .status-pending { background: #FEF9C3; color: #854D0E; }
-        
+
         .logout-btn { background: #EF4444; margin-top: 20px; }
-        .logout-btn:hover { background: #DC2626; }
-        
+        .logout-btn:hover:not(:disabled) { background: #DC2626; }
+
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
         th, td { padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; }
         th { color: var(--primary-blue); }
@@ -74,6 +81,11 @@
 <body>
 
 <div class="container">
+    <div class="sync-bar">
+        <span><span class="sync-dot" id="sync-dot"></span><span id="sync-status">جاري الاتصال بقاعدة البيانات...</span></span>
+        <span>مزامنة مباشرة</span>
+    </div>
+
     <!-- شاشة تسجيل الدخول الموحدة -->
     <div id="login-screen">
         <h2>SwiftDrop Logistics</h2>
@@ -86,7 +98,7 @@
             <label>كلمة المرور (Password)</label>
             <input type="password" id="password" placeholder="أدخل كلمة المرور">
         </div>
-        <button onclick="login()">دخول</button>
+        <button id="login-btn" onclick="login()">دخول</button>
         <p id="error-msg" style="color: red; margin-top: 10px; font-size: 14px;"></p>
     </div>
 
@@ -112,7 +124,7 @@
             <div class="input-group">
                 <input type="password" id="new-client-pass" placeholder="كلمة المرور (Password)">
             </div>
-            <button onclick="addNewClient()">إضافة العميل وتوليد ID</button>
+            <button id="add-client-btn" onclick="addNewClient()">إضافة العميل وتوليد ID</button>
         </div>
 
         <!-- إضافة أوردر/بوليصة جديدة للعميل باستخدام الـ ID -->
@@ -127,7 +139,7 @@
             <div class="input-group">
                 <input type="number" id="order-price" placeholder="مبلغ التحصيل (COD)">
             </div>
-            <button onclick="addOrderAsAdmin()">إضافة الأوردر للعميل</button>
+            <button id="add-order-btn" onclick="addOrderAsAdmin()">إضافة الأوردر للعميل</button>
         </div>
 
         <!-- قائمة العملاء المسجلين وأكوادهم -->
@@ -171,9 +183,19 @@
     </div>
 </div>
 
-<script>
-    // قاعدة البيانات المخزنة في المتصفح لتنحفظ مؤقتاً
-    let systemData = JSON.parse(localStorage.getItem('swift_data')) || {
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+        databaseURL: "https://swiftdrop-sync-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const dataRef = ref(db, "swiftdrop_data");
+
+    const defaultData = {
         users: {
             "admin": { pass: "admin123", name: "مدير النظام", role: "admin" },
             "youssef": { pass: "1234", name: "شركة الأضواء", id: "CUST-101", balance: 0, shipments: [] }
@@ -181,60 +203,142 @@
         shipments: []
     };
 
-    let currentLoggedInUser = null;
-
-    function saveData() {
-        localStorage.setItem('swift_data', JSON.stringify(systemData));
+    function normalizeData(raw) {
+        if (!raw || typeof raw !== "object") {
+            return JSON.parse(JSON.stringify(defaultData));
+        }
+        const users = raw.users && typeof raw.users === "object" ? raw.users : JSON.parse(JSON.stringify(defaultData.users));
+        Object.keys(users).forEach((k) => {
+            if (users[k].role !== "admin") {
+                users[k].balance = Number(users[k].balance || 0);
+                users[k].shipments = Array.isArray(users[k].shipments) ? users[k].shipments : [];
+            }
+        });
+        const shipments = Array.isArray(raw.shipments) ? raw.shipments : [];
+        return { users, shipments };
     }
 
-    function login() {
-        let u = document.getElementById('username').value.trim();
-        let p = document.getElementById('password').value.trim();
-        let err = document.getElementById('error-msg');
+    let systemData = JSON.parse(JSON.stringify(defaultData));
+    let currentLoggedInUser = null;
+    let isDbReady = false;
+    let isSaving = false;
 
-        if(systemData.users[u] && systemData.users[u].pass === p) {
+    function setSyncStatus(text, isOk = true) {
+        document.getElementById("sync-status").innerText = text;
+        document.getElementById("sync-dot").style.background = isOk ? "#16A34A" : "#EF4444";
+    }
+
+    onValue(dataRef, (snapshot) => {
+        if (snapshot.exists()) {
+            systemData = normalizeData(snapshot.val());
+            isDbReady = true;
+            setSyncStatus("متصل بقاعدة البيانات السحابية", true);
+            refreshActiveView();
+        } else {
+            systemData = JSON.parse(JSON.stringify(defaultData));
+            set(dataRef, systemData)
+                .then(() => {
+                    isDbReady = true;
+                    setSyncStatus("تم تهيئة قاعدة البيانات السحابية", true);
+                    refreshActiveView();
+                })
+                .catch(() => {
+                    setSyncStatus("تعذر الاتصال بقاعدة البيانات", false);
+                });
+        }
+    }, () => {
+        setSyncStatus("خطأ في مزامنة قاعدة البيانات", false);
+    });
+
+    async function saveData() {
+        isSaving = true;
+        setSyncStatus("جاري حفظ البيانات ومزامنتها...", true);
+        try {
+            await set(dataRef, normalizeData(systemData));
+            setSyncStatus("تم الحفظ والمزامنة مع جميع الأجهزة", true);
+            return true;
+        } catch (err) {
+            setSyncStatus("فشل الحفظ، تحقق من الاتصال", false);
+            alert("حدث خطأ أثناء حفظ البيانات على قاعدة البيانات.");
+            return false;
+        } finally {
+            isSaving = false;
+        }
+    }
+
+    function refreshActiveView() {
+        if (!currentLoggedInUser) return;
+        if (!systemData.users[currentLoggedInUser]) {
+            logout();
+            return;
+        }
+        if (systemData.users[currentLoggedInUser].role === "admin") {
+            updateAdminDashboard();
+        } else {
+            updateClientDashboard();
+        }
+    }
+
+    window.login = function () {
+        const u = document.getElementById("username").value.trim();
+        const p = document.getElementById("password").value.trim();
+        const err = document.getElementById("error-msg");
+
+        if (!isDbReady) {
+            err.innerText = "جاري تحميل البيانات من السحابة، انتظر لحظة...";
+            return;
+        }
+
+        if (systemData.users[u] && systemData.users[u].pass === p) {
             currentLoggedInUser = u;
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            err.innerText = '';
+            document.getElementById("login-screen").style.display = "none";
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+            err.innerText = "";
 
-            if(systemData.users[u].role === "admin") {
-                document.getElementById('admin-dashboard').style.display = 'block';
+            if (systemData.users[u].role === "admin") {
+                document.getElementById("admin-dashboard").style.display = "block";
                 updateAdminDashboard();
             } else {
-                document.getElementById('client-dashboard').style.display = 'block';
+                document.getElementById("client-dashboard").style.display = "block";
                 updateClientDashboard();
             }
         } else {
             err.innerText = "اسم المستخدم أو كلمة المرور غير صحيحة!";
         }
-    }
+    };
 
-    function logout() {
+    window.logout = function () {
         currentLoggedInUser = null;
-        document.getElementById('admin-dashboard').style.display = 'none';
-        document.getElementById('client-dashboard').style.display = 'none';
-        document.getElementById('login-screen').style.display = 'block';
-    }
+        document.getElementById("admin-dashboard").style.display = "none";
+        document.getElementById("client-dashboard").style.display = "none";
+        document.getElementById("login-screen").style.display = "block";
+    };
 
-    // وظائف المدير: إضافة عميل جديد برقم ID
-    function addNewClient() {
-        let name = document.getElementById('new-client-name').value.trim();
-        let user = document.getElementById('new-client-user').value.trim();
-        let pass = document.getElementById('new-client-pass').value.trim();
+    window.addNewClient = async function () {
+        if (isSaving) return;
+        const name = document.getElementById("new-client-name").value.trim();
+        const user = document.getElementById("new-client-user").value.trim();
+        const pass = document.getElementById("new-client-pass").value.trim();
 
-        if(!name || !user || !pass) {
+        if (!name || !user || !pass) {
             alert("برجاء ملء جميع بيانات العميل.");
             return;
         }
 
-        if(systemData.users[user]) {
+        if (systemData.users[user]) {
             alert("اسم المستخدم هذا موجود بالفعل، اختر اسماً آخر.");
             return;
         }
 
         let randomId = "CUST-" + Math.floor(100 + Math.random() * 900);
+        const existingIds = new Set(Object.values(systemData.users).map((x) => x.id));
+        while (existingIds.has(randomId)) {
+            randomId = "CUST-" + Math.floor(100 + Math.random() * 900);
+        }
+
+        const btn = document.getElementById("add-client-btn");
+        btn.disabled = true;
 
         systemData.users[user] = {
             pass: pass,
@@ -244,40 +348,46 @@
             shipments: []
         };
 
-        saveData();
-        document.getElementById('new-client-name').value = '';
-        document.getElementById('new-client-user').value = '';
-        document.getElementById('new-client-pass').value = '';
-        alert("تم إضافة العميل بنجاح برقم ID: " + randomId);
-        updateAdminDashboard();
-    }
+        const ok = await saveData();
+        btn.disabled = false;
 
-    // وظائف المدير: إضافة أوردر للعميل باستخدام الـ ID
-    function addOrderAsAdmin() {
-        let clientId = document.getElementById('order-client-id').value.trim();
-        let recipient = document.getElementById('order-recipient').value.trim();
-        let price = parseFloat(document.getElementById('order-price').value);
+        if (ok) {
+            document.getElementById("new-client-name").value = "";
+            document.getElementById("new-client-user").value = "";
+            document.getElementById("new-client-pass").value = "";
+            alert("تم إضافة العميل بنجاح برقم ID: " + randomId);
+            updateAdminDashboard();
+        }
+    };
 
-        if(!clientId || !recipient || isNaN(price)) {
+    window.addOrderAsAdmin = async function () {
+        if (isSaving) return;
+        const clientId = document.getElementById("order-client-id").value.trim();
+        const recipient = document.getElementById("order-recipient").value.trim();
+        const price = parseFloat(document.getElementById("order-price").value);
+
+        if (!clientId || !recipient || isNaN(price) || price < 0) {
             alert("برجاء التأكد من الـ ID وبيانات الأوردر والمبلغ.");
             return;
         }
 
-        // البحث عن العميل بواسطة الـ ID الخاص به
         let targetUserKey = null;
-        for(let key in systemData.users) {
-            if(systemData.users[key].id === clientId) {
+        for (const key in systemData.users) {
+            if (systemData.users[key].id === clientId) {
                 targetUserKey = key;
                 break;
             }
         }
 
-        if(!targetUserKey) {
+        if (!targetUserKey) {
             alert("رقم الـ ID غير صحيح أو غير موجود!");
             return;
         }
 
-        let newOrder = {
+        const btn = document.getElementById("add-order-btn");
+        btn.disabled = true;
+
+        const newOrder = {
             id: Math.floor(1000 + Math.random() * 9000),
             recipient: recipient,
             price: price,
@@ -285,59 +395,67 @@
             owner: targetUserKey
         };
 
-        // إضافة الأوردر للعميل وللقائمة العامة
+        if (!Array.isArray(systemData.users[targetUserKey].shipments)) {
+            systemData.users[targetUserKey].shipments = [];
+        }
+        if (!Array.isArray(systemData.shipments)) {
+            systemData.shipments = [];
+        }
+
         systemData.users[targetUserKey].shipments.push(newOrder);
         systemData.shipments.push(newOrder);
 
-        saveData();
-        document.getElementById('order-client-id').value = '';
-        document.getElementById('order-recipient').value = '';
-        document.getElementById('order-price').value = '';
-        alert("تم إضافة البوليصة بنجاح للعميل!");
-        updateAdminDashboard();
-    }
+        const ok = await saveData();
+        btn.disabled = false;
 
-    // تأكيد التسليم من جانب المدير وتحديث رصيد العميل تلقائياً
-    function adminDeliverOrder(orderIndex) {
-        let order = systemData.shipments[orderIndex];
-        if(order.status !== "تم التسليم") {
-            order.status = "تم التسليم";
-            
-            // تحديث حالة الأوردر جوه قايمة العميل نفسه أيضاً
-            let clientKey = order.owner;
-            let clientOrders = systemData.users[clientKey].shipments;
-            let found = clientOrders.find(o => o.id === order.id);
-            if(found) {
-                found.status = "تم التسليم";
-            }
-
-            // زيادة رصيد العميل تلقائياً
-            systemData.users[clientKey].balance += order.price;
-
-            saveData();
+        if (ok) {
+            document.getElementById("order-client-id").value = "";
+            document.getElementById("order-recipient").value = "";
+            document.getElementById("order-price").value = "";
+            alert("تم إضافة البوليصة بنجاح للعميل!");
             updateAdminDashboard();
         }
-    }
+    };
+
+    window.adminDeliverOrder = async function (orderIndex) {
+        if (isSaving) return;
+        const order = systemData.shipments[orderIndex];
+        if (!order || order.status === "تم التسليم") return;
+
+        order.status = "تم التسليم";
+        const clientKey = order.owner;
+        if (systemData.users[clientKey]) {
+            const clientOrders = systemData.users[clientKey].shipments || [];
+            const found = clientOrders.find((o) => o.id === order.id);
+            if (found) {
+                found.status = "تم التسليم";
+            }
+            systemData.users[clientKey].balance = Number(systemData.users[clientKey].balance || 0) + Number(order.price || 0);
+        }
+
+        const ok = await saveData();
+        if (ok) {
+            updateAdminDashboard();
+        }
+    };
 
     function updateAdminDashboard() {
-        // تحديث جدول العملاء
         let clientsHtml = `<table><tr><th>اسم العميل</th><th>اليوزر</th><th>الـ ID</th></tr>`;
-        for(let key in systemData.users) {
-            if(systemData.users[key].role !== "admin") {
-                let u = systemData.users[key];
+        for (const key in systemData.users) {
+            if (systemData.users[key].role !== "admin") {
+                const u = systemData.users[key];
                 clientsHtml += `<tr><td>${u.name}</td><td>${key}</td><td><b>${u.id}</b></td></tr>`;
             }
         }
         clientsHtml += `</table>`;
-        document.getElementById('admin-clients-list').innerHTML = clientsHtml;
+        document.getElementById("admin-clients-list").innerHTML = clientsHtml;
 
-        // تحديث قايمة الشحنات العامة
-        let shipmentsHtml = '';
-        if(systemData.shipments.length === 0) {
+        let shipmentsHtml = "";
+        if (!systemData.shipments || systemData.shipments.length === 0) {
             shipmentsHtml = '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص مسجلة.</p>';
         } else {
             systemData.shipments.forEach((s, idx) => {
-                let isDelivered = s.status === "تم التسليم";
+                const isDelivered = s.status === "تم التسليم";
                 shipmentsHtml += `
                     <div class="item-card">
                         <div>
@@ -345,31 +463,32 @@
                             <small style="color: var(--gray-text);">للعميل: ${s.owner} | المبلغ: ${s.price} ج.م</small>
                         </div>
                         <div>
-                            <span class="status-badge ${isDelivered ? 'status-delivered' : 'status-pending'}">${s.status}</span>
-                            ${!isDelivered ? `<br><button style="margin-top:5px; padding:4px 8px; font-size:11px;" onclick="adminDeliverOrder(${idx})">تأكيد التسليم</button>` : ''}
+                            <span class="status-badge ${isDelivered ? "status-delivered" : "status-pending"}">${s.status}</span>
+                            ${!isDelivered ? `<br><button style="margin-top:5px; padding:4px 8px; font-size:11px;" onclick="adminDeliverOrder(${idx})">تأكيد التسليم</button>` : ""}
                         </div>
                     </div>
                 `;
             });
         }
-        document.getElementById('admin-shipments-list').innerHTML = shipmentsHtml;
+        document.getElementById("admin-shipments-list").innerHTML = shipmentsHtml;
     }
 
     function updateClientDashboard() {
-        let user = systemData.users[currentLoggedInUser];
-        document.getElementById('client-welcome').innerText = "مرحباً، " + user.name;
-        document.getElementById('client-id-display').innerText = "رقم التعريف (ID): " + user.id;
-        document.getElementById('wallet-balance').innerText = user.balance.toFixed(2) + " EGP";
+        const user = systemData.users[currentLoggedInUser];
+        document.getElementById("client-welcome").innerText = "مرحباً، " + user.name;
+        document.getElementById("client-id-display").innerText = "رقم التعريف (ID): " + user.id;
+        document.getElementById("wallet-balance").innerText = Number(user.balance || 0).toFixed(2) + " EGP";
 
-        let listContainer = document.getElementById('client-shipments-list');
-        if(user.shipments.length === 0) {
+        const listContainer = document.getElementById("client-shipments-list");
+        const shipments = user.shipments || [];
+        if (shipments.length === 0) {
             listContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد شحنات حتى الآن.</p>';
             return;
         }
 
-        let html = '';
-        user.shipments.forEach((s) => {
-            let isDelivered = s.status === "تم التسليم";
+        let html = "";
+        shipments.forEach((s) => {
+            const isDelivered = s.status === "تم التسليم";
             html += `
                 <div class="item-card">
                     <div>
@@ -377,7 +496,7 @@
                         <small style="color: var(--gray-text);">مبلغ التحصيل: ${s.price} جنيه</small>
                     </div>
                     <div>
-                        <span class="status-badge ${isDelivered ? 'status-delivered' : 'status-pending'}">${s.status}</span>
+                        <span class="status-badge ${isDelivered ? "status-delivered" : "status-pending"}">${s.status}</span>
                     </div>
                 </div>
             `;

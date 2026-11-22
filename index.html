@@ -167,7 +167,7 @@
             outline: none;
             border-color: var(--sky-blue);
         }
-               /* لوحات التحكم */
+                /* لوحات التحكم */
         .dashboard-screen { display: none; }
         .header-box {
             background: linear-gradient(135deg, var(--primary-blue), var(--sky-blue));
@@ -350,7 +350,7 @@
             <label>كلمة المرور (Password)</label>
             <input type="password" id="password" placeholder="أدخل كلمة المرور">
         </div>
-        <button id="login-btn" onclick="login()">دخول</button>
+                <button id="login-btn" onclick="login()">دخول</button>
 
         <!-- اختيار المنفذ بعد دخول الأدمن -->
         <div id="staff-select-box">
@@ -386,7 +386,7 @@
             <button style="width: auto; padding: 7px 14px; font-size: 12px; background: #1D4ED8;" onclick="logout()">خروج</button>
         </div>
 
-        <!-- القائمة الرئيسية لصفحة الإدارة (أزرار تدخل على الأقسام) -->
+        <!-- القائمة الرئيسية لصفحة الإدارة -->
         <div id="admin-home-view">
             <div class="stats-grid">
                 <div class="stat-card">
@@ -407,9 +407,10 @@
             <div class="admin-menu-grid">
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('add-client')">1. إضافة عميل جديد</button>
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('add-order')">2. إضافة بوليصة / أوردر جديد</button>
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('notifications')">3. الإشعارات وسجل المنفّذين</button>
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('clients')">4. قائمة العملاء وأكواد الـ ID</button>
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('shipments')">5. متابعة الشحنات</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('couriers')">3. إضافة دليفري (مندوب التوصيل) وبوالصه</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('notifications')">4. الإشعارات وسجل المنفّذين</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('clients')">5. قائمة العملاء وأكواد الـ ID</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('shipments')">6. متابعة الشحنات</button>
             </div>
         </div>
 
@@ -432,7 +433,7 @@
         </div>
 
         <!-- قسم 2: إضافة بوليصة / أوردر جديد -->
-                <div id="admin-view-add-order" class="admin-subview">
+        <div id="admin-view-add-order" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
                 <h4>إضافة بوليصة / أوردر جديد لعميل</h4>
@@ -445,11 +446,40 @@
                 <div class="input-group">
                     <input type="number" id="order-price" placeholder="مبلغ التحصيل (COD)">
                 </div>
+                <div class="input-group">
+                    <label>اختيار مندوب التوصيل (الدليفري)</label>
+                    <select id="order-courier">
+                        <option value="">بدون مندوب حالياً</option>
+                    </select>
+                </div>
                 <button id="add-order-btn" onclick="addOrderAsAdmin()">إضافة الأوردر للعميل</button>
             </div>
         </div>
 
-        <!-- قسم 3: الإشعارات وسجل المنفذين -->
+        <!-- قسم 3: إضافة دليفري (مندوب التوصيل) وبوالصه -->
+        <div id="admin-view-couriers" class="admin-subview">
+            <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
+            <div class="section">
+                <h4>إضافة دليفري (مندوب التوصيل)</h4>
+                <div class="input-group">
+                    <input type="text" id="new-courier-name" placeholder="اسم مندوب التوصيل">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="new-courier-phone" placeholder="رقم تليفون المندوب (للإدارة فقط)">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="new-courier-zone" placeholder="منطقة التوصيل أو الخط">
+                </div>
+                <button id="add-courier-btn" onclick="addNewCourier()">إضافة المندوب وتوليد كود</button>
+            </div>
+
+            <div class="section">
+                <h4>قائمة المناديب والبوالص المسندة لكل مندوب</h4>
+                <div id="admin-couriers-list"></div>
+            </div>
+        </div>
+
+        <!-- قسم 4: الإشعارات وسجل المنفذين -->
         <div id="admin-view-notifications" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
@@ -459,8 +489,7 @@
                 </div>
             </div>
         </div>
-
-        <!-- قسم 4: قائمة العملاء -->
+                <!-- قسم 5: قائمة العملاء -->
         <div id="admin-view-clients" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
@@ -469,7 +498,7 @@
             </div>
         </div>
 
-        <!-- قسم 5: متابعة الشحنات -->
+        <!-- قسم 6: متابعة الشحنات -->
         <div id="admin-view-shipments" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
@@ -532,7 +561,7 @@
 
     const STAFF_PINS = {
         "أستاذ يوسف": "1010",
-        "أستاذ صبري": "1122"
+        "أستاذ صبري": "1111"
     };
 
     const defaultData = {
@@ -540,6 +569,7 @@
             "admin": { pass: "admin123", name: "مدير النظام", role: "admin" },
             "youssef": { pass: "1234", name: "شركة الأضواء", id: "CUST-101", balance: 0, shipments: [], notifications: [] }
         },
+        couriers: [],
         shipments: [],
         adminNotifications: []
     };
@@ -560,9 +590,10 @@
                 users[k].notifications = Array.isArray(users[k].notifications) ? users[k].notifications : [];
             }
         });
+        const couriers = Array.isArray(raw.couriers) ? raw.couriers : [];
         const shipments = Array.isArray(raw.shipments) ? raw.shipments : [];
         const adminNotifications = Array.isArray(raw.adminNotifications) ? raw.adminNotifications : [];
-        return { users, shipments, adminNotifications };
+        return { users, couriers, shipments, adminNotifications };
     }
 
     let systemData = JSON.parse(JSON.stringify(defaultData));
@@ -652,7 +683,7 @@
         activeAdminSection = sectionName;
         persistSessionState();
         document.getElementById("admin-home-view").style.display = sectionName === "home" ? "block" : "none";
-        const views = ["add-client", "add-order", "notifications", "clients", "shipments"];
+        const views = ["add-client", "add-order", "couriers", "notifications", "clients", "shipments"];
         views.forEach((v) => {
             const el = document.getElementById("admin-view-" + v);
             if (el) el.style.display = sectionName === v ? "block" : "none";
@@ -707,8 +738,7 @@
     }, () => {
         setSyncStatus("خطأ في مزامنة قاعدة البيانات", false);
     });
-
-    async function saveData() {
+        async function saveData() {
         isSaving = true;
         setSyncStatus("جاري حفظ البيانات ومزامنتها...", true);
         try {
@@ -829,7 +859,8 @@
         updatePushStatusLabel();
         openAdminSection("home");
     };
-        window.login = function () {
+
+    window.login = function () {
         const u = document.getElementById("username").value.trim();
         const p = document.getElementById("password").value.trim();
         const err = document.getElementById("error-msg");
@@ -878,6 +909,52 @@
         document.getElementById("admin-dashboard").style.display = "none";
         document.getElementById("client-dashboard").style.display = "none";
         document.getElementById("login-screen").style.display = "block";
+    };
+
+    window.addNewCourier = async function () {
+        if (isSaving || !currentAdminOperator) return;
+        const name = document.getElementById("new-courier-name").value.trim();
+        const phone = document.getElementById("new-courier-phone").value.trim();
+        const zone = document.getElementById("new-courier-zone").value.trim() || "عام";
+
+        if (!name || !phone) {
+            alert("برجاء إدخال اسم المندوب ورقم تليفونه.");
+            return;
+        }
+
+        if (!Array.isArray(systemData.couriers)) {
+            systemData.couriers = [];
+        }
+
+        let code = "DLV-" + Math.floor(100 + Math.random() * 900);
+        const existingCodes = new Set(systemData.couriers.map((c) => c.code));
+        while (existingCodes.has(code)) {
+            code = "DLV-" + Math.floor(100 + Math.random() * 900);
+        }
+
+        const btn = document.getElementById("add-courier-btn");
+        btn.disabled = true;
+
+        systemData.couriers.push({
+            code: code,
+            name: name,
+            phone: phone,
+            zone: zone,
+            addedBy: currentAdminOperator
+        });
+
+        pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة مندوب التوصيل: " + name + " (" + code + ")");
+
+        const ok = await saveData();
+        btn.disabled = false;
+
+        if (ok) {
+            document.getElementById("new-courier-name").value = "";
+            document.getElementById("new-courier-phone").value = "";
+            document.getElementById("new-courier-zone").value = "";
+            alert("تم إضافة المندوب بنجاح بكود: " + code);
+            updateAdminDashboard();
+        }
     };
 
     window.addNewClient = async function () {
@@ -936,6 +1013,7 @@
         const clientId = document.getElementById("order-client-id").value.trim();
         const recipient = document.getElementById("order-recipient").value.trim();
         const price = parseFloat(document.getElementById("order-price").value);
+        const selectedCourierCode = document.getElementById("order-courier").value;
 
         if (!clientId || !recipient || isNaN(price) || price < 0) {
             alert("برجاء التأكد من الـ ID وبيانات الأوردر والمبلغ.");
@@ -955,6 +1033,9 @@
             return;
         }
 
+        const couriers = Array.isArray(systemData.couriers) ? systemData.couriers : [];
+        const courierObj = couriers.find((c) => c.code === selectedCourierCode) || null;
+
         const btn = document.getElementById("add-order-btn");
         btn.disabled = true;
 
@@ -964,6 +1045,8 @@
             price: price,
             status: "قيد التوصيل",
             owner: targetUserKey,
+            courierCode: courierObj ? courierObj.code : "",
+            courierName: courierObj ? courierObj.name : "",
             lastActionBy: currentAdminOperator
         };
 
@@ -978,7 +1061,8 @@
         systemData.shipments.push(newOrder);
 
         pushClientNotification(targetUserKey, "تم إضافة بوليصة جديدة #" + newOrder.id + " (" + recipient + ") بمبلغ " + price + " ج.م");
-        pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة بوليصة #" + newOrder.id + " للعميل " + systemData.users[targetUserKey].name);
+        const courierNote = courierObj ? " وإسنادها للمندوب: " + courierObj.name : "";
+        pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة بوليصة #" + newOrder.id + " للعميل " + systemData.users[targetUserKey].name + courierNote);
 
         const ok = await saveData();
         btn.disabled = false;
@@ -987,6 +1071,7 @@
             document.getElementById("order-client-id").value = "";
             document.getElementById("order-recipient").value = "";
             document.getElementById("order-price").value = "";
+            document.getElementById("order-courier").value = "";
             alert("تم إضافة البوليصة بنجاح للعميل!");
             updateAdminDashboard();
         }
@@ -1047,10 +1132,50 @@
         }
     };
 
+    function renderCourierSelect() {
+        const selectEl = document.getElementById("order-courier");
+        if (!selectEl) return;
+        const prevVal = selectEl.value;
+        const couriers = Array.isArray(systemData.couriers) ? systemData.couriers : [];
+        selectEl.innerHTML = '<option value="">بدون مندوب حالياً</option>' + couriers.map((c) => `
+            <option value="${c.code}">${c.name} (${c.code} - ${c.zone})</option>
+        `).join("");
+        if (prevVal && couriers.some((c) => c.code === prevVal)) {
+            selectEl.value = prevVal;
+        }
+    }
+
     function updateAdminDashboard() {
         const clientKeys = Object.keys(systemData.users).filter((k) => systemData.users[k].role !== "admin");
         document.getElementById("total-clients-count").innerText = clientKeys.length;
         document.getElementById("total-shipments-count").innerText = (systemData.shipments || []).length;
+        renderCourierSelect();
+
+        const couriers = Array.isArray(systemData.couriers) ? systemData.couriers : [];
+        const couriersContainer = document.getElementById("admin-couriers-list");
+        if (couriersContainer) {
+            if (couriers.length === 0) {
+                couriersContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا يوجد مناديب مضافون بعد.</p>';
+            } else {
+                couriersContainer.innerHTML = couriers.map((c) => {
+                    const assigned = (systemData.shipments || []).filter((s) => s.courierCode === c.code);
+                    const ordersHtml = assigned.length === 0
+                        ? '<small style="color: var(--gray-text);">لا توجد بوالص مسندة لهذا المندوب حالياً.</small>'
+                        : assigned.map((o) => `
+                            <div class="notif-item" style="margin-top: 6px;">
+                                <strong>بوليصة #${o.id} - ${o.recipient}</strong> | المبلغ: ${o.price} ج.م | <span class="status-badge">${o.status}</span>
+                            </div>
+                        `).join("");
+                    return `
+                        <div class="section" style="margin-bottom: 12px; padding: 14px;">
+                            <strong>${c.name} (${c.code})</strong><br>
+                            <small style="color: var(--gray-text);">تليفون (للإدارة فقط): ${c.phone} | المنطقة: ${c.zone}</small>
+                            <div style="margin-top: 8px;">${ordersHtml}</div>
+                        </div>
+                    `;
+                }).join("");
+            }
+        }
 
         const notifs = systemData.adminNotifications || [];
         const notifContainer = document.getElementById("admin-notifications-list");
@@ -1081,13 +1206,14 @@
                 const isDelivered = s.status === "تم التسليم";
                 const isPostponed = s.status === "أوردر مؤجل";
                 const badgeClass = isDelivered ? "status-delivered" : (isPostponed ? "status-postponed" : "status-pending");
+                const courierLabel = s.courierName ? "المندوب: " + s.courierName : "المندوب: غير محدد";
                 const actorLabel = s.lastActionBy ? "آخر إجراء بواسطة: " + s.lastActionBy : "";
 
                 shipmentsHtml += `
-                    <div class="item-card">
+                     <div class="item-card">
                         <div>
                             <strong>بوليصة #${s.id} - ${s.recipient}</strong><br>
-                            <small style="color: var(--gray-text);">للعميل: ${s.owner} | المبلغ: ${s.price} ج.م</small><br>
+                            <small style="color: var(--gray-text);">للعميل: ${s.owner} | المبلغ: ${s.price} ج.م | ${courierLabel}</small><br>
                             <small style="color: var(--primary-blue); font-weight: 600;">${actorLabel}</small>
                         </div>
                         <div class="action-row">

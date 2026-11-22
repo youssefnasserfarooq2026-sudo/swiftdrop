@@ -167,7 +167,7 @@
             outline: none;
             border-color: var(--sky-blue);
         }
-                /* لوحات التحكم */
+               /* لوحات التحكم */
         .dashboard-screen { display: none; }
         .header-box {
             background: linear-gradient(135deg, var(--primary-blue), var(--sky-blue));
@@ -400,8 +400,8 @@
             </div>
 
             <div class="section" style="padding: 12px 16px;">
-                <button type="button" id="push-permission-btn" onclick="requestMobileNotifications()">تفعيل إشعارات الموبايل</button>
-                <small id="push-status-text" style="display: block; margin-top: 6px; color: var(--gray-text); font-size: 12px;">إشعارات الجهاز: بانتظار التفعيل</small>
+                <button type="button" id="push-permission-btn" onclick="requestMobileNotifications()">تفعيل إشعارات التطبيق</button>
+                <small id="push-status-text" style="display: block; margin-top: 6px; color: var(--gray-text); font-size: 12px;">إشعارات داخل التطبيق: مفعّلة ومحدّثة تلقائياً</small>
             </div>
 
             <div class="admin-menu-grid">
@@ -497,7 +497,7 @@
         </div>
 
         <div class="section" style="padding: 12px 16px;">
-            <button type="button" onclick="requestMobileNotifications()">تفعيل إشعارات الموبايل</button>
+            <button type="button" onclick="requestMobileNotifications()">تحديث وتفعيل الإشعارات</button>
         </div>
 
         <div class="section">
@@ -566,13 +566,31 @@
     }
 
     let systemData = JSON.parse(JSON.stringify(defaultData));
-    let currentLoggedInUser = null;
-    let currentAdminOperator = null;
+    let currentLoggedInUser = sessionStorage.getItem("swiftdrop_user") || null;
+    let currentAdminOperator = sessionStorage.getItem("swiftdrop_operator") || null;
     let pendingStaffSelection = null;
-    let activeAdminSection = "home";
+    let activeAdminSection = sessionStorage.getItem("swiftdrop_admin_section") || "home";
     let isDbReady = false;
     let isSaving = false;
     let touchStartY = 0;
+
+    if (sessionStorage.getItem("swiftdrop_welcomed") === "1") {
+        document.getElementById("welcome-screen").style.display = "none";
+    }
+
+    function persistSessionState() {
+        if (currentLoggedInUser) {
+            sessionStorage.setItem("swiftdrop_user", currentLoggedInUser);
+        } else {
+            sessionStorage.removeItem("swiftdrop_user");
+        }
+        if (currentAdminOperator) {
+            sessionStorage.setItem("swiftdrop_operator", currentAdminOperator);
+        } else {
+            sessionStorage.removeItem("swiftdrop_operator");
+        }
+        sessionStorage.setItem("swiftdrop_admin_section", activeAdminSection);
+    }
 
     document.addEventListener("touchstart", (e) => {
         if (e.touches && e.touches.length > 0) {
@@ -589,42 +607,34 @@
     }, { passive: false });
 
     window.enterApp = function () {
+        sessionStorage.setItem("swiftdrop_welcomed", "1");
         document.getElementById("welcome-screen").style.display = "none";
-        if ("Notification" in window && Notification.permission === "default") {
-            Notification.requestPermission().then(() => updatePushStatusLabel());
-        } else {
-            updatePushStatusLabel();
-        }
+        updatePushStatusLabel();
+        restoreSessionIfAvailable();
     };
 
     function updatePushStatusLabel() {
         const el = document.getElementById("push-status-text");
         if (!el) return;
-        if (!("Notification" in window)) {
-            el.innerText = "إشعارات الموبايل: غير مدعومة في هذا المتصفح";
-            return;
-        }
-        if (Notification.permission === "granted") {
-            el.innerText = "إشعارات الموبايل: مفعّلة بنجاح";
-        } else if (Notification.permission === "denied") {
-            el.innerText = "إشعارات الموبايل: محظورة من إعدادات المتصفح/التطبيق";
-        } else {
-            el.innerText = "إشعارات الموبايل: اضغط لتفعيلها على جهازك";
-        }
+        const canSystemPush = ("Notification" in window) && (Notification.permission === "granted");
+        el.innerText = canSystemPush
+            ? "إشعارات الموبايل والتطبيق: مفعّلة"
+            : "إشعارات التطبيق: مفعّلة ومحدّثة تلقائياً";
     }
 
     window.requestMobileNotifications = async function () {
-        if (!("Notification" in window)) {
-            alert("هذا المتصفح لا يدعم إشعارات النظام.");
-            return;
+        if ("Notification" in window && typeof Notification.requestPermission === "function") {
+            try {
+                const perm = await Notification.requestPermission();
+                updatePushStatusLabel();
+                if (perm === "granted") {
+                    triggerDeviceNotification("SwiftDrop Logistics", "تم تفعيل إشعارات الموبايل بنجاح.");
+                    return;
+                }
+            } catch (e) {}
         }
-        const perm = await Notification.requestPermission();
         updatePushStatusLabel();
-        if (perm === "granted") {
-            triggerDeviceNotification("SwiftDrop Logistics", "تم تفعيل إشعارات الموبايل بنجاح.");
-        } else {
-            alert("يرجى السماح بالإشعارات من إعدادات المتصفح أو التطبيق لوصول الإشعارات على الموبايل.");
-        }
+        alert("تم تفعيل وتحديث الإشعارات داخل التطبيق بنجاح. يمكنك متابعتها في قسم (الإشعارات وسجل المنفّذين).");
     };
 
     function triggerDeviceNotification(title, body) {
@@ -640,6 +650,7 @@
 
     window.openAdminSection = function (sectionName) {
         activeAdminSection = sectionName;
+        persistSessionState();
         document.getElementById("admin-home-view").style.display = sectionName === "home" ? "block" : "none";
         const views = ["add-client", "add-order", "notifications", "clients", "shipments"];
         views.forEach((v) => {
@@ -654,11 +665,31 @@
         document.getElementById("sync-dot").style.background = isOk ? "#16A34A" : "#EF4444";
     }
 
+    function restoreSessionIfAvailable() {
+        if (!isDbReady || !currentLoggedInUser) return;
+        const userObj = systemData.users[currentLoggedInUser];
+        if (!userObj) return;
+
+        document.getElementById("login-screen").style.display = "none";
+        if (userObj.role === "admin" && currentAdminOperator) {
+            document.getElementById("client-dashboard").style.display = "none";
+            document.getElementById("admin-dashboard").style.display = "block";
+            document.getElementById("admin-active-operator").innerText = "المنفّذ الحالي: " + currentAdminOperator;
+            updatePushStatusLabel();
+            openAdminSection(activeAdminSection || "home");
+        } else if (userObj.role !== "admin") {
+            document.getElementById("admin-dashboard").style.display = "none";
+            document.getElementById("client-dashboard").style.display = "block";
+            updateClientDashboard();
+        }
+    }
+
     onValue(dataRef, (snapshot) => {
         if (snapshot.exists()) {
             systemData = normalizeData(snapshot.val());
             isDbReady = true;
             setSyncStatus("متصل بقاعدة البيانات السحابية", true);
+            restoreSessionIfAvailable();
             refreshActiveView();
         } else {
             systemData = JSON.parse(JSON.stringify(defaultData));
@@ -666,6 +697,7 @@
                 .then(() => {
                     isDbReady = true;
                     setSyncStatus("تم تهيئة قاعدة البيانات السحابية", true);
+                    restoreSessionIfAvailable();
                     refreshActiveView();
                 })
                 .catch(() => {
@@ -785,6 +817,8 @@
         }
 
         currentAdminOperator = pendingStaffSelection;
+        activeAdminSection = "home";
+        persistSessionState();
         document.getElementById("login-screen").style.display = "none";
         document.getElementById("staff-select-box").style.display = "none";
         document.getElementById("pin-modal-box").style.display = "none";
@@ -807,6 +841,7 @@
 
         if (systemData.users[u] && systemData.users[u].pass === p) {
             currentLoggedInUser = u;
+            persistSessionState();
             document.getElementById("username").value = "";
             document.getElementById("password").value = "";
             err.innerText = "";
@@ -814,6 +849,7 @@
             if (systemData.users[u].role === "admin") {
                 currentAdminOperator = null;
                 pendingStaffSelection = null;
+                sessionStorage.removeItem("swiftdrop_operator");
                 document.getElementById("btn-youssef").classList.remove("active");
                 document.getElementById("btn-sabry").classList.remove("active");
                 document.getElementById("pin-modal-box").style.display = "none";
@@ -833,6 +869,9 @@
         currentAdminOperator = null;
         pendingStaffSelection = null;
         activeAdminSection = "home";
+        sessionStorage.removeItem("swiftdrop_user");
+        sessionStorage.removeItem("swiftdrop_operator");
+        sessionStorage.removeItem("swiftdrop_admin_section");
         clearPinInputs();
         document.getElementById("staff-select-box").style.display = "none";
         document.getElementById("pin-modal-box").style.display = "none";

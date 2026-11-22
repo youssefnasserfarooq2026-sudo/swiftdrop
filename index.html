@@ -1,4 +1,4 @@
-          <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -17,12 +17,41 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body {
-    background: linear-gradient(rgba(224, 242, 254, 0.4), rgba(240, 249, 255, 0.5)), url("./1795190351498.jpg") center/cover fixed no-repeat;
-    min-height: 100vh;
-    color: var(--text-dark);
-    padding: 20px;
+            background: linear-gradient(rgba(224, 242, 254, 0.4), rgba(240, 249, 255, 0.5)), url("./1795190351498.jpg") center/cover fixed no-repeat;
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 20px;
         }
         .container { max-width: 700px; margin: 0 auto; }
+
+        /* شاشة الترحيب */
+        #welcome-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(10, 74, 143, 0.94), rgba(2, 132, 199, 0.92));
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 24px;
+            z-index: 9999;
+        }
+        .welcome-box {
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(8px);
+            padding: 32px 24px;
+            border-radius: 20px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 14px 35px rgba(10, 74, 143, 0.3);
+        }
+        .welcome-box h1 { font-size: 24px; margin-bottom: 12px; line-height: 1.5; }
+        .welcome-box p { font-size: 14px; opacity: 0.95; margin-bottom: 24px; }
+        .welcome-btn { background: #FFFFFF; color: var(--primary-blue); }
+        .welcome-btn:hover { background: var(--light-sky); }
 
         .sync-bar {
             background: var(--light-sky);
@@ -46,22 +75,22 @@
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(2, 132, 199, 0.08);
-            margin-top: 30px;
+            margin-top: 20px;
             text-align: center;
         }
-        h2 { color: var(--primary-blue); margin-bottom: 20px; }
-        .input-group { margin-bottom: 15px; text-align: right; }
-        .input-group label { display: block; margin-bottom: 5px; color: var(--gray-text); font-weight: 600; }
-        .input-group input {
+        h2 { color: var(--primary-blue); margin-bottom: 16px; }
+        .input-group { margin-bottom: 14px; text-align: right; }
+        .input-group label { display: block; margin-bottom: 5px; color: var(--gray-text); font-weight: 600; font-size: 14px; }
+        .input-group input, .input-group select {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border-sky);
             background: var(--ice-white);
             color: var(--text-dark);
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
         }
-        .input-group input:focus {
+        .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: var(--sky-blue);
             background: #FFFFFF;
@@ -70,16 +99,70 @@
             background: var(--sky-blue);
             color: #FFFFFF;
             border: none;
-            padding: 12px 20px;
+            padding: 12px 18px;
             width: 100%;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.25s;
         }
         button:hover:not(:disabled) { background: var(--primary-blue); }
         button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* اختيار المنفذ ورمز الأمان (4 خانات) */
+        #staff-select-box {
+            display: none;
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 2px dashed var(--border-sky);
+        }
+        .staff-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .staff-btn {
+            background: var(--light-sky);
+            color: var(--primary-blue);
+            border: 1px solid var(--border-sky);
+        }
+        .staff-btn.active {
+            background: var(--primary-blue);
+            color: #FFFFFF;
+            border-color: var(--primary-blue);
+        }
+        #pin-modal-box {
+            display: none;
+            background: var(--ice-white);
+            border: 1px solid var(--border-sky);
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+        .pin-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            direction: ltr;
+            margin: 12px 0;
+        }
+        .pin-digit {
+            width: 48px;
+            height: 52px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            border: 2px solid var(--border-sky);
+            border-radius: 10px;
+            background: #FFFFFF;
+            color: var(--primary-blue);
+        }
+        .pin-digit:focus {
+            outline: none;
+            border-color: var(--sky-blue);
+        }
 
         /* لوحات التحكم */
         .dashboard-screen { display: none; }
@@ -91,16 +174,33 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 16px;
             box-shadow: 0 6px 18px rgba(10, 74, 143, 0.16);
         }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-sky);
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+        }
+        .stat-card span { display: block; font-size: 12px; color: var(--gray-text); margin-bottom: 4px; }
+        .stat-card strong { font-size: 22px; color: var(--primary-blue); }
+
         .wallet-card {
             background: linear-gradient(135deg, #0284C7, #38BDF8);
             color: #FFFFFF;
             padding: 20px;
             border-radius: 16px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             box-shadow: 0 6px 18px rgba(2, 132, 199, 0.25);
         }
         .wallet-card h3 { font-size: 14px; opacity: 0.95; margin-bottom: 5px; }
@@ -109,13 +209,13 @@
         .section {
             background: var(--card-bg);
             border: 1px solid var(--border-sky);
-            padding: 20px;
+            padding: 18px;
             border-radius: 16px;
-            margin-bottom: 15px;
+            margin-bottom: 14px;
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.04);
         }
         .section h4 {
-            margin-bottom: 15px;
+            margin-bottom: 14px;
             color: var(--primary-blue);
             border-bottom: 2px solid var(--light-sky);
             padding-bottom: 8px;
@@ -128,14 +228,30 @@
             gap: 10px;
             padding: 12px;
             background: var(--ice-white);
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 10px;
             border-right: 4px solid var(--sky-blue);
             border-top: 1px solid var(--light-sky);
             border-left: 1px solid var(--light-sky);
             border-bottom: 1px solid var(--light-sky);
         }
+        .action-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 118px;
+            text-align: left;
+        }
+        .small-btn {
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 7px;
+        }
+        .postpone-btn {
+            background: #0369A1;
+        }
         .status-badge {
+            display: inline-block;
             background: var(--light-sky);
             color: var(--primary-blue);
             padding: 4px 10px;
@@ -145,16 +261,41 @@
         }
         .status-delivered { background: #DCFCE7; color: #166534; }
         .status-pending { background: #E0F2FE; color: #0369A1; }
+        .status-postponed { background: #FEF3C7; color: #92400E; }
 
-        .logout-btn { background: #2563EB; margin-top: 20px; }
+        .notif-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: var(--ice-white);
+            border: 1px solid var(--border-sky);
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .notif-time {
+            display: block;
+            font-size: 11px;
+            color: var(--gray-text);
+            margin-top: 4px;
+        }
+
+        .logout-btn { background: #2563EB; margin-top: 14px; }
         .logout-btn:hover:not(:disabled) { background: #1D4ED8; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-        th, td { padding: 10px; text-align: right; border-bottom: 1px solid var(--light-sky); }
+        table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+        th, td { padding: 9px; text-align: right; border-bottom: 1px solid var(--light-sky); }
         th { color: var(--primary-blue); background: var(--ice-white); }
     </style>
 </head>
 <body>
+
+<!-- شاشة الترحيب -->
+<div id="welcome-screen">
+    <div class="welcome-box">
+        <h1>أهلاً بك في شركة SwiftDrop Logistics للشحن</h1>
+        <p>نظام متكامل لإدارة العملاء، البوالص، المحافظ، والإشعارات الفورية</p>
+        <button class="welcome-btn" onclick="enterApp()">دخول إلى النظام</button>
+    </div>
+</div>
 
 <div class="container">
     <div class="sync-bar">
@@ -165,7 +306,7 @@
     <!-- شاشة تسجيل الدخول الموحدة -->
     <div id="login-screen">
         <h2>SwiftDrop Logistics</h2>
-        <p style="color: var(--gray-text); margin-bottom: 20px;">تسجيل الدخول للنظام</p>
+        <p style="color: var(--gray-text); margin-bottom: 18px;">تسجيل الدخول للنظام</p>
         <div class="input-group">
             <label>اسم المستخدم (Username)</label>
             <input type="text" id="username" placeholder="أدخل اسم المستخدم">
@@ -175,17 +316,59 @@
             <input type="password" id="password" placeholder="أدخل كلمة المرور">
         </div>
         <button id="login-btn" onclick="login()">دخول</button>
-        <p id="error-msg" style="color: #0369A1; margin-top: 10px; font-size: 14px; font-weight: 600;"></p>
+
+        <!-- اختيار المنفذ بعد دخول الأدمن -->
+        <div id="staff-select-box">
+            <p style="color: var(--primary-blue); font-weight: 700; margin-bottom: 10px;">اختر هوية المنفّذ لمتابعة العمل:</p>
+            <div class="staff-buttons">
+                <button type="button" id="btn-youssef" class="staff-btn" onclick="selectStaff('أستاذ يوسف')">أستاذ يوسف</button>
+                <button type="button" id="btn-sabry" class="staff-btn" onclick="selectStaff('أستاذ صبري')">أستاذ صبري</button>
+            </div>
+
+            <!-- إدخال رمز الأمان من 4 مربعات -->
+            <div id="pin-modal-box">
+                <p id="pin-prompt-text" style="font-size: 14px; font-weight: 700; color: var(--primary-blue);"></p>
+                <div class="pin-boxes">
+                    <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="pin-0" oninput="handlePinInput(0)" onkeydown="handlePinKeydown(0, event)">
+                    <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="pin-1" oninput="handlePinInput(1)" onkeydown="handlePinKeydown(1, event)">
+                    <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="pin-2" oninput="handlePinInput(2)" onkeydown="handlePinKeydown(2, event)">
+                    <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="pin-3" oninput="handlePinInput(3)" onkeydown="handlePinKeydown(3, event)">
+                </div>
+                <button type="button" onclick="verifyStaffPin()">تأكيد رمز الأمان والدخول</button>
+            </div>
+        </div>
+
+        <p id="error-msg" style="color: #0369A1; margin-top: 12px; font-size: 14px; font-weight: 600;"></p>
     </div>
 
     <!-- 1. لوحة تحكم المدير (ADMIN DASHBOARD) -->
     <div id="admin-dashboard" class="dashboard-screen">
         <div class="header-box">
             <div>
-                <h3>لوحة تحكم المدير (Admin)</h3>
-                <p style="font-size: 12px; opacity: 0.9;">إدارة العملاء والبوالص بالكامل</p>
+                <h3>شركة SwiftDrop Logistics</h3>
+                <p id="admin-active-operator" style="font-size: 12px; opacity: 0.95; margin-top: 3px;">المنفّذ الحالي: -</p>
             </div>
-            <button style="width: auto; padding: 6px 12px; font-size: 12px; background: #1D4ED8;" onclick="logout()">خروج</button>
+            <button style="width: auto; padding: 7px 14px; font-size: 12px; background: #1D4ED8;" onclick="logout()">خروج</button>
+        </div>
+
+        <!-- إحصائية عدد العملاء والإشعارات -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span>إجمالي عدد العملاء</span>
+                <strong id="total-clients-count">0</strong>
+            </div>
+            <div class="stat-card">
+                <span>إجمالي البوالص</span>
+                <strong id="total-shipments-count">0</strong>
+            </div>
+        </div>
+
+        <!-- إشعارات الإدارة وسجل الإجراءات -->
+        <div class="section">
+            <h4>إشعارات الإدارة وسجل المنفّذين</h4>
+            <div id="admin-notifications-list">
+                <p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات بعد.</p>
+            </div>
         </div>
 
         <!-- إضافة عميل جديد برقم ID تلقائي -->
@@ -240,12 +423,19 @@
                 <h3 id="client-welcome">مرحباً، يا عَميل</h3>
                 <p id="client-id-display" style="font-size: 12px; opacity: 0.9;"></p>
             </div>
-            <button style="width: auto; padding: 6px 12px; font-size: 12px; background: #1D4ED8;" onclick="logout()">خروج</button>
+            <button style="width: auto; padding: 7px 14px; font-size: 12px; background: #1D4ED8;" onclick="logout()">خروج</button>
         </div>
 
         <div class="wallet-card">
             <h3>رصيد المحفظة المتاح</h3>
             <div class="amount" id="wallet-balance">0.00 EGP</div>
+        </div>
+
+        <div class="section">
+            <h4>إشعارات شحناتك</h4>
+            <div id="client-notifications-list">
+                <p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات جديدة.</p>
+            </div>
         </div>
 
         <div class="section">
@@ -271,13 +461,23 @@
     const db = getDatabase(app);
     const dataRef = ref(db, "swiftdrop_data");
 
+    const STAFF_PINS = {
+        "أستاذ يوسف": "1010",
+        "أستاذ صبري": "1122"
+    };
+
     const defaultData = {
         users: {
             "admin": { pass: "admin123", name: "مدير النظام", role: "admin" },
-            "youssef": { pass: "1234", name: "شركة الأضواء", id: "CUST-101", balance: 0, shipments: [] }
+            "youssef": { pass: "1234", name: "شركة الأضواء", id: "CUST-101", balance: 0, shipments: [], notifications: [] }
         },
-        shipments: []
+        shipments: [],
+        adminNotifications: []
     };
+
+    function formatNow() {
+        return new Date().toLocaleString("ar-EG", { dateStyle: "short", timeStyle: "short" });
+    }
 
     function normalizeData(raw) {
         if (!raw || typeof raw !== "object") {
@@ -288,23 +488,30 @@
             if (users[k].role !== "admin") {
                 users[k].balance = Number(users[k].balance || 0);
                 users[k].shipments = Array.isArray(users[k].shipments) ? users[k].shipments : [];
+                users[k].notifications = Array.isArray(users[k].notifications) ? users[k].notifications : [];
             }
         });
         const shipments = Array.isArray(raw.shipments) ? raw.shipments : [];
-        return { users, shipments };
+        const adminNotifications = Array.isArray(raw.adminNotifications) ? raw.adminNotifications : [];
+        return { users, shipments, adminNotifications };
     }
 
     let systemData = JSON.parse(JSON.stringify(defaultData));
     let currentLoggedInUser = null;
+    let currentAdminOperator = null;
+    let pendingStaffSelection = null;
     let isDbReady = false;
     let isSaving = false;
+
+    window.enterApp = function () {
+        document.getElementById("welcome-screen").style.display = "none";
+    };
 
     function setSyncStatus(text, isOk = true) {
         document.getElementById("sync-status").innerText = text;
         document.getElementById("sync-dot").style.background = isOk ? "#16A34A" : "#EF4444";
     }
-
-    onValue(dataRef, (snapshot) => {
+             onValue(dataRef, (snapshot) => {
         if (snapshot.exists()) {
             systemData = normalizeData(snapshot.val());
             isDbReady = true;
@@ -342,6 +549,31 @@
         }
     }
 
+    function pushAdminNotification(message) {
+        if (!Array.isArray(systemData.adminNotifications)) {
+            systemData.adminNotifications = [];
+        }
+        systemData.adminNotifications.unshift({
+            message: message,
+            operator: currentAdminOperator || "الأدمن",
+            time: formatNow()
+        });
+        systemData.adminNotifications = systemData.adminNotifications.slice(0, 40);
+    }
+
+    function pushClientNotification(clientKey, message) {
+        const client = systemData.users[clientKey];
+        if (!client) return;
+        if (!Array.isArray(client.notifications)) {
+            client.notifications = [];
+        }
+        client.notifications.unshift({
+            message: message,
+            time: formatNow()
+        });
+        client.notifications = client.notifications.slice(0, 30);
+    }
+
     function refreshActiveView() {
         if (!currentLoggedInUser) return;
         if (!systemData.users[currentLoggedInUser]) {
@@ -349,11 +581,71 @@
             return;
         }
         if (systemData.users[currentLoggedInUser].role === "admin") {
-            updateAdminDashboard();
+            if (currentAdminOperator) {
+                updateAdminDashboard();
+            }
         } else {
             updateClientDashboard();
         }
     }
+
+    function clearPinInputs() {
+        for (let i = 0; i < 4; i++) {
+            const el = document.getElementById("pin-" + i);
+            if (el) el.value = "";
+        }
+    }
+
+    window.handlePinInput = function (index) {
+        const el = document.getElementById("pin-" + index);
+        el.value = el.value.replace(/[^0-9]/g, "").slice(0, 1);
+        if (el.value && index < 3) {
+            document.getElementById("pin-" + (index + 1)).focus();
+        }
+    };
+
+    window.handlePinKeydown = function (index, event) {
+        if (event.key === "Backspace" && !document.getElementById("pin-" + index).value && index > 0) {
+            document.getElementById("pin-" + (index - 1)).focus();
+        }
+    };
+
+    window.selectStaff = function (staffName) {
+        pendingStaffSelection = staffName;
+        document.getElementById("btn-youssef").classList.toggle("active", staffName === "أستاذ يوسف");
+        document.getElementById("btn-sabry").classList.toggle("active", staffName === "أستاذ صبري");
+        document.getElementById("pin-prompt-text").innerText = "أدخل رمز الأمان الخاص بـ (" + staffName + ") من 4 أرقام:";
+        document.getElementById("pin-modal-box").style.display = "block";
+        document.getElementById("error-msg").innerText = "";
+        clearPinInputs();
+        document.getElementById("pin-0").focus();
+    };
+
+    window.verifyStaffPin = function () {
+        if (!pendingStaffSelection) {
+            document.getElementById("error-msg").innerText = "اختر أستاذ يوسف أو أستاذ صبري أولاً.";
+            return;
+        }
+        const enteredPin = [0, 1, 2, 3].map((i) => document.getElementById("pin-" + i).value).join("");
+        const expectedPin = STAFF_PINS[pendingStaffSelection];
+
+        if (enteredPin !== expectedPin) {
+            document.getElementById("error-msg").innerText = "رمز الأمان غير صحيح لـ " + pendingStaffSelection + "!";
+            clearPinInputs();
+            document.getElementById("pin-0").focus();
+            return;
+        }
+
+        currentAdminOperator = pendingStaffSelection;
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("staff-select-box").style.display = "none";
+        document.getElementById("pin-modal-box").style.display = "none";
+        document.getElementById("admin-dashboard").style.display = "block";
+        document.getElementById("admin-active-operator").innerText = "المنفّذ الحالي: " + currentAdminOperator;
+        document.getElementById("error-msg").innerText = "";
+        clearPinInputs();
+        updateAdminDashboard();
+    };
 
     window.login = function () {
         const u = document.getElementById("username").value.trim();
@@ -367,15 +659,19 @@
 
         if (systemData.users[u] && systemData.users[u].pass === p) {
             currentLoggedInUser = u;
-            document.getElementById("login-screen").style.display = "none";
             document.getElementById("username").value = "";
             document.getElementById("password").value = "";
             err.innerText = "";
 
             if (systemData.users[u].role === "admin") {
-                document.getElementById("admin-dashboard").style.display = "block";
-                updateAdminDashboard();
+                currentAdminOperator = null;
+                pendingStaffSelection = null;
+                document.getElementById("btn-youssef").classList.remove("active");
+                document.getElementById("btn-sabry").classList.remove("active");
+                document.getElementById("pin-modal-box").style.display = "none";
+                document.getElementById("staff-select-box").style.display = "block";
             } else {
+                document.getElementById("login-screen").style.display = "none";
                 document.getElementById("client-dashboard").style.display = "block";
                 updateClientDashboard();
             }
@@ -386,13 +682,18 @@
 
     window.logout = function () {
         currentLoggedInUser = null;
+        currentAdminOperator = null;
+        pendingStaffSelection = null;
+        clearPinInputs();
+        document.getElementById("staff-select-box").style.display = "none";
+        document.getElementById("pin-modal-box").style.display = "none";
         document.getElementById("admin-dashboard").style.display = "none";
         document.getElementById("client-dashboard").style.display = "none";
         document.getElementById("login-screen").style.display = "block";
     };
 
     window.addNewClient = async function () {
-        if (isSaving) return;
+        if (isSaving || !currentAdminOperator) return;
         const name = document.getElementById("new-client-name").value.trim();
         const user = document.getElementById("new-client-user").value.trim();
         const pass = document.getElementById("new-client-pass").value.trim();
@@ -421,8 +722,14 @@
             name: name,
             id: randomId,
             balance: 0,
-            shipments: []
+            shipments: [],
+            notifications: [{
+                message: "تم إنشاء حسابك في شركة SwiftDrop Logistics برقم " + randomId,
+                time: formatNow()
+            }]
         };
+
+        pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة العميل: " + name + " (" + randomId + ")");
 
         const ok = await saveData();
         btn.disabled = false;
@@ -437,7 +744,7 @@
     };
 
     window.addOrderAsAdmin = async function () {
-        if (isSaving) return;
+        if (isSaving || !currentAdminOperator) return;
         const clientId = document.getElementById("order-client-id").value.trim();
         const recipient = document.getElementById("order-recipient").value.trim();
         const price = parseFloat(document.getElementById("order-price").value);
@@ -468,7 +775,8 @@
             recipient: recipient,
             price: price,
             status: "قيد التوصيل",
-            owner: targetUserKey
+            owner: targetUserKey,
+            lastActionBy: currentAdminOperator
         };
 
         if (!Array.isArray(systemData.users[targetUserKey].shipments)) {
@@ -480,6 +788,9 @@
 
         systemData.users[targetUserKey].shipments.push(newOrder);
         systemData.shipments.push(newOrder);
+
+        pushClientNotification(targetUserKey, "تم إضافة بوليصة جديدة #" + newOrder.id + " (" + recipient + ") بمبلغ " + price + " ج.م");
+        pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة بوليصة #" + newOrder.id + " للعميل " + systemData.users[targetUserKey].name);
 
         const ok = await saveData();
         btn.disabled = false;
@@ -494,20 +805,53 @@
     };
 
     window.adminDeliverOrder = async function (orderIndex) {
-        if (isSaving) return;
+        if (isSaving || !currentAdminOperator) return;
         const order = systemData.shipments[orderIndex];
         if (!order || order.status === "تم التسليم") return;
 
         order.status = "تم التسليم";
+        order.lastActionBy = currentAdminOperator;
+
         const clientKey = order.owner;
         if (systemData.users[clientKey]) {
             const clientOrders = systemData.users[clientKey].shipments || [];
             const found = clientOrders.find((o) => o.id === order.id);
             if (found) {
                 found.status = "تم التسليم";
+                found.lastActionBy = currentAdminOperator;
             }
             systemData.users[clientKey].balance = Number(systemData.users[clientKey].balance || 0) + Number(order.price || 0);
+            pushClientNotification(clientKey, "تم التسليم: تم تسليم البوليصة #" + order.id + " وإضافة " + order.price + " ج.م إلى محفظتك.");
         }
+
+        pushAdminNotification("قام (" + currentAdminOperator + ") بتأكيد تسليم البوليصة #" + order.id);
+
+        const ok = await saveData();
+        if (ok) {
+            updateAdminDashboard();
+        }
+    };
+
+    window.adminPostponeOrder = async function (orderIndex) {
+        if (isSaving || !currentAdminOperator) return;
+        const order = systemData.shipments[orderIndex];
+        if (!order || order.status === "تم التسليم") return;
+
+        order.status = "أوردر مؤجل";
+        order.lastActionBy = currentAdminOperator;
+
+        const clientKey = order.owner;
+        if (systemData.users[clientKey]) {
+            const clientOrders = systemData.users[clientKey].shipments || [];
+            const found = clientOrders.find((o) => o.id === order.id);
+            if (found) {
+                found.status = "أوردر مؤجل";
+                found.lastActionBy = currentAdminOperator;
+            }
+            pushClientNotification(clientKey, "أوردر مؤجل: تم تأجيل البوليصة #" + order.id + " (" + order.recipient + ").");
+        }
+
+        pushAdminNotification("قام (" + currentAdminOperator + ") بتأجيل البوليصة #" + order.id + " (أوردر مؤجل)");
 
         const ok = await saveData();
         if (ok) {
@@ -516,13 +860,28 @@
     };
 
     function updateAdminDashboard() {
-        let clientsHtml = `<table><tr><th>اسم العميل</th><th>اليوزر</th><th>الـ ID</th></tr>`;
-        for (const key in systemData.users) {
-            if (systemData.users[key].role !== "admin") {
-                const u = systemData.users[key];
-                clientsHtml += `<tr><td>${u.name}</td><td>${key}</td><td><b>${u.id}</b></td></tr>`;
-            }
+        const clientKeys = Object.keys(systemData.users).filter((k) => systemData.users[k].role !== "admin");
+        document.getElementById("total-clients-count").innerText = clientKeys.length;
+        document.getElementById("total-shipments-count").innerText = (systemData.shipments || []).length;
+
+        const notifs = systemData.adminNotifications || [];
+        const notifContainer = document.getElementById("admin-notifications-list");
+        if (notifs.length === 0) {
+            notifContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات بعد.</p>';
+        } else {
+            notifContainer.innerHTML = notifs.slice(0, 10).map((n) => `
+                <div class="notif-item">
+                    <strong>${n.message}</strong>
+                    <span class="notif-time">المنفّذ: ${n.operator} | ${n.time}</span>
+                </div>
+            `).join("");
         }
+
+        let clientsHtml = `<table><tr><th>اسم العميل</th><th>اليوزر</th><th>الـ ID</th></tr>`;
+        clientKeys.forEach((key) => {
+            const u = systemData.users[key];
+            clientsHtml += `<tr><td>${u.name}</td><td>${key}</td><td><b>${u.id}</b></td></tr>`;
+        });
         clientsHtml += `</table>`;
         document.getElementById("admin-clients-list").innerHTML = clientsHtml;
 
@@ -532,15 +891,21 @@
         } else {
             systemData.shipments.forEach((s, idx) => {
                 const isDelivered = s.status === "تم التسليم";
-                                shipmentsHtml += `
+                const isPostponed = s.status === "أوردر مؤجل";
+                const badgeClass = isDelivered ? "status-delivered" : (isPostponed ? "status-postponed" : "status-pending");
+                const actorLabel = s.lastActionBy ? "آخر إجراء بواسطة: " + s.lastActionBy : "";
+
+                shipmentsHtml += `
                     <div class="item-card">
                         <div>
                             <strong>بوليصة #${s.id} - ${s.recipient}</strong><br>
-                            <small style="color: var(--gray-text);">للعميل: ${s.owner} | المبلغ: ${s.price} ج.م</small>
+                            <small style="color: var(--gray-text);">للعميل: ${s.owner} | المبلغ: ${s.price} ج.م</small><br>
+                            <small style="color: var(--primary-blue); font-weight: 600;">${actorLabel}</small>
                         </div>
-                        <div>
-                            <span class="status-badge ${isDelivered ? "status-delivered" : "status-pending"}">${s.status}</span>
-                            ${!isDelivered ? `<br><button style="margin-top:5px; padding:4px 8px; font-size:11px;" onclick="adminDeliverOrder(${idx})">تأكيد التسليم</button>` : ""}
+                        <div class="action-row">
+                            <span class="status-badge ${badgeClass}">${s.status}</span>
+                            ${!isDelivered ? `<button class="small-btn" onclick="adminDeliverOrder(${idx})">تم التسليم</button>` : ""}
+                            ${!isDelivered ? `<button class="small-btn postpone-btn" onclick="adminPostponeOrder(${idx})">أوردر مؤجل</button>` : ""}
                         </div>
                     </div>
                 `;
@@ -555,6 +920,19 @@
         document.getElementById("client-id-display").innerText = "رقم التعريف (ID): " + user.id;
         document.getElementById("wallet-balance").innerText = Number(user.balance || 0).toFixed(2) + " EGP";
 
+        const notifContainer = document.getElementById("client-notifications-list");
+        const notifs = user.notifications || [];
+        if (notifs.length === 0) {
+            notifContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات جديدة.</p>';
+        } else {
+            notifContainer.innerHTML = notifs.slice(0, 10).map((n) => `
+                <div class="notif-item">
+                    <strong>${n.message}</strong>
+                    <span class="notif-time">${n.time}</span>
+                </div>
+            `).join("");
+        }
+
         const listContainer = document.getElementById("client-shipments-list");
         const shipments = user.shipments || [];
         if (shipments.length === 0) {
@@ -565,13 +943,15 @@
         let html = "";
         shipments.forEach((s) => {
             const isDelivered = s.status === "تم التسليم";
+            const isPostponed = s.status === "أوردر مؤجل";
+            const badgeClass = isDelivered ? "status-delivered" : (isPostponed ? "status-postponed" : "status-pending");
             html += `
                 <div class="item-card">
                     <div>
                         <strong>بوليصة #${s.id} - ${s.recipient}</strong><br>
                         <small style="color: var(--gray-text);">المبلغ: ${s.price} ج.م</small>
                     </div>
-                    <span class="status-badge ${isDelivered ? "status-delivered" : "status-pending"}">${s.status}</span>
+                    <span class="status-badge ${badgeClass}">${s.status}</span>
                 </div>
             `;
         });
@@ -579,4 +959,4 @@
     }
 </script>
 </body>
-</html>      
+</html> 

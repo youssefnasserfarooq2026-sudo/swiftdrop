@@ -16,11 +16,15 @@
             --border-sky: #BAE6FD;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        html, body {
+            overscroll-behavior-y: none;
+        }
         body {
             background: linear-gradient(rgba(224, 242, 254, 0.4), rgba(240, 249, 255, 0.5)), url("./1795190351498.jpg") center/cover fixed no-repeat;
             min-height: 100vh;
             color: var(--text-dark);
             padding: 20px;
+            overscroll-behavior-y: none;
         }
         .container { max-width: 700px; margin: 0 auto; }
 
@@ -163,8 +167,7 @@
             outline: none;
             border-color: var(--sky-blue);
         }
-
-        /* لوحات التحكم */
+                /* لوحات التحكم */
         .dashboard-screen { display: none; }
         .header-box {
             background: linear-gradient(135deg, var(--primary-blue), var(--sky-blue));
@@ -182,7 +185,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
         .stat-card {
             background: var(--card-bg);
@@ -193,6 +196,38 @@
         }
         .stat-card span { display: block; font-size: 12px; color: var(--gray-text); margin-bottom: 4px; }
         .stat-card strong { font-size: 22px; color: var(--primary-blue); }
+
+        .admin-menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .admin-nav-btn {
+            background: var(--card-bg);
+            color: var(--primary-blue);
+            border: 1px solid var(--border-sky);
+            text-align: right;
+            padding: 15px 16px;
+            border-radius: 14px;
+            font-size: 15px;
+            box-shadow: 0 3px 10px rgba(2, 132, 199, 0.05);
+        }
+        .admin-nav-btn:hover:not(:disabled) {
+            background: var(--light-sky);
+        }
+        .back-btn {
+            background: var(--light-sky);
+            color: var(--primary-blue);
+            border: 1px solid var(--border-sky);
+            margin-bottom: 14px;
+        }
+        .back-btn:hover:not(:disabled) {
+            background: #BAE6FD;
+        }
+        .admin-subview {
+            display: none;
+        }
 
         .wallet-card {
             background: linear-gradient(135deg, #0284C7, #38BDF8);
@@ -351,66 +386,96 @@
             <button style="width: auto; padding: 7px 14px; font-size: 12px; background: #1D4ED8;" onclick="logout()">خروج</button>
         </div>
 
-        <!-- إحصائية عدد العملاء والإشعارات -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <span>إجمالي عدد العملاء</span>
-                <strong id="total-clients-count">0</strong>
+        <!-- القائمة الرئيسية لصفحة الإدارة (أزرار تدخل على الأقسام) -->
+        <div id="admin-home-view">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span>إجمالي عدد العملاء</span>
+                    <strong id="total-clients-count">0</strong>
+                </div>
+                <div class="stat-card">
+                    <span>إجمالي البوالص</span>
+                    <strong id="total-shipments-count">0</strong>
+                </div>
             </div>
-            <div class="stat-card">
-                <span>إجمالي البوالص</span>
-                <strong id="total-shipments-count">0</strong>
+
+            <div class="section" style="padding: 12px 16px;">
+                <button type="button" id="push-permission-btn" onclick="requestMobileNotifications()">تفعيل إشعارات الموبايل</button>
+                <small id="push-status-text" style="display: block; margin-top: 6px; color: var(--gray-text); font-size: 12px;">إشعارات الجهاز: بانتظار التفعيل</small>
+            </div>
+
+            <div class="admin-menu-grid">
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('add-client')">1. إضافة عميل جديد</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('add-order')">2. إضافة بوليصة / أوردر جديد</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('notifications')">3. الإشعارات وسجل المنفّذين</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('clients')">4. قائمة العملاء وأكواد الـ ID</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('shipments')">5. متابعة الشحنات</button>
             </div>
         </div>
 
-        <!-- إشعارات الإدارة وسجل الإجراءات -->
-        <div class="section">
-            <h4>إشعارات الإدارة وسجل المنفّذين</h4>
-            <div id="admin-notifications-list">
-                <p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات بعد.</p>
+        <!-- قسم 1: إضافة عميل جديد -->
+        <div id="admin-view-add-client" class="admin-subview">
+            <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
+            <div class="section">
+                <h4>إضافة عميل جديد للنظام</h4>
+                <div class="input-group">
+                    <input type="text" id="new-client-name" placeholder="اسم الشركة أو التاجر">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="new-client-user" placeholder="اسم المستخدم للدخول (Username)">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="new-client-pass" placeholder="كلمة المرور (Password)">
+                </div>
+                <button id="add-client-btn" onclick="addNewClient()">إضافة العميل وتوليد ID</button>
             </div>
         </div>
 
-        <!-- إضافة عميل جديد برقم ID تلقائي -->
-        <div class="section">
-            <h4>إضافة عميل جديد للنظام</h4>
-            <div class="input-group">
-                <input type="text" id="new-client-name" placeholder="اسم الشركة أو التاجر">
+        <!-- قسم 2: إضافة بوليصة / أوردر جديد -->
+                <div id="admin-view-add-order" class="admin-subview">
+            <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
+            <div class="section">
+                <h4>إضافة بوليصة / أوردر جديد لعميل</h4>
+                <div class="input-group">
+                    <input type="text" id="order-client-id" placeholder="رقم ID العميل (مثلاً: CUST-101)">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="order-recipient" placeholder="اسم المستلم وعنوانه ورقم تليفونه">
+                </div>
+                <div class="input-group">
+                    <input type="number" id="order-price" placeholder="مبلغ التحصيل (COD)">
+                </div>
+                <button id="add-order-btn" onclick="addOrderAsAdmin()">إضافة الأوردر للعميل</button>
             </div>
-            <div class="input-group">
-                <input type="text" id="new-client-user" placeholder="اسم المستخدم للدخول (Username)">
-            </div>
-            <div class="input-group">
-                <input type="password" id="new-client-pass" placeholder="كلمة المرور (Password)">
-            </div>
-            <button id="add-client-btn" onclick="addNewClient()">إضافة العميل وتوليد ID</button>
         </div>
 
-        <!-- إضافة أوردر/بوليصة جديدة للعميل باستخدام الـ ID -->
-        <div class="section">
-            <h4>إضافة بوليصة / أوردر جديد لعميل</h4>
-            <div class="input-group">
-                <input type="text" id="order-client-id" placeholder="رقم ID العميل (مثلاً: CUST-101)">
+        <!-- قسم 3: الإشعارات وسجل المنفذين -->
+        <div id="admin-view-notifications" class="admin-subview">
+            <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
+            <div class="section">
+                <h4>إشعارات الإدارة وسجل المنفّذين</h4>
+                <div id="admin-notifications-list">
+                    <p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات بعد.</p>
+                </div>
             </div>
-            <div class="input-group">
-                <input type="text" id="order-recipient" placeholder="اسم المستلم وعنوانه ورقم تليفونه">
-            </div>
-            <div class="input-group">
-                <input type="number" id="order-price" placeholder="مبلغ التحصيل (COD)">
-            </div>
-            <button id="add-order-btn" onclick="addOrderAsAdmin()">إضافة الأوردر للعميل</button>
         </div>
 
-        <!-- قائمة العملاء المسجلين وأكوادهم -->
-        <div class="section">
-            <h4>قائمة العملاء وأكواد الـ ID الخاصة بهم</h4>
-            <div id="admin-clients-list"></div>
+        <!-- قسم 4: قائمة العملاء -->
+        <div id="admin-view-clients" class="admin-subview">
+            <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
+            <div class="section">
+                <h4>قائمة العملاء وأكواد الـ ID الخاصة بهم</h4>
+                <div id="admin-clients-list"></div>
+            </div>
         </div>
 
-        <!-- متابعة كل الشحنات الكلية -->
-        <div class="section">
-            <h4>متابعة كافة شحنات الشركة</h4>
-            <div id="admin-shipments-list"></div>
+        <!-- قسم 5: متابعة الشحنات -->
+        <div id="admin-view-shipments" class="admin-subview">
+            <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
+            <div class="section">
+                <h4>متابعة كافة شحنات الشركة</h4>
+                <div id="admin-shipments-list"></div>
+            </div>
         </div>
 
         <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
@@ -429,6 +494,10 @@
         <div class="wallet-card">
             <h3>رصيد المحفظة المتاح</h3>
             <div class="amount" id="wallet-balance">0.00 EGP</div>
+        </div>
+
+        <div class="section" style="padding: 12px 16px;">
+            <button type="button" onclick="requestMobileNotifications()">تفعيل إشعارات الموبايل</button>
         </div>
 
         <div class="section">
@@ -500,18 +569,92 @@
     let currentLoggedInUser = null;
     let currentAdminOperator = null;
     let pendingStaffSelection = null;
+    let activeAdminSection = "home";
     let isDbReady = false;
     let isSaving = false;
+    let touchStartY = 0;
+
+    document.addEventListener("touchstart", (e) => {
+        if (e.touches && e.touches.length > 0) {
+            touchStartY = e.touches[0].clientY;
+        }
+    }, { passive: true });
+
+    document.addEventListener("touchmove", (e) => {
+        if (!e.touches || e.touches.length === 0) return;
+        const touchY = e.touches[0].clientY;
+        if (window.scrollY <= 0 && touchY > touchStartY && e.cancelable) {
+            e.preventDefault();
+        }
+    }, { passive: false });
 
     window.enterApp = function () {
         document.getElementById("welcome-screen").style.display = "none";
+        if ("Notification" in window && Notification.permission === "default") {
+            Notification.requestPermission().then(() => updatePushStatusLabel());
+        } else {
+            updatePushStatusLabel();
+        }
+    };
+
+    function updatePushStatusLabel() {
+        const el = document.getElementById("push-status-text");
+        if (!el) return;
+        if (!("Notification" in window)) {
+            el.innerText = "إشعارات الموبايل: غير مدعومة في هذا المتصفح";
+            return;
+        }
+        if (Notification.permission === "granted") {
+            el.innerText = "إشعارات الموبايل: مفعّلة بنجاح";
+        } else if (Notification.permission === "denied") {
+            el.innerText = "إشعارات الموبايل: محظورة من إعدادات المتصفح/التطبيق";
+        } else {
+            el.innerText = "إشعارات الموبايل: اضغط لتفعيلها على جهازك";
+        }
+    }
+
+    window.requestMobileNotifications = async function () {
+        if (!("Notification" in window)) {
+            alert("هذا المتصفح لا يدعم إشعارات النظام.");
+            return;
+        }
+        const perm = await Notification.requestPermission();
+        updatePushStatusLabel();
+        if (perm === "granted") {
+            triggerDeviceNotification("SwiftDrop Logistics", "تم تفعيل إشعارات الموبايل بنجاح.");
+        } else {
+            alert("يرجى السماح بالإشعارات من إعدادات المتصفح أو التطبيق لوصول الإشعارات على الموبايل.");
+        }
+    };
+
+    function triggerDeviceNotification(title, body) {
+        if (!("Notification" in window) || Notification.permission !== "granted") return;
+        try {
+            new Notification(title, {
+                body: body,
+                icon: "./1795190351498.jpg",
+                dir: "rtl"
+            });
+        } catch (e) {}
+    }
+
+    window.openAdminSection = function (sectionName) {
+        activeAdminSection = sectionName;
+        document.getElementById("admin-home-view").style.display = sectionName === "home" ? "block" : "none";
+        const views = ["add-client", "add-order", "notifications", "clients", "shipments"];
+        views.forEach((v) => {
+            const el = document.getElementById("admin-view-" + v);
+            if (el) el.style.display = sectionName === v ? "block" : "none";
+        });
+        updateAdminDashboard();
     };
 
     function setSyncStatus(text, isOk = true) {
         document.getElementById("sync-status").innerText = text;
         document.getElementById("sync-dot").style.background = isOk ? "#16A34A" : "#EF4444";
     }
-             onValue(dataRef, (snapshot) => {
+
+    onValue(dataRef, (snapshot) => {
         if (snapshot.exists()) {
             systemData = normalizeData(snapshot.val());
             isDbReady = true;
@@ -553,12 +696,14 @@
         if (!Array.isArray(systemData.adminNotifications)) {
             systemData.adminNotifications = [];
         }
+        const op = currentAdminOperator || "الأدمن";
         systemData.adminNotifications.unshift({
             message: message,
-            operator: currentAdminOperator || "الأدمن",
+            operator: op,
             time: formatNow()
         });
         systemData.adminNotifications = systemData.adminNotifications.slice(0, 40);
+        triggerDeviceNotification("إشعار الإدارة - " + op, message);
     }
 
     function pushClientNotification(clientKey, message) {
@@ -572,6 +717,9 @@
             time: formatNow()
         });
         client.notifications = client.notifications.slice(0, 30);
+        if (currentLoggedInUser === clientKey) {
+            triggerDeviceNotification("SwiftDrop Logistics", message);
+        }
     }
 
     function refreshActiveView() {
@@ -644,10 +792,10 @@
         document.getElementById("admin-active-operator").innerText = "المنفّذ الحالي: " + currentAdminOperator;
         document.getElementById("error-msg").innerText = "";
         clearPinInputs();
-        updateAdminDashboard();
+        updatePushStatusLabel();
+        openAdminSection("home");
     };
-
-    window.login = function () {
+        window.login = function () {
         const u = document.getElementById("username").value.trim();
         const p = document.getElementById("password").value.trim();
         const err = document.getElementById("error-msg");
@@ -684,6 +832,7 @@
         currentLoggedInUser = null;
         currentAdminOperator = null;
         pendingStaffSelection = null;
+        activeAdminSection = "home";
         clearPinInputs();
         document.getElementById("staff-select-box").style.display = "none";
         document.getElementById("pin-modal-box").style.display = "none";
@@ -869,7 +1018,7 @@
         if (notifs.length === 0) {
             notifContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات بعد.</p>';
         } else {
-            notifContainer.innerHTML = notifs.slice(0, 10).map((n) => `
+            notifContainer.innerHTML = notifs.slice(0, 15).map((n) => `
                 <div class="notif-item">
                     <strong>${n.message}</strong>
                     <span class="notif-time">المنفّذ: ${n.operator} | ${n.time}</span>
@@ -925,7 +1074,7 @@
         if (notifs.length === 0) {
             notifContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات جديدة.</p>';
         } else {
-            notifContainer.innerHTML = notifs.slice(0, 10).map((n) => `
+            notifContainer.innerHTML = notifs.slice(0, 15).map((n) => `
                 <div class="notif-item">
                     <strong>${n.message}</strong>
                     <span class="notif-time">${n.time}</span>
@@ -959,4 +1108,4 @@
     }
 </script>
 </body>
-</html> 
+</html>

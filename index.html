@@ -16,9 +16,7 @@
             --border-sky: #BAE6FD;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        html, body {
-            overscroll-behavior-y: none;
-        }
+        html, body { overscroll-behavior-y: none; }
         body {
             background: linear-gradient(rgba(224, 242, 254, 0.4), rgba(240, 249, 255, 0.5)), url("./1795190351498.jpg") center/cover fixed no-repeat;
             min-height: 100vh;
@@ -26,7 +24,7 @@
             padding: 20px;
             overscroll-behavior-y: none;
         }
-        .container { max-width: 700px; margin: 0 auto; }
+        .container { max-width: 720px; margin: 0 auto; }
 
         /* شاشة الترحيب */
         #welcome-screen {
@@ -83,92 +81,95 @@
             text-align: center;
         }
         h2 { color: var(--primary-blue); margin-bottom: 16px; }
-        .input-group { margin-bottom: 14px; text-align: right; }
-        .input-group label { display: block; margin-bottom: 5px; color: var(--gray-text); font-weight: 600; font-size: 14px; }
+        .input-group { margin-bottom: 12px; text-align: right; }
+        .input-group label { display: block; margin-bottom: 5px; color: var(--gray-text); font-weight: 600; font-size: 13px; }
         .input-group input, .input-group select {
             width: 100%;
-            padding: 12px;
+            padding: 11px;
             border: 1px solid var(--border-sky);
             background: var(--ice-white);
             color: var(--text-dark);
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 14px;
         }
         .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: var(--sky-blue);
             background: #FFFFFF;
         }
-        button {
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+        button, .link-btn {
             background: var(--sky-blue);
             color: #FFFFFF;
             border: none;
-            padding: 12px 18px;
+            padding: 12px 16px;
             width: 100%;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.25s;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
-        button:hover:not(:disabled) { background: var(--primary-blue); }
+        button:hover:not(:disabled), .link-btn:hover { background: var(--primary-blue); }
         button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* اختيار المنفذ ورمز الأمان (4 خانات) */
         #staff-select-box {
             display: none;
             margin-top: 18px;
             padding-top: 18px;
             border-top: 2px dashed var(--border-sky);
         }
-        .staff-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .staff-btn {
-            background: var(--light-sky);
-            color: var(--primary-blue);
-            border: 1px solid var(--border-sky);
-        }
-        .staff-btn.active {
-            background: var(--primary-blue);
-            color: #FFFFFF;
-            border-color: var(--primary-blue);
-        }
-        #pin-modal-box {
+        .staff-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .staff-btn { background: var(--light-sky); color: var(--primary-blue); border: 1px solid var(--border-sky); }
+        .staff-btn.active { background: var(--primary-blue); color: #FFFFFF; border-color: var(--primary-blue); }
+
+        #pin-modal-box, #delete-pin-modal {
             display: none;
             background: var(--ice-white);
             border: 1px solid var(--border-sky);
             padding: 16px;
             border-radius: 12px;
             margin-top: 10px;
-        }
-        .pin-boxes {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            direction: ltr;
-            margin: 12px 0;
-        }
-        .pin-digit {
-            width: 48px;
-            height: 52px;
             text-align: center;
-            font-size: 22px;
+        }
+        #delete-pin-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 41, 66, 0.55);
+            z-index: 9500;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-card {
+            background: #FFFFFF;
+            border: 1px solid var(--border-sky);
+            border-radius: 16px;
+            padding: 22px;
+            max-width: 390px;
+            width: 100%;
+            box-shadow: 0 12px 30px rgba(10, 74, 143, 0.25);
+        }
+        .pin-boxes { display: flex; justify-content: center; gap: 10px; direction: ltr; margin: 12px 0; }
+        .pin-digit {
+            width: 46px;
+            height: 50px;
+            text-align: center;
+            font-size: 21px;
             font-weight: bold;
             border: 2px solid var(--border-sky);
             border-radius: 10px;
             background: #FFFFFF;
             color: var(--primary-blue);
         }
-        .pin-digit:focus {
-            outline: none;
-            border-color: var(--sky-blue);
-        }
+        .pin-digit:focus { outline: none; border-color: var(--sky-blue); }
 
-        /* لوحات التحكم */
         .dashboard-screen { display: none; }
         .header-box {
             background: linear-gradient(135deg, var(--primary-blue), var(--sky-blue));
@@ -182,41 +183,33 @@
             margin-bottom: 16px;
             box-shadow: 0 6px 18px rgba(10, 74, 143, 0.16);
         }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 14px;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 14px; }
         .stat-card {
             background: var(--card-bg);
             border: 1px solid var(--border-sky);
             border-radius: 14px;
             padding: 14px;
             text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
         }
+        .stat-card:hover { background: var(--ice-white); border-color: var(--sky-blue); }
         .stat-card span { display: block; font-size: 12px; color: var(--gray-text); margin-bottom: 4px; }
-        .stat-card strong { font-size: 22px; color: var(--primary-blue); }
+        .stat-card strong { font-size: 22px; color: var(--primary-blue); display: block; }
+        .stat-card small { font-size: 11px; color: var(--sky-blue); font-weight: 600; }
 
-        .admin-menu-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
+        .admin-menu-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 14px; }
         .admin-nav-btn {
             background: var(--card-bg);
             color: var(--primary-blue);
             border: 1px solid var(--border-sky);
             text-align: right;
-            padding: 15px 16px;
+            padding: 14px 16px;
             border-radius: 14px;
-            font-size: 15px;
+            font-size: 14px;
             box-shadow: 0 3px 10px rgba(2, 132, 199, 0.05);
         }
-        .admin-nav-btn:hover:not(:disabled) {
-            background: var(--light-sky);
-        }
+        .admin-nav-btn:hover:not(:disabled) { background: var(--light-sky); }
         .entity-btn {
             background: var(--ice-white);
             color: var(--primary-blue);
@@ -225,23 +218,14 @@
             padding: 13px 15px;
             border-radius: 12px;
             font-size: 14px;
-            margin-bottom: 9px;
+            margin-bottom: 6px;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        .entity-btn:hover:not(:disabled) {
-            background: var(--light-sky);
-        }
-        .back-btn {
-            background: var(--light-sky);
-            color: var(--primary-blue);
-            border: 1px solid var(--border-sky);
-            margin-bottom: 14px;
-        }
-        .back-btn:hover:not(:disabled) {
-            background: #BAE6FD;
-        }
-        .admin-subview {
-            display: none;
-        }
+        .entity-btn:hover:not(:disabled) { background: var(--light-sky); }
+        .back-btn { background: var(--light-sky); color: var(--primary-blue); border: 1px solid var(--border-sky); margin-bottom: 14px; }
+        .back-btn:hover:not(:disabled) { background: #BAE6FD; }
+        .admin-subview { display: none; }
 
         .wallet-card {
             background: linear-gradient(135deg, #0284C7, #38BDF8);
@@ -278,27 +262,22 @@
             padding: 12px;
             background: var(--ice-white);
             border-radius: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             border-right: 4px solid var(--sky-blue);
             border-top: 1px solid var(--light-sky);
             border-left: 1px solid var(--light-sky);
             border-bottom: 1px solid var(--light-sky);
+            user-select: none;
+            -webkit-user-select: none;
         }
-        .action-row {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            min-width: 118px;
-            text-align: left;
-        }
-        .small-btn {
-            padding: 6px 10px;
-            font-size: 12px;
-            border-radius: 7px;
-        }
-        .postpone-btn {
-            background: #0369A1;
-        }
+        .action-row { display: flex; flex-direction: column; gap: 6px; min-width: 118px; text-align: left; }
+        .small-btn { padding: 6px 10px; font-size: 12px; border-radius: 7px; }
+        .postpone-btn { background: #0369A1; }
+        .delete-chip-btn { background: #1E3A8A; margin-bottom: 10px; }
+        .delete-chip-btn:hover { background: #172554; }
+        .order-type-btn { padding: 14px; font-size: 15px; border-radius: 12px; }
+        .order-type-btn.active { background: var(--primary-blue); outline: 3px solid var(--light-sky); }
+
         .status-badge {
             display: inline-block;
             background: var(--light-sky);
@@ -311,6 +290,7 @@
         .status-delivered { background: #DCFCE7; color: #166534; }
         .status-pending { background: #E0F2FE; color: #0369A1; }
         .status-postponed { background: #FEF3C7; color: #92400E; }
+        .status-archived { background: #DBEAFE; color: #1E40AF; }
 
         .notif-item {
             padding: 10px 12px;
@@ -320,23 +300,45 @@
             margin-bottom: 8px;
             font-size: 13px;
         }
-        .notif-time {
-            display: block;
-            font-size: 11px;
-            color: var(--gray-text);
-            margin-top: 4px;
-        }
-
+        .notif-time { display: block; font-size: 11px; color: var(--gray-text); margin-top: 4px; }
         .logout-btn { background: #2563EB; margin-top: 14px; }
         .logout-btn:hover:not(:disabled) { background: #1D4ED8; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
-        th, td { padding: 9px; text-align: right; border-bottom: 1px solid var(--light-sky); }
-        th { color: var(--primary-blue); background: var(--ice-white); }
+        .phone-link {
+            display: inline-block;
+            margin-top: 4px;
+            color: var(--primary-blue);
+            background: var(--light-sky);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .phone-link:hover { background: #BAE6FD; }
     </style>
 </head>
 <body>
-    <!-- شاشة الترحيب -->
+    <!-- نافذة رمز الأمان عند الحذف بالضغط المطوّل -->
+<div id="delete-pin-modal">
+    <div class="modal-card">
+        <h4 style="color: var(--primary-blue); margin-bottom: 8px;">تأكيد حذف العنصر</h4>
+        <p id="delete-target-label" style="font-size: 13px; color: var(--gray-text); margin-bottom: 10px;"></p>
+        <p id="delete-pin-prompt" style="font-size: 13px; font-weight: 700; color: var(--primary-blue);"></p>
+        <div class="pin-boxes">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="del-pin-0" oninput="handleDelPinInput(0)" onkeydown="handleDelPinKeydown(0, event)">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="del-pin-1" oninput="handleDelPinInput(1)" onkeydown="handleDelPinKeydown(1, event)">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="del-pin-2" oninput="handleDelPinInput(2)" onkeydown="handleDelPinKeydown(2, event)">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="del-pin-3" oninput="handleDelPinInput(3)" onkeydown="handleDelPinKeydown(3, event)">
+        </div>
+        <p id="delete-pin-error" style="color: #0369A1; font-size: 12px; font-weight: 600; margin-bottom: 10px;"></p>
+        <div class="grid-2">
+            <button type="button" onclick="confirmDeleteWithPin()">تأكيد الحذف</button>
+            <button type="button" class="back-btn" style="margin-bottom: 0;" onclick="closeDeletePinModal()">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<!-- شاشة الترحيب -->
 <div id="welcome-screen">
     <div class="welcome-box">
         <h1>أهلاً بك في شركة SwiftDrop Logistics للشحن</h1>
@@ -365,7 +367,6 @@
         </div>
         <button id="login-btn" onclick="login()">دخول</button>
 
-        <!-- اختيار المنفذ بعد دخول الأدمن -->
         <div id="staff-select-box">
             <p style="color: var(--primary-blue); font-weight: 700; margin-bottom: 10px;">اختر هوية المنفّذ لمتابعة العمل:</p>
             <div class="staff-buttons">
@@ -373,7 +374,6 @@
                 <button type="button" id="btn-sabry" class="staff-btn" onclick="selectStaff('أستاذ صبري')">أستاذ صبري</button>
             </div>
 
-            <!-- إدخال رمز الأمان من 4 مربعات -->
             <div id="pin-modal-box">
                 <p id="pin-prompt-text" style="font-size: 14px; font-weight: 700; color: var(--primary-blue);"></p>
                 <div class="pin-boxes">
@@ -399,22 +399,33 @@
             <button style="width: auto; padding: 7px 14px; font-size: 12px; background: #1D4ED8;" onclick="logout()">خروج</button>
         </div>
 
-        <!-- القائمة الرئيسية لصفحة الإدارة -->
         <div id="admin-home-view">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span>إجمالي عدد العملاء</span>
-                    <strong id="total-clients-count">0</strong>
+            <div class="section" style="padding: 14px 16px;">
+                <h4>فلترة الإحصائيات والبوالص المنفّذة بالتاريخ</h4>
+                <div class="grid-2">
+                    <div class="input-group" style="margin-bottom: 6px;">
+                        <label>من تاريخ</label>
+                        <input type="date" id="filter-date-from" onchange="updateAdminDashboard()">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 6px;">
+                        <label>إلى تاريخ</label>
+                        <input type="date" id="filter-date-to" onchange="updateAdminDashboard()">
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <span>إجمالي البوالص</span>
-                    <strong id="total-shipments-count">0</strong>
-                </div>
+                <button type="button" class="back-btn" style="margin-bottom: 0; padding: 8px 12px; font-size: 12px;" onclick="clearDateFilter()">عرض الكل (إلغاء تحديد التاريخ)</button>
             </div>
 
-            <div class="section" style="padding: 12px 16px;">
-                <button type="button" id="push-permission-btn" onclick="requestMobileNotifications()">تفعيل إشعارات التطبيق</button>
-                <small id="push-status-text" style="display: block; margin-top: 6px; color: var(--gray-text); font-size: 12px;">إشعارات داخل التطبيق: مفعّلة ومحدّثة تلقائياً</small>
+            <div class="stats-grid">
+                <div class="stat-card" onclick="openAdminSection('clients')">
+                    <span>إجمالي عدد العملاء</span>
+                    <strong id="total-clients-count">0</strong>
+                    <small id="clients-range-note">الكل</small>
+                </div>
+                <div class="stat-card" onclick="openAdminSection('shipments')">
+                    <span>إجمالي البوالص المنفّذة</span>
+                    <strong id="total-shipments-count">0</strong>
+                    <small>اضغط لفتح البوالص</small>
+                </div>
             </div>
 
             <div class="admin-menu-grid">
@@ -422,8 +433,9 @@
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('add-order')">2. إضافة بوليصة / أوردر جديد</button>
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('couriers')">3. إضافة دليفري (مندوب التوصيل) وبوالصه</button>
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('notifications')">4. الإشعارات وسجل المنفّذين</button>
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('clients')">5. قائمة العملاء وأكواد الـ ID</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('clients')">5. قائمة العملاء وحساباتهم</button>
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('shipments')">6. متابعة الشحنات</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('archive')">7. الأرشيف</button>
             </div>
         </div>
 
@@ -433,13 +445,52 @@
             <div class="section">
                 <h4>إضافة عميل جديد للنظام</h4>
                 <div class="input-group">
-                    <input type="text" id="new-client-name" placeholder="اسم الشركة أو التاجر">
+                    <label>اسم العميل أو الشركة</label>
+                    <input type="text" id="new-client-name" placeholder="اسم العميل أو الشركة">
                 </div>
-                <div class="input-group">
-                    <input type="text" id="new-client-user" placeholder="اسم المستخدم للدخول (Username)">
+                <div class="grid-3">
+                    <div class="input-group">
+                        <label>رقم العمارة</label>
+                        <input type="text" id="new-client-building" placeholder="مثال: 12">
+                    </div>
+                    <div class="input-group">
+                        <label>رقم الطابق</label>
+                        <input type="text" id="new-client-floor" placeholder="مثال: 3">
+                    </div>
+                    <div class="input-group">
+                        <label>رقم الشقة</label>
+                        <input type="text" id="new-client-apt" placeholder="مثال: 7">
+                    </div>
                 </div>
-                <div class="input-group">
-                    <input type="password" id="new-client-pass" placeholder="كلمة المرور (Password)">
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>اسم الشارع</label>
+                        <input type="text" id="new-client-street" placeholder="اسم الشارع">
+                    </div>
+                    <div class="input-group">
+                        <label>المنطقة</label>
+                        <input type="text" id="new-client-area" placeholder="المنطقة">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>رقم التليفون</label>
+                        <input type="tel" id="new-client-phone" placeholder="رقم التليفون الأساسي">
+                    </div>
+                    <div class="input-group">
+                        <label>رقم تليفون آخر (اختياري)</label>
+                        <input type="tel" id="new-client-phone2" placeholder="اختياري">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>اسم المستخدم (Username)</label>
+                        <input type="text" id="new-client-user" placeholder="اسم المستخدم للدخول">
+                    </div>
+                    <div class="input-group">
+                        <label>كلمة المرور (Password)</label>
+                        <input type="password" id="new-client-pass" placeholder="كلمة المرور">
+                    </div>
                 </div>
                 <button id="add-client-btn" onclick="addNewClient()">إضافة العميل وتوليد ID</button>
             </div>
@@ -449,15 +500,34 @@
         <div id="admin-view-add-order" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
-                <h4>إضافة بوليصة / أوردر جديد لعميل</h4>
+                <h4>اختر نوع البوليصة</h4>
+                <div class="grid-2" style="margin-bottom: 14px;">
+                    <button type="button" id="btn-type-prepaid" class="order-type-btn active" onclick="selectOrderCategory('prepaid')">دفع مقدم</button>
+                    <button type="button" id="btn-type-cod" class="order-type-btn" onclick="selectOrderCategory('cod')">تحصيل</button>
+                </div>
+                <p id="order-category-hint" style="font-size: 12px; color: var(--gray-text); margin-bottom: 14px;">وضع «دفع مقدم»: تُضاف البوليصة للعميل ولا يُضاف مبلغ التحصيل إلى حساب العميل.</p>
+
                 <div class="input-group">
-                    <input type="text" id="order-client-id" placeholder="رقم ID العميل (مثلاً: C-101)">
+                    <label>رقم ID العميل</label>
+                    <input type="text" id="order-client-id" placeholder="مثال: C-101">
                 </div>
                 <div class="input-group">
-                    <input type="text" id="order-recipient" placeholder="اسم المستلم وعنوانه ورقم تليفونه">
+                    <label>اسم المستلم</label>
+                    <input type="text" id="order-recipient-name" placeholder="اسم المستلم">
                 </div>
                 <div class="input-group">
-                    <input type="number" id="order-price" placeholder="مبلغ التحصيل (COD)">
+                    <label>عنوان المستلم</label>
+                    <input type="text" id="order-recipient-address" placeholder="عنوان المستلم بالتفصيل">
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>رقم الهاتف</label>
+                        <input type="tel" id="order-recipient-phone" placeholder="رقم هاتف المستلم">
+                    </div>
+                    <div class="input-group">
+                        <label>مبلغ التحصيل</label>
+                        <input type="number" id="order-price" placeholder="المبلغ (ج.م)">
+                    </div>
                 </div>
                 <div class="input-group">
                     <label>اختيار مندوب التوصيل (الدليفري)</label>
@@ -465,29 +535,43 @@
                         <option value="">بدون مندوب حالياً</option>
                     </select>
                 </div>
-                <button id="add-order-btn" onclick="addOrderAsAdmin()">إضافة الأوردر للعميل</button>
+                <button id="add-order-btn" onclick="addOrderAsAdmin()">حفظ وإضافة البوليصة</button>
             </div>
         </div>
-
-        <!-- قسم 3: إضافة دليفري (مندوب التوصيل) وزرار شغل كل دليفري -->
+                <!-- قسم 3: إضافة دليفري وأزرار المناديب -->
         <div id="admin-view-couriers" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
-                <h4>إضافة دليفري (مندوب التوصيل)</h4>
+                <h4>إضافة دليفري جديد وإنشاء حساب دخول له</h4>
                 <div class="input-group">
+                    <label>اسم المندوب</label>
                     <input type="text" id="new-courier-name" placeholder="اسم مندوب التوصيل">
                 </div>
-                <div class="input-group">
-                    <input type="text" id="new-courier-phone" placeholder="رقم تليفون المندوب (للإدارة فقط)">
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>رقم تليفون المندوب</label>
+                        <input type="tel" id="new-courier-phone" placeholder="رقم الهاتف">
+                    </div>
+                    <div class="input-group">
+                        <label>منطقة التوصيل أو الخط</label>
+                        <input type="text" id="new-courier-zone" placeholder="المنطقة / الخط">
+                    </div>
                 </div>
-                <div class="input-group">
-                    <input type="text" id="new-courier-zone" placeholder="منطقة التوصيل أو الخط">
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>اسم المستخدم للمندوب (Username)</label>
+                        <input type="text" id="new-courier-user" placeholder="يوزر دخول المندوب">
+                    </div>
+                    <div class="input-group">
+                        <label>كلمة المرور للمندوب (Password)</label>
+                        <input type="password" id="new-courier-pass" placeholder="باسورد المندوب">
+                    </div>
                 </div>
                 <button id="add-courier-btn" onclick="addNewCourier()">إضافة المندوب وتوليد كود</button>
             </div>
 
             <div class="section">
-                <h4>أزرار المناديب (اضغط على أي دليفري لفتح شغله)</h4>
+                <h4>أزرار المناديب (اضغط لفتح بياناته وشغله، أو اضغط مطوّلاً للحذف)</h4>
                 <div id="admin-couriers-list"></div>
                 <div id="courier-detail-box" style="display: none; margin-top: 14px;"></div>
             </div>
@@ -508,7 +592,7 @@
         <div id="admin-view-clients" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
-                <h4>أزرار العملاء (اضغط على أي عميل لفتح حسابه وبوالصه)</h4>
+                <h4>أزرار العملاء (اضغط لفتح حسابه وبوالصه، أو اضغط مطوّلاً للحذف)</h4>
                 <div id="admin-clients-list"></div>
                 <div id="client-detail-box" style="display: none; margin-top: 14px;"></div>
             </div>
@@ -518,8 +602,17 @@
         <div id="admin-view-shipments" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
-                <h4>متابعة كافة شحنات الشركة</h4>
+                <h4>متابعة الشحنات الحالية (اضغط مطوّلاً على بوليصة للحذف)</h4>
                 <div id="admin-shipments-list"></div>
+            </div>
+        </div>
+
+        <!-- قسم 7: الأرشيف (إدارة) -->
+        <div id="admin-view-archive" class="admin-subview">
+            <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
+            <div class="section">
+                <h4>أرشيف البوالص المسلّمة</h4>
+                <div id="admin-archive-list"></div>
             </div>
         </div>
 
@@ -541,74 +634,123 @@
             <div class="amount" id="wallet-balance">0.00 EGP</div>
         </div>
 
-        <div class="section" style="padding: 12px 16px;">
-            <button type="button" onclick="requestMobileNotifications()">تحديث وتفعيل الإشعارات</button>
+        <div class="grid-2" style="margin-bottom: 14px;">
+            <button type="button" id="client-tab-active" onclick="switchClientTab('active')">الشحنات الحالية والإشعارات</button>
+            <button type="button" id="client-tab-archive" class="back-btn" style="margin-bottom: 0;" onclick="switchClientTab('archive')">الأرشيف</button>
         </div>
 
-        <div class="section">
-            <h4>إشعارات شحناتك</h4>
-            <div id="client-notifications-list">
-                <p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات جديدة.</p>
+        <div id="client-active-view">
+            <div class="section">
+                <h4>إشعارات شحناتك</h4>
+                <div id="client-notifications-list">
+                    <p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات جديدة.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h4>شحناتك وبوالصك الحالية</h4>
+                <div id="client-shipments-list">
+                    <p style="color: var(--gray-text); text-align: center;">لا توجد شحنات حتى الآن.</p>
+                </div>
             </div>
         </div>
 
-        <div class="section">
-            <h4>شحناتك وبوالصك الحالية</h4>
-            <div id="client-shipments-list">
-                <p style="color: var(--gray-text); text-align: center;">لا توجد شحنات حتى الآن.</p>
+        <div id="client-archive-view" style="display: none;">
+            <div class="section">
+                <h4>أرشيف الشحنات المسلّمة</h4>
+                <div id="client-archive-list">
+                    <p style="color: var(--gray-text); text-align: center;">لا توجد شحنات في الأرشيف بعد.</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+    <!-- 3. لوحة تحكم المندوب / الدليفري (COURIER DASHBOARD) -->
+    <div id="courier-dashboard" class="dashboard-screen">
+        <div class="header-box">
+            <div>
+                <h3 id="courier-welcome">مرحباً، يا مندوب</h3>
+                <p id="courier-meta-display" style="font-size: 12px; opacity: 0.92;"></p>
+            </div>
+            <button style="width: auto; padding: 7px 14px; font-size: 12px; background: #1D4ED8;" onclick="logout()">خروج</button>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 14px;">
+            <button type="button" id="courier-tab-active" onclick="switchCourierTab('active')">البوالص المسندة إليك</button>
+            <button type="button" id="courier-tab-archive" class="back-btn" style="margin-bottom: 0;" onclick="switchCourierTab('archive')">الأرشيف</button>
+        </div>
+
+        <div id="courier-active-view">
+            <div class="section">
+                <h4>البوالص المطلوب توصيلها</h4>
+                <div id="courier-shipments-list">
+                    <p style="color: var(--gray-text); text-align: center;">لا توجد بوالص مسندة إليك حالياً.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="courier-archive-view" style="display: none;">
+            <div class="section">
+                <h4>أرشيف البوالص التي تم تسليمها</h4>
+                <div id="courier-archive-list">
+                    <p style="color: var(--gray-text); text-align: center;">لا توجد بوالص في الأرشيف بعد.</p>
+                </div>
             </div>
         </div>
 
         <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
     </div>
 </div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    const firebaseConfig = {
-        databaseURL: "https://swiftdrop-sync-default-rtdb.firebaseio.com/"
-    };
-
+    const firebaseConfig = { databaseURL: "https://swiftdrop-sync-default-rtdb.firebaseio.com/" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const dataRef = ref(db, "swiftdrop_data");
 
-    const STAFF_PINS = {
-        "أستاذ يوسف": "1010",
-        "أستاذ صبري": "1111"
-    };
-
+    const STAFF_PINS = { "أستاذ يوسف": "1010", "أستاذ صبري": "1111" };
     const defaultData = {
         users: {
             "admin": { pass: "admin123", name: "مدير النظام", role: "admin" },
-            "youssef": { pass: "1234", name: "شركة الأضواء", id: "C-101", balance: 0, shipments: [], notifications: [] }
+            "youssef": {
+                pass: "1234", name: "شركة الأضواء", id: "C-101",
+                building: "10", floor: "2", apt: "4", street: "النصر", area: "مدينة نصر",
+                phone: "01000000000", phone2: "", balance: 0, shipments: [], archive: [], notifications: []
+            }
         },
         couriers: [],
         shipments: [],
+        archive: [],
         adminNotifications: []
     };
 
-    function formatNow() {
-        return new Date().toLocaleString("ar-EG", { dateStyle: "short", timeStyle: "short" });
-    }
+    function formatNow() { return new Date().toLocaleString("ar-EG", { dateStyle: "short", timeStyle: "short" }); }
+    function todayIso() { return new Date().toISOString().slice(0, 10); }
+    function normalizeClientCode(val) { return String(val || "").trim().toUpperCase().replace(/^C-?/, "C-"); }
 
     function normalizeData(raw) {
-        if (!raw || typeof raw !== "object") {
-            return JSON.parse(JSON.stringify(defaultData));
-        }
+        if (!raw || typeof raw !== "object") return JSON.parse(JSON.stringify(defaultData));
         const users = raw.users && typeof raw.users === "object" ? raw.users : JSON.parse(JSON.stringify(defaultData.users));
         Object.keys(users).forEach((k) => {
-            if (users[k].role !== "admin") {
+            if (users[k].role !== "admin" && users[k].role !== "courier") {
                 users[k].balance = Number(users[k].balance || 0);
                 users[k].shipments = Array.isArray(users[k].shipments) ? users[k].shipments : [];
+                users[k].archive = Array.isArray(users[k].archive) ? users[k].archive : [];
                 users[k].notifications = Array.isArray(users[k].notifications) ? users[k].notifications : [];
             }
         });
-        const couriers = Array.isArray(raw.couriers) ? raw.couriers : [];
-        const shipments = Array.isArray(raw.shipments) ? raw.shipments : [];
-        const adminNotifications = Array.isArray(raw.adminNotifications) ? raw.adminNotifications : [];
-        return { users, couriers, shipments, adminNotifications };
+        return {
+            users,
+            couriers: Array.isArray(raw.couriers) ? raw.couriers : [],
+            shipments: Array.isArray(raw.shipments) ? raw.shipments : [],
+            archive: Array.isArray(raw.archive) ? raw.archive : [],
+            adminNotifications: Array.isArray(raw.adminNotifications) ? raw.adminNotifications : []
+        };
     }
 
     let systemData = JSON.parse(JSON.stringify(defaultData));
@@ -616,8 +758,13 @@
     let currentAdminOperator = sessionStorage.getItem("swiftdrop_operator") || null;
     let pendingStaffSelection = null;
     let activeAdminSection = sessionStorage.getItem("swiftdrop_admin_section") || "home";
+    let orderCategory = "prepaid";
     let selectedCourierCode = null;
     let selectedClientKey = null;
+    let armedDeleteKey = null;
+    let pendingDeletePayload = null;
+    let clientTab = "active";
+    let courierTab = "active";
     let isDbReady = false;
     let isSaving = false;
     let touchStartY = 0;
@@ -627,90 +774,77 @@
     }
 
     function persistSessionState() {
-        if (currentLoggedInUser) {
-            sessionStorage.setItem("swiftdrop_user", currentLoggedInUser);
-        } else {
-            sessionStorage.removeItem("swiftdrop_user");
-        }
-        if (currentAdminOperator) {
-            sessionStorage.setItem("swiftdrop_operator", currentAdminOperator);
-        } else {
-            sessionStorage.removeItem("swiftdrop_operator");
-        }
+        if (currentLoggedInUser) sessionStorage.setItem("swiftdrop_user", currentLoggedInUser);
+        else sessionStorage.removeItem("swiftdrop_user");
+        if (currentAdminOperator) sessionStorage.setItem("swiftdrop_operator", currentAdminOperator);
+        else sessionStorage.removeItem("swiftdrop_operator");
         sessionStorage.setItem("swiftdrop_admin_section", activeAdminSection);
     }
 
     document.addEventListener("touchstart", (e) => {
-        if (e.touches && e.touches.length > 0) {
-            touchStartY = e.touches[0].clientY;
-        }
+        if (e.touches && e.touches.length > 0) touchStartY = e.touches[0].clientY;
     }, { passive: true });
 
     document.addEventListener("touchmove", (e) => {
         if (!e.touches || e.touches.length === 0) return;
         const touchY = e.touches[0].clientY;
-        if (window.scrollY <= 0 && touchY > touchStartY && e.cancelable) {
-            e.preventDefault();
-        }
+        if (window.scrollY <= 0 && touchY > touchStartY && e.cancelable) e.preventDefault();
     }, { passive: false });
 
     window.enterApp = function () {
         sessionStorage.setItem("swiftdrop_welcomed", "1");
         document.getElementById("welcome-screen").style.display = "none";
-        updatePushStatusLabel();
         restoreSessionIfAvailable();
     };
 
-    function updatePushStatusLabel() {
-        const el = document.getElementById("push-status-text");
-        if (!el) return;
-        const canSystemPush = ("Notification" in window) && (Notification.permission === "granted");
-        el.innerText = canSystemPush
-            ? "إشعارات الموبايل والتطبيق: مفعّلة"
-            : "إشعارات التطبيق: مفعّلة ومحدّثة تلقائياً";
-    }
-
-    window.requestMobileNotifications = async function () {
-        if ("Notification" in window && typeof Notification.requestPermission === "function") {
-            try {
-                const perm = await Notification.requestPermission();
-                updatePushStatusLabel();
-                if (perm === "granted") {
-                    triggerDeviceNotification("SwiftDrop Logistics", "تم تفعيل إشعارات الموبايل بنجاح.");
-                    return;
-                }
-            } catch (e) {}
-        }
-        updatePushStatusLabel();
-        alert("تم تفعيل وتحديث الإشعارات داخل التطبيق بنجاح. يمكنك متابعتها في قسم (الإشعارات وسجل المنفّذين).");
+    window.clearDateFilter = function () {
+        document.getElementById("filter-date-from").value = "";
+        document.getElementById("filter-date-to").value = "";
+        updateAdminDashboard();
     };
 
-    function triggerDeviceNotification(title, body) {
-        if (!("Notification" in window) || Notification.permission !== "granted") return;
-        try {
-            new Notification(title, {
-                body: body,
-                icon: "./1795190351498.jpg",
-                dir: "rtl"
-            });
-        } catch (e) {}
-    }
+    window.selectOrderCategory = function (cat) {
+        orderCategory = cat;
+        document.getElementById("btn-type-prepaid").classList.toggle("active", cat === "prepaid");
+        document.getElementById("btn-type-cod").classList.toggle("active", cat === "cod");
+        document.getElementById("order-category-hint").innerText = cat === "prepaid"
+            ? "وضع «دفع مقدم»: تُضاف البوليصة للعميل ولا يُضاف مبلغ التحصيل إلى حساب العميل."
+            : "وضع «تحصيل»: بوليصة تحصيل (COD) يُضاف مبلغها إلى حساب العميل عند التسليم/التأكيد حسب الرصيد.";
+    };
+
+    window.switchClientTab = function (tab) {
+        clientTab = tab;
+        document.getElementById("client-active-view").style.display = tab === "active" ? "block" : "none";
+        document.getElementById("client-archive-view").style.display = tab === "archive" ? "block" : "none";
+        document.getElementById("client-tab-active").className = tab === "active" ? "" : "back-btn";
+        document.getElementById("client-tab-archive").className = tab === "archive" ? "" : "back-btn";
+        updateClientDashboard();
+    };
+
+    window.switchCourierTab = function (tab) {
+        courierTab = tab;
+        document.getElementById("courier-active-view").style.display = tab === "active" ? "block" : "none";
+        document.getElementById("courier-archive-view").style.display = tab === "archive" ? "block" : "none";
+        document.getElementById("courier-tab-active").className = tab === "active" ? "" : "back-btn";
+        document.getElementById("courier-tab-archive").className = tab === "archive" ? "" : "back-btn";
+        updateCourierDashboard();
+    };
 
     window.openAdminSection = function (sectionName) {
         activeAdminSection = sectionName;
         selectedCourierCode = null;
         selectedClientKey = null;
+        armedDeleteKey = null;
         persistSessionState();
         document.getElementById("admin-home-view").style.display = sectionName === "home" ? "block" : "none";
-        const views = ["add-client", "add-order", "couriers", "notifications", "clients", "shipments"];
+        const views = ["add-client", "add-order", "couriers", "notifications", "clients", "shipments", "archive"];
         views.forEach((v) => {
             const el = document.getElementById("admin-view-" + v);
             if (el) el.style.display = sectionName === v ? "block" : "none";
         });
         updateAdminDashboard();
     };
-
-    function setSyncStatus(text, isOk = true) {
+        function setSyncStatus(text, isOk = true) {
         document.getElementById("sync-status").innerText = text;
         document.getElementById("sync-dot").style.background = isOk ? "#16A34A" : "#EF4444";
     }
@@ -721,14 +855,18 @@
         if (!userObj) return;
 
         document.getElementById("login-screen").style.display = "none";
+        document.getElementById("admin-dashboard").style.display = "none";
+        document.getElementById("client-dashboard").style.display = "none";
+        document.getElementById("courier-dashboard").style.display = "none";
+
         if (userObj.role === "admin" && currentAdminOperator) {
-            document.getElementById("client-dashboard").style.display = "none";
             document.getElementById("admin-dashboard").style.display = "block";
             document.getElementById("admin-active-operator").innerText = "المنفّذ الحالي: " + currentAdminOperator;
-            updatePushStatusLabel();
             openAdminSection(activeAdminSection || "home");
-        } else if (userObj.role !== "admin") {
-            document.getElementById("admin-dashboard").style.display = "none";
+        } else if (userObj.role === "courier") {
+            document.getElementById("courier-dashboard").style.display = "block";
+            updateCourierDashboard();
+        } else {
             document.getElementById("client-dashboard").style.display = "block";
             updateClientDashboard();
         }
@@ -737,23 +875,14 @@
     onValue(dataRef, (snapshot) => {
         if (snapshot.exists()) {
             systemData = normalizeData(snapshot.val());
-            isDbReady = true;
-            setSyncStatus("متصل بقاعدة البيانات السحابية", true);
-            restoreSessionIfAvailable();
-            refreshActiveView();
         } else {
             systemData = JSON.parse(JSON.stringify(defaultData));
-            set(dataRef, systemData)
-                .then(() => {
-                    isDbReady = true;
-                    setSyncStatus("تم تهيئة قاعدة البيانات السحابية", true);
-                    restoreSessionIfAvailable();
-                    refreshActiveView();
-                })
-                .catch(() => {
-                    setSyncStatus("تعذر الاتصال بقاعدة البيانات", false);
-                });
+            set(dataRef, systemData).catch(() => {});
         }
+        isDbReady = true;
+        setSyncStatus("متصل بقاعدة البيانات السحابية", true);
+        restoreSessionIfAvailable();
+        refreshActiveView();
     }, () => {
         setSyncStatus("خطأ في مزامنة قاعدة البيانات", false);
     });
@@ -775,53 +904,34 @@
     }
 
     function pushAdminNotification(message) {
-        if (!Array.isArray(systemData.adminNotifications)) {
-            systemData.adminNotifications = [];
-        }
-        const op = currentAdminOperator || "الأدمن";
+        if (!Array.isArray(systemData.adminNotifications)) systemData.adminNotifications = [];
         systemData.adminNotifications.unshift({
-            message: message,
-            operator: op,
+            message,
+            operator: currentAdminOperator || "الأدمن",
             time: formatNow()
         });
-        systemData.adminNotifications = systemData.adminNotifications.slice(0, 40);
-        triggerDeviceNotification("إشعار الإدارة - " + op, message);
+        systemData.adminNotifications = systemData.adminNotifications.slice(0, 50);
     }
 
     function pushClientNotification(clientKey, message) {
         const client = systemData.users[clientKey];
         if (!client) return;
-        if (!Array.isArray(client.notifications)) {
-            client.notifications = [];
-        }
-        client.notifications.unshift({
-            message: message,
-            time: formatNow()
-        });
-        client.notifications = client.notifications.slice(0, 30);
-        if (currentLoggedInUser === clientKey) {
-            triggerDeviceNotification("SwiftDrop Logistics", message);
-        }
+        if (!Array.isArray(client.notifications)) client.notifications = [];
+        client.notifications.unshift({ message, time: formatNow() });
+        client.notifications = client.notifications.slice(0, 40);
     }
 
     function refreshActiveView() {
-        if (!currentLoggedInUser) return;
-        if (!systemData.users[currentLoggedInUser]) {
-            logout();
-            return;
-        }
-        if (systemData.users[currentLoggedInUser].role === "admin") {
-            if (currentAdminOperator) {
-                updateAdminDashboard();
-            }
-        } else {
-            updateClientDashboard();
-        }
+        if (!currentLoggedInUser || !systemData.users[currentLoggedInUser]) return;
+        const role = systemData.users[currentLoggedInUser].role;
+        if (role === "admin" && currentAdminOperator) updateAdminDashboard();
+        else if (role === "courier") updateCourierDashboard();
+        else if (role !== "admin") updateClientDashboard();
     }
 
-    function clearPinInputs() {
+    function clearPinInputs(prefix = "pin-") {
         for (let i = 0; i < 4; i++) {
-            const el = document.getElementById("pin-" + i);
+            const el = document.getElementById(prefix + i);
             if (el) el.value = "";
         }
     }
@@ -829,14 +939,24 @@
     window.handlePinInput = function (index) {
         const el = document.getElementById("pin-" + index);
         el.value = el.value.replace(/[^0-9]/g, "").slice(0, 1);
-        if (el.value && index < 3) {
-            document.getElementById("pin-" + (index + 1)).focus();
-        }
+        if (el.value && index < 3) document.getElementById("pin-" + (index + 1)).focus();
     };
 
     window.handlePinKeydown = function (index, event) {
         if (event.key === "Backspace" && !document.getElementById("pin-" + index).value && index > 0) {
             document.getElementById("pin-" + (index - 1)).focus();
+        }
+    };
+
+    window.handleDelPinInput = function (index) {
+        const el = document.getElementById("del-pin-" + index);
+        el.value = el.value.replace(/[^0-9]/g, "").slice(0, 1);
+        if (el.value && index < 3) document.getElementById("del-pin-" + (index + 1)).focus();
+    };
+
+    window.handleDelPinKeydown = function (index, event) {
+        if (event.key === "Backspace" && !document.getElementById("del-pin-" + index).value && index > 0) {
+            document.getElementById("del-pin-" + (index - 1)).focus();
         }
     };
 
@@ -847,7 +967,7 @@
         document.getElementById("pin-prompt-text").innerText = "أدخل رمز الأمان الخاص بـ (" + staffName + ") من 4 أرقام:";
         document.getElementById("pin-modal-box").style.display = "block";
         document.getElementById("error-msg").innerText = "";
-        clearPinInputs();
+        clearPinInputs("pin-");
         document.getElementById("pin-0").focus();
     };
 
@@ -857,15 +977,12 @@
             return;
         }
         const enteredPin = [0, 1, 2, 3].map((i) => document.getElementById("pin-" + i).value).join("");
-        const expectedPin = STAFF_PINS[pendingStaffSelection];
-
-        if (enteredPin !== expectedPin) {
+        if (enteredPin !== STAFF_PINS[pendingStaffSelection]) {
             document.getElementById("error-msg").innerText = "رمز الأمان غير صحيح لـ " + pendingStaffSelection + "!";
-            clearPinInputs();
+            clearPinInputs("pin-");
             document.getElementById("pin-0").focus();
             return;
         }
-
         currentAdminOperator = pendingStaffSelection;
         activeAdminSection = "home";
         persistSessionState();
@@ -875,8 +992,7 @@
         document.getElementById("admin-dashboard").style.display = "block";
         document.getElementById("admin-active-operator").innerText = "المنفّذ الحالي: " + currentAdminOperator;
         document.getElementById("error-msg").innerText = "";
-        clearPinInputs();
-        updatePushStatusLabel();
+        clearPinInputs("pin-");
         openAdminSection("home");
     };
 
@@ -897,7 +1013,8 @@
             document.getElementById("password").value = "";
             err.innerText = "";
 
-            if (systemData.users[u].role === "admin") {
+            const role = systemData.users[u].role;
+            if (role === "admin") {
                 currentAdminOperator = null;
                 pendingStaffSelection = null;
                 sessionStorage.removeItem("swiftdrop_operator");
@@ -905,6 +1022,10 @@
                 document.getElementById("btn-sabry").classList.remove("active");
                 document.getElementById("pin-modal-box").style.display = "none";
                 document.getElementById("staff-select-box").style.display = "block";
+            } else if (role === "courier") {
+                document.getElementById("login-screen").style.display = "none";
+                document.getElementById("courier-dashboard").style.display = "block";
+                updateCourierDashboard();
             } else {
                 document.getElementById("login-screen").style.display = "none";
                 document.getElementById("client-dashboard").style.display = "block";
@@ -922,17 +1043,96 @@
         activeAdminSection = "home";
         selectedCourierCode = null;
         selectedClientKey = null;
+        armedDeleteKey = null;
         sessionStorage.removeItem("swiftdrop_user");
         sessionStorage.removeItem("swiftdrop_operator");
         sessionStorage.removeItem("swiftdrop_admin_section");
-        clearPinInputs();
+        clearPinInputs("pin-");
         document.getElementById("staff-select-box").style.display = "none";
         document.getElementById("pin-modal-box").style.display = "none";
         document.getElementById("admin-dashboard").style.display = "none";
         document.getElementById("client-dashboard").style.display = "none";
+        document.getElementById("courier-dashboard").style.display = "none";
         document.getElementById("login-screen").style.display = "block";
     };
-        window.openCourierWorkspace = function (courierCode) {
+
+    /* الضغط المطوّل وطلب رمز الأمان للحذف */
+    let longPressTimer = null;
+    window.startLongPress = function (key, event) {
+        if (event && event.type === "mousedown" && event.button !== 0) return;
+        clearTimeout(longPressTimer);
+        longPressTimer = setTimeout(() => {
+            armedDeleteKey = key;
+            updateAdminDashboard();
+        }, 550);
+    };
+    window.cancelLongPress = function () { clearTimeout(longPressTimer); };
+
+    window.requestDeleteWithPin = function (type, targetId, labelText) {
+        if (!currentAdminOperator) return;
+        pendingDeletePayload = { type, targetId, labelText };
+        document.getElementById("delete-target-label").innerText = "العنصر: " + labelText;
+        document.getElementById("delete-pin-prompt").innerText = "أدخل رمز الأمان الخاص بـ (" + currentAdminOperator + ") لتأكيد الحذف:";
+        document.getElementById("delete-pin-error").innerText = "";
+        clearPinInputs("del-pin-");
+        document.getElementById("delete-pin-modal").style.display = "flex";
+        document.getElementById("del-pin-0").focus();
+    };
+
+    window.closeDeletePinModal = function () {
+        pendingDeletePayload = null;
+        armedDeleteKey = null;
+        clearPinInputs("del-pin-");
+        document.getElementById("delete-pin-modal").style.display = "none";
+        updateAdminDashboard();
+    };
+
+    window.confirmDeleteWithPin = async function () {
+        if (!pendingDeletePayload || !currentAdminOperator || isSaving) return;
+        const entered = [0, 1, 2, 3].map((i) => document.getElementById("del-pin-" + i).value).join("");
+        if (entered !== STAFF_PINS[currentAdminOperator]) {
+            document.getElementById("delete-pin-error").innerText = "رمز الأمان غير صحيح!";
+            clearPinInputs("del-pin-");
+            document.getElementById("del-pin-0").focus();
+            return;
+        }
+
+        const { type, targetId, labelText } = pendingDeletePayload;
+        if (type === "courier") {
+            systemData.couriers = (systemData.couriers || []).filter((c) => c.code !== targetId);
+            Object.keys(systemData.users).forEach((k) => {
+                if (systemData.users[k].role === "courier" && systemData.users[k].courierCode === targetId) {
+                    delete systemData.users[k];
+                }
+            });
+            if (selectedCourierCode === targetId) selectedCourierCode = null;
+            pushAdminNotification("قام (" + currentAdminOperator + ") بحذف المندوب: " + labelText);
+        } else if (type === "client") {
+            if (systemData.users[targetId]) {
+                delete systemData.users[targetId];
+                systemData.shipments = (systemData.shipments || []).filter((s) => s.owner !== targetId);
+                systemData.archive = (systemData.archive || []).filter((s) => s.owner !== targetId);
+                if (selectedClientKey === targetId) selectedClientKey = null;
+                pushAdminNotification("قام (" + currentAdminOperator + ") بحذف العميل: " + labelText);
+            }
+        } else if (type === "shipment") {
+            const ord = (systemData.shipments || []).find((s) => String(s.id) === String(targetId));
+            systemData.shipments = (systemData.shipments || []).filter((s) => String(s.id) !== String(targetId));
+            if (ord && systemData.users[ord.owner]) {
+                systemData.users[ord.owner].shipments = (systemData.users[ord.owner].shipments || []).filter((s) => String(s.id) !== String(targetId));
+            }
+            pushAdminNotification("قام (" + currentAdminOperator + ") بحذف البوليصة #" + targetId);
+        }
+
+        armedDeleteKey = null;
+        pendingDeletePayload = null;
+        clearPinInputs("del-pin-");
+        document.getElementById("delete-pin-modal").style.display = "none";
+        const ok = await saveData();
+        if (ok) updateAdminDashboard();
+    };
+
+    window.openCourierWorkspace = function (courierCode) {
         selectedCourierCode = courierCode || null;
         updateAdminDashboard();
     };
@@ -947,44 +1147,41 @@
         const name = document.getElementById("new-courier-name").value.trim();
         const phone = document.getElementById("new-courier-phone").value.trim();
         const zone = document.getElementById("new-courier-zone").value.trim() || "عام";
+        const cUser = document.getElementById("new-courier-user").value.trim();
+        const cPass = document.getElementById("new-courier-pass").value.trim();
 
-        if (!name || !phone) {
-            alert("برجاء إدخال اسم المندوب ورقم تليفونه.");
+        if (!name || !phone || !cUser || !cPass) {
+            alert("برجاء إدخال اسم المندوب، التليفون، اليوزر نيم، والباسورد.");
+            return;
+        }
+        if (systemData.users[cUser]) {
+            alert("اسم المستخدم هذا مستخدم بالفعل، اختر يوزر آخر.");
             return;
         }
 
-        if (!Array.isArray(systemData.couriers)) {
-            systemData.couriers = [];
-        }
-
         let code = "D-" + Math.floor(100 + Math.random() * 900);
-        const existingCodes = new Set(systemData.couriers.map((c) => c.code));
-        while (existingCodes.has(code)) {
-            code = "D-" + Math.floor(100 + Math.random() * 900);
-        }
+        const existingCodes = new Set((systemData.couriers || []).map((c) => c.code));
+        while (existingCodes.has(code)) code = "D-" + Math.floor(100 + Math.random() * 900);
 
         const btn = document.getElementById("add-courier-btn");
         btn.disabled = true;
 
         systemData.couriers.push({
-            code: code,
-            name: name,
-            phone: phone,
-            zone: zone,
-            addedBy: currentAdminOperator
+            code, name, phone, zone, username: cUser, addedBy: currentAdminOperator
         });
-
-        pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة مندوب التوصيل: " + name + " (" + code + ")");
+        systemData.users[cUser] = {
+            pass: cPass, name, role: "courier", courierCode: code, phone, zone
+        };
+        pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة المندوب: " + name + " (" + code + ")");
 
         const ok = await saveData();
         btn.disabled = false;
-
         if (ok) {
-            document.getElementById("new-courier-name").value = "";
-            document.getElementById("new-courier-phone").value = "";
-            document.getElementById("new-courier-zone").value = "";
+            ["new-courier-name", "new-courier-phone", "new-courier-zone", "new-courier-user", "new-courier-pass"].forEach((id) => {
+                document.getElementById(id).value = "";
+            });
             selectedCourierCode = code;
-            alert("تم إضافة المندوب بنجاح بكود: " + code);
+            alert("تم إضافة المندوب وحساب دخوله بنجاح بكود: " + code);
             updateAdminDashboard();
         }
     };
@@ -992,14 +1189,20 @@
     window.addNewClient = async function () {
         if (isSaving || !currentAdminOperator) return;
         const name = document.getElementById("new-client-name").value.trim();
+        const building = document.getElementById("new-client-building").value.trim();
+        const floor = document.getElementById("new-client-floor").value.trim();
+        const apt = document.getElementById("new-client-apt").value.trim();
+        const street = document.getElementById("new-client-street").value.trim();
+        const area = document.getElementById("new-client-area").value.trim();
+        const phone = document.getElementById("new-client-phone").value.trim();
+        const phone2 = document.getElementById("new-client-phone2").value.trim();
         const user = document.getElementById("new-client-user").value.trim();
         const pass = document.getElementById("new-client-pass").value.trim();
 
-        if (!name || !user || !pass) {
-            alert("برجاء ملء جميع بيانات العميل.");
+        if (!name || !building || !floor || !apt || !street || !area || !phone || !user || !pass) {
+            alert("برجاء استكمال بيانات العميل والعنوان التفصيلي ورقم التليفون واليوزر والباسورد.");
             return;
         }
-
         if (systemData.users[user]) {
             alert("اسم المستخدم هذا موجود بالفعل، اختر اسماً آخر.");
             return;
@@ -1007,189 +1210,229 @@
 
         let randomId = "C-" + Math.floor(100 + Math.random() * 900);
         const existingIds = new Set(Object.values(systemData.users).map((x) => x.id));
-        while (existingIds.has(randomId)) {
-            randomId = "C-" + Math.floor(100 + Math.random() * 900);
-        }
+        while (existingIds.has(randomId)) randomId = "C-" + Math.floor(100 + Math.random() * 900);
 
         const btn = document.getElementById("add-client-btn");
         btn.disabled = true;
 
         systemData.users[user] = {
-            pass: pass,
-            name: name,
-            id: randomId,
-            balance: 0,
-            shipments: [],
-            notifications: [{
-                message: "تم إنشاء حسابك في شركة SwiftDrop Logistics برقم " + randomId,
-                time: formatNow()
-            }]
+            pass, name, id: randomId,
+            building, floor, apt, street, area, phone, phone2,
+            balance: 0, shipments: [], archive: [],
+            notifications: [{ message: "تم إنشاء حسابك في شركة SwiftDrop Logistics برقم " + randomId, time: formatNow() }]
         };
-
         pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة العميل: " + name + " (" + randomId + ")");
 
         const ok = await saveData();
         btn.disabled = false;
-
         if (ok) {
-            document.getElementById("new-client-name").value = "";
-            document.getElementById("new-client-user").value = "";
-            document.getElementById("new-client-pass").value = "";
+            ["new-client-name", "new-client-building", "new-client-floor", "new-client-apt", "new-client-street", "new-client-area", "new-client-phone", "new-client-phone2", "new-client-user", "new-client-pass"].forEach((id) => {
+                document.getElementById(id).value = "";
+            });
             selectedClientKey = user;
             alert("تم إضافة العميل بنجاح برقم ID: " + randomId);
             updateAdminDashboard();
         }
     };
 
-    function normalizeClientCode(val) {
-        return String(val || "").trim().toUpperCase().replace(/^C-?/, "C-");
-    }
-
     window.addOrderAsAdmin = async function () {
         if (isSaving || !currentAdminOperator) return;
         const rawClientId = document.getElementById("order-client-id").value.trim();
         const clientId = normalizeClientCode(rawClientId);
-        const recipient = document.getElementById("order-recipient").value.trim();
+        const recipientName = document.getElementById("order-recipient-name").value.trim();
+        const recipientAddress = document.getElementById("order-recipient-address").value.trim();
+        const recipientPhone = document.getElementById("order-recipient-phone").value.trim();
         const price = parseFloat(document.getElementById("order-price").value);
         const selectedCourierCodeVal = document.getElementById("order-courier").value;
 
-        if (!rawClientId || !recipient || isNaN(price) || price < 0) {
-            alert("برجاء التأكد من الـ ID وبيانات الأوردر والمبلغ.");
+        if (!rawClientId || !recipientName || !recipientAddress || !recipientPhone || isNaN(price) || price < 0) {
+            alert("برجاء إدخال رقم الـ ID وبيانات المستلم الكاملة (الاسم، العنوان، الهاتف) والمبلغ.");
             return;
         }
 
         let targetUserKey = null;
         for (const key in systemData.users) {
-            if (normalizeClientCode(systemData.users[key].id) === clientId) {
+            if (systemData.users[key].id && normalizeClientCode(systemData.users[key].id) === clientId) {
                 targetUserKey = key;
                 break;
             }
         }
-
         if (!targetUserKey) {
             alert("رقم الـ ID غير صحيح أو غير موجود!");
             return;
         }
 
-        const couriers = Array.isArray(systemData.couriers) ? systemData.couriers : [];
-        const courierObj = couriers.find((c) => c.code === selectedCourierCodeVal) || null;
-
+        const courierObj = (systemData.couriers || []).find((c) => c.code === selectedCourierCodeVal) || null;
         const btn = document.getElementById("add-order-btn");
         btn.disabled = true;
-
+const isCod = orderCategory === "cod";
         const newOrder = {
             id: Math.floor(1000 + Math.random() * 9000),
-            recipient: recipient,
-            price: price,
+            orderCategory: orderCategory,
+            orderCategoryLabel: isCod ? "تحصيل" : "دفع مقدم",
+            recipientName,
+            recipientAddress,
+            recipientPhone,
+            recipient: recipientName + " - " + recipientAddress + " (" + recipientPhone + ")",
+            price,
             status: "قيد التوصيل",
+            date: todayIso(),
             owner: targetUserKey,
             courierCode: courierObj ? courierObj.code : "",
             courierName: courierObj ? courierObj.name : "",
             lastActionBy: currentAdminOperator
         };
 
-        if (!Array.isArray(systemData.users[targetUserKey].shipments)) {
-            systemData.users[targetUserKey].shipments = [];
-        }
-        if (!Array.isArray(systemData.shipments)) {
-            systemData.shipments = [];
-        }
-
+        if (!Array.isArray(systemData.users[targetUserKey].shipments)) systemData.users[targetUserKey].shipments = [];
+        if (!Array.isArray(systemData.shipments)) systemData.shipments = [];
         systemData.users[targetUserKey].shipments.push(newOrder);
         systemData.shipments.push(newOrder);
 
-        pushClientNotification(targetUserKey, "تم إضافة بوليصة جديدة #" + newOrder.id + " (" + recipient + ") بمبلغ " + price + " ج.م");
+        pushClientNotification(targetUserKey, "تم إضافة بوليصة (" + newOrder.orderCategoryLabel + ") #" + newOrder.id + " للمستلم " + recipientName + " بمبلغ " + price + " ج.م");
         const courierNote = courierObj ? " وإسنادها للمندوب: " + courierObj.name : "";
-        pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة بوليصة #" + newOrder.id + " للعميل " + systemData.users[targetUserKey].name + courierNote);
+        pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة بوليصة (" + newOrder.orderCategoryLabel + ") #" + newOrder.id + " للعميل " + systemData.users[targetUserKey].name + courierNote);
 
         const ok = await saveData();
         btn.disabled = false;
-
         if (ok) {
-            document.getElementById("order-client-id").value = "";
-            document.getElementById("order-recipient").value = "";
-            document.getElementById("order-price").value = "";
+            ["order-client-id", "order-recipient-name", "order-recipient-address", "order-recipient-phone", "order-price"].forEach((id) => {
+                document.getElementById(id).value = "";
+            });
             document.getElementById("order-courier").value = "";
-            alert("تم إضافة البوليصة بنجاح للعميل!");
+            alert("تم إضافة البوليصة بنجاح (" + newOrder.orderCategoryLabel + ")!");
             updateAdminDashboard();
         }
     };
 
-    window.adminDeliverOrder = async function (orderIndex) {
-        if (isSaving || !currentAdminOperator) return;
-        const order = systemData.shipments[orderIndex];
-        if (!order || order.status === "تم التسليم") return;
+    function archiveDeliveredShipment(orderId, actorName) {
+        const idx = (systemData.shipments || []).findIndex((s) => String(s.id) === String(orderId));
+        if (idx === -1) return null;
+        const order = systemData.shipments[idx];
+        const archivedOrder = Object.assign({}, order, {
+            status: "تم التسليم",
+            deliveredAtDate: todayIso(),
+            deliveredAtTime: formatNow(),
+            deliveredBy: actorName,
+            lastActionBy: actorName
+        });
 
-        order.status = "تم التسليم";
-        order.lastActionBy = currentAdminOperator;
+        systemData.shipments.splice(idx, 1);
+        if (!Array.isArray(systemData.archive)) systemData.archive = [];
+        systemData.archive.unshift(archivedOrder);
 
         const clientKey = order.owner;
         if (systemData.users[clientKey]) {
-            const clientOrders = systemData.users[clientKey].shipments || [];
-            const found = clientOrders.find((o) => o.id === order.id);
-            if (found) {
-                found.status = "تم التسليم";
-                found.lastActionBy = currentAdminOperator;
+            const cUser = systemData.users[clientKey];
+            cUser.shipments = (cUser.shipments || []).filter((o) => String(o.id) !== String(orderId));
+            if (!Array.isArray(cUser.archive)) cUser.archive = [];
+            cUser.archive.unshift(archivedOrder);
+
+            if (order.orderCategory === "cod") {
+                cUser.balance = Number(cUser.balance || 0) + Number(order.price || 0);
             }
-            systemData.users[clientKey].balance = Number(systemData.users[clientKey].balance || 0) + Number(order.price || 0);
-            pushClientNotification(clientKey, "تم التسليم: تم تسليم البوليصة #" + order.id + " وإضافة " + order.price + " ج.م إلى محفظتك.");
+            const courierText = archivedOrder.courierName ? " بواسطة المندوب (" + archivedOrder.courierName + ")" : "";
+            pushClientNotification(clientKey, "تم التسليم: المندوب " + (archivedOrder.courierName || actorName) + " سلم البوليصة #" + archivedOrder.id + " تم التسليم" + (order.orderCategory === "cod" ? " وتم إضافة " + order.price + " ج.م إلى محفظتك." : "."));
         }
+        return archivedOrder;
+    }
 
-        pushAdminNotification("قام (" + currentAdminOperator + ") بتأكيد تسليم البوليصة #" + order.id);
-
+    window.adminDeliverOrder = async function (orderId) {
+        if (isSaving || !currentAdminOperator) return;
+        const archived = archiveDeliveredShipment(orderId, currentAdminOperator);
+        if (!archived) return;
+        pushAdminNotification("قام (" + currentAdminOperator + ") بتأكيد تسليم البوليصة #" + archived.id + (archived.courierName ? " (المندوب: " + archived.courierName + ")" : "") + " - تم التسليم");
         const ok = await saveData();
-        if (ok) {
-            updateAdminDashboard();
-        }
+        if (ok) updateAdminDashboard();
     };
 
-    window.adminPostponeOrder = async function (orderIndex) {
+    window.adminPostponeOrder = async function (orderId) {
         if (isSaving || !currentAdminOperator) return;
-        const order = systemData.shipments[orderIndex];
-        if (!order || order.status === "تم التسليم") return;
-
+        const order = (systemData.shipments || []).find((s) => String(s.id) === String(orderId));
+        if (!order) return;
         order.status = "أوردر مؤجل";
         order.lastActionBy = currentAdminOperator;
-
-        const clientKey = order.owner;
-        if (systemData.users[clientKey]) {
-            const clientOrders = systemData.users[clientKey].shipments || [];
-            const found = clientOrders.find((o) => o.id === order.id);
+        if (systemData.users[order.owner]) {
+            const found = (systemData.users[order.owner].shipments || []).find((o) => String(o.id) === String(orderId));
             if (found) {
                 found.status = "أوردر مؤجل";
                 found.lastActionBy = currentAdminOperator;
             }
-            pushClientNotification(clientKey, "أوردر مؤجل: تم تأجيل البوليصة #" + order.id + " (" + order.recipient + ").");
+            pushClientNotification(order.owner, "أوردر مؤجل: تم تأجيل البوليصة #" + order.id + " (" + order.recipientName + ").");
         }
-
         pushAdminNotification("قام (" + currentAdminOperator + ") بتأجيل البوليصة #" + order.id + " (أوردر مؤجل)");
-
         const ok = await saveData();
-        if (ok) {
-            updateAdminDashboard();
+        if (ok) updateAdminDashboard();
+    };
+
+    window.courierConfirmDelivery = async function (orderId) {
+        if (isSaving || !currentLoggedInUser) return;
+        const courierUser = systemData.users[currentLoggedInUser];
+        if (!courierUser || courierUser.role !== "courier") return;
+        const courierDisplayName = courierUser.name || "المندوب";
+        const archived = archiveDeliveredShipment(orderId, courierDisplayName);
+        if (!archived) return;
+
+        pushAdminNotification("المندوب (" + courierDisplayName + ") سلم البوليصة #" + archived.id + " تم التسليم");
+        const ok = await saveData();
+        if (ok) updateCourierDashboard();
+    };
+
+    window.courierPostponeOrder = async function (orderId) {
+        if (isSaving || !currentLoggedInUser) return;
+        const courierUser = systemData.users[currentLoggedInUser];
+        if (!courierUser || courierUser.role !== "courier") return;
+        const order = (systemData.shipments || []).find((s) => String(s.id) === String(orderId));
+        if (!order) return;
+        order.status = "أوردر مؤجل";
+        order.lastActionBy = courierUser.name;
+        if (systemData.users[order.owner]) {
+            const found = (systemData.users[order.owner].shipments || []).find((o) => String(o.id) === String(orderId));
+            if (found) {
+                found.status = "أوردر مؤجل";
+                found.lastActionBy = courierUser.name;
+            }
+            pushClientNotification(order.owner, "أوردر مؤجل: أفاد المندوب (" + courierUser.name + ") بتأجيل البوليصة #" + order.id + ".");
         }
+        pushAdminNotification("أفاد المندوب (" + courierUser.name + ") بتأجيل البوليصة #" + order.id + " (أوردر مؤجل)");
+        const ok = await saveData();
+        if (ok) updateCourierDashboard();
     };
 
     function renderCourierSelect() {
         const selectEl = document.getElementById("order-courier");
         if (!selectEl) return;
         const prevVal = selectEl.value;
-        const couriers = Array.isArray(systemData.couriers) ? systemData.couriers : [];
+        const couriers = systemData.couriers || [];
         selectEl.innerHTML = '<option value="">بدون مندوب حالياً</option>' + couriers.map((c) => `
             <option value="${c.code}">${c.name} (${c.code} - ${c.zone})</option>
         `).join("");
-        if (prevVal && couriers.some((c) => c.code === prevVal)) {
-            selectEl.value = prevVal;
-        }
+        if (prevVal && couriers.some((c) => c.code === prevVal)) selectEl.value = prevVal;
+    }
+
+    function isWithinDateRange(dateStr, fromVal, toVal) {
+        if (!fromVal && !toVal) return true;
+        if (!dateStr) return false;
+        if (fromVal && dateStr < fromVal) return false;
+        if (toVal && dateStr > toVal) return false;
+        return true;
     }
 
     function updateAdminDashboard() {
-        const clientKeys = Object.keys(systemData.users).filter((k) => systemData.users[k].role !== "admin");
+        const clientKeys = Object.keys(systemData.users).filter((k) => systemData.users[k].role !== "admin" && systemData.users[k].role !== "courier");
+        const fromVal = document.getElementById("filter-date-from").value;
+        const toVal = document.getElementById("filter-date-to").value;
+
         document.getElementById("total-clients-count").innerText = clientKeys.length;
-        document.getElementById("total-shipments-count").innerText = (systemData.shipments || []).length;
+        document.getElementById("clients-range-note").innerText = (fromVal || toVal) ? "إجمالي العملاء المسجلين" : "الكل";
+
+        const allExecuted = [...(systemData.archive || []), ...(systemData.shipments || [])];
+        const filteredExecuted = allExecuted.filter((s) => isWithinDateRange(s.deliveredAtDate || s.date, fromVal, toVal));
+        document.getElementById("total-shipments-count").innerText = filteredExecuted.length;
+
         renderCourierSelect();
 
-        const couriers = Array.isArray(systemData.couriers) ? systemData.couriers : [];
+        /* أزرار المناديب + حذف بالضغط المطوّل + اتصال مباشر */
+        const couriers = systemData.couriers || [];
         const couriersContainer = document.getElementById("admin-couriers-list");
         const courierDetailBox = document.getElementById("courier-detail-box");
         if (couriersContainer && courierDetailBox) {
@@ -1199,10 +1442,19 @@
             } else {
                 couriersContainer.innerHTML = couriers.map((c) => {
                     const count = (systemData.shipments || []).filter((s) => s.courierCode === c.code).length;
+                    const armed = armedDeleteKey === "courier:" + c.code;
+                    const safeName = (c.name || "").replace(/'/g, "");
                     return `
-                        <button type="button" class="entity-btn" onclick="openCourierWorkspace('${c.code}')">
-                            <strong>${c.name}</strong> (${c.code}) — الخط: ${c.zone} | البوالص: ${count}
-                        </button>
+                        <div style="margin-bottom: 10px;">
+                            <button type="button" class="entity-btn"
+                                onmousedown="startLongPress('courier:${c.code}', event)"
+                                ontouchstart="startLongPress('courier:${c.code}', event)"
+                                onmouseup="cancelLongPress()" ontouchend="cancelLongPress()" ontouchcancel="cancelLongPress()"
+                                onclick="openCourierWorkspace('${c.code}')">
+                                <strong>${c.name}</strong> (${c.code}) — الخط: ${c.zone} | بوالص حالية: ${count}
+                            </button>
+                            ${armed ? `<button type="button" class="small-btn delete-chip-btn" onclick="requestDeleteWithPin('courier', '${c.code}', '${safeName} (${c.code})')">حذف المندوب (يتطلب رمز الأمان)</button>` : ""}
+                        </div>
                     `;
                 }).join("");
 
@@ -1214,15 +1466,22 @@
                         ? '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص مسندة لهذا المندوب حالياً.</p>'
                         : assigned.map((o) => `
                             <div class="notif-item" style="margin-top: 6px;">
-                                <strong>بوليصة #${o.id} - ${o.recipient}</strong> | المبلغ: ${o.price} ج.م | <span class="status-badge">${o.status}</span>
+                                <strong>بوليصة #${o.id} (${o.orderCategoryLabel || "تحصيل"}) - ${o.recipientName || o.recipient}</strong><br>
+                                <small style="color: var(--gray-text);">العنوان: ${o.recipientAddress || "-"} | الهاتف: ${o.recipientPhone || "-"} | المبلغ: ${o.price} ج.م</small><br>
+                                <span class="status-badge">${o.status}</span>
                             </div>
                         `).join("");
                     courierDetailBox.style.display = "block";
                     courierDetailBox.innerHTML = `
                         <div class="section" style="margin-bottom: 0; background: var(--ice-white);">
-                            <button type="button" class="back-btn" onclick="openCourierWorkspace(null)">← إغلاق شغل المندوب</button>
-                            <h4>شغل المندوب: ${activeCourier.name} (${activeCourier.code})</h4>
-                            <p style="font-size: 13px; color: var(--gray-text); margin-bottom: 8px;">تليفون (للإدارة فقط): <b>${activeCourier.phone}</b> | المنطقة: <b>${activeCourier.zone}</b> | إجمالي مبالغ بوالصه: <b>${totalCod} ج.م</b></p>
+                            <button type="button" class="back-btn" onclick="openCourierWorkspace(null)">← إغلاق بيانات وشغل المندوب</button>
+                            <h4>المندوب: ${activeCourier.name}</h4>
+                            <p style="font-size: 13px; color: var(--primary-blue); margin-bottom: 6px;">الكود: <b>${activeCourier.code}</b> | المنطقة: <b>${activeCourier.zone || "-"}</b> | يوزر الدخول: <b>${activeCourier.username || "-"}</b></p>
+                            <div style="margin-bottom: 10px;">
+                                <span style="font-size: 12px; color: var(--gray-text);">رقم التليفون (اضغط للاتصال المباشر / فتح جهات الاتصال):</span><br>
+                                <a class="phone-link" href="tel:${activeCourier.phone}">📞 ${activeCourier.phone}</a>
+                            </div>
+                            <p style="font-size: 13px; color: var(--gray-text); margin-bottom: 8px;">إجمالي مبالغ البوالص الحالية: <b>${totalCod} ج.م</b></p>
                             ${ordersHtml}
                         </div>
                     `;
@@ -1234,17 +1493,16 @@
 
         const notifs = systemData.adminNotifications || [];
         const notifContainer = document.getElementById("admin-notifications-list");
-        if (notifs.length === 0) {
-            notifContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات بعد.</p>';
-        } else {
-            notifContainer.innerHTML = notifs.slice(0, 15).map((n) => `
+        notifContainer.innerHTML = notifs.length === 0
+            ? '<p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات بعد.</p>'
+            : notifs.slice(0, 20).map((n) => `
                 <div class="notif-item">
                     <strong>${n.message}</strong>
                     <span class="notif-time">المنفّذ: ${n.operator} | ${n.time}</span>
                 </div>
             `).join("");
-        }
 
+        /* أزرار العملاء + حذف بالضغط المطوّل */
         const clientsContainer = document.getElementById("admin-clients-list");
         const clientDetailBox = document.getElementById("client-detail-box");
         if (clientsContainer && clientDetailBox) {
@@ -1255,24 +1513,38 @@
                 clientsContainer.innerHTML = clientKeys.map((key) => {
                     const u = systemData.users[key];
                     const count = (u.shipments || []).length;
+                    const armed = armedDeleteKey === "client:" + key;
+                    const safeName = (u.name || "").replace(/'/g, "");
                     return `
-                        <button type="button" class="entity-btn" onclick="openClientWorkspace('${key}')">
-                            <strong>${u.name}</strong> (${u.id}) — اليوزر: ${key} | البوالص: ${count}
-                        </button>
+                        <div style="margin-bottom: 10px;">
+                            <button type="button" class="entity-btn"
+                                onmousedown="startLongPress('client:${key}', event)"
+                                ontouchstart="startLongPress('client:${key}', event)"
+                                onmouseup="cancelLongPress()" ontouchend="cancelLongPress()" ontouchcancel="cancelLongPress()"
+                                onclick="openClientWorkspace('${key}')">
+                                <strong>${u.name}</strong> (${u.id}) — اليوزر: ${key} | بوالص حالية: ${count}
+                            </button>
+                            ${armed ? `<button type="button" class="small-btn delete-chip-btn" onclick="requestDeleteWithPin('client', '${key}', '${safeName} (${u.id})')">حذف العميل (يتطلب رمز الأمان)</button>` : ""}
+                        </div>
                     `;
                 }).join("");
 
-                const activeClient = selectedClientKey && systemData.users[selectedClientKey] && systemData.users[selectedClientKey].role !== "admin"
-                    ? systemData.users[selectedClientKey]
-                    : null;
-
+                const activeClient = selectedClientKey && systemData.users[selectedClientKey] ? systemData.users[selectedClientKey] : null;
                 if (activeClient) {
+                    const addrParts = [
+                        activeClient.area ? "منطقة: " + activeClient.area : "",
+                        activeClient.street ? "شارع: " + activeClient.street : "",
+                        activeClient.building ? "عمارة: " + activeClient.building : "",
+                        activeClient.floor ? "طابق: " + activeClient.floor : "",
+                        activeClient.apt ? "شقة: " + activeClient.apt : ""
+                    ].filter(Boolean).join("، ");
+                    const phonesText = activeClient.phone2 ? activeClient.phone + " / " + activeClient.phone2 : (activeClient.phone || "-");
                     const cShipments = activeClient.shipments || [];
                     const cOrdersHtml = cShipments.length === 0
-                        ? '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص مسجلة لهذا العميل.</p>'
+                        ? '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص حالية لهذا العميل.</p>'
                         : cShipments.map((s) => `
                             <div class="notif-item" style="margin-top: 6px;">
-                                <strong>بوليصة #${s.id} - ${s.recipient}</strong> | المبلغ: ${s.price} ج.م | <span class="status-badge">${s.status}</span>
+                                <strong>بوليصة #${s.id} (${s.orderCategoryLabel || "تحصيل"}) - ${s.recipientName || s.recipient}</strong> | المبلغ: ${s.price} ج.م | <span class="status-badge">${s.status}</span>
                             </div>
                         `).join("");
 
@@ -1280,8 +1552,10 @@
                     clientDetailBox.innerHTML = `
                         <div class="section" style="margin-bottom: 0; background: var(--ice-white);">
                             <button type="button" class="back-btn" onclick="openClientWorkspace(null)">← إغلاق حساب العميل</button>
-                            <h4>حساب وبوالص العميل: ${activeClient.name} (${activeClient.id})</h4>
-                            <p style="font-size: 13px; color: var(--primary-blue); margin-bottom: 8px;">رصيد المحفظة: <b>${Number(activeClient.balance || 0).toFixed(2)} EGP</b> | اليوزر: <b>${selectedClientKey}</b></p>
+                            <h4>حساب العميل: ${activeClient.name} (${activeClient.id})</h4>
+                            <p style="font-size: 13px; color: var(--primary-blue); margin-bottom: 4px;">رصيد المحفظة: <b>${Number(activeClient.balance || 0).toFixed(2)} EGP</b> | اليوزر: <b>${selectedClientKey}</b></p>
+                            <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 4px;">التليفون: <b>${phonesText}</b></p>
+                            <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 8px;">العنوان: <b>${addrParts || "غير مسجل"}</b></p>
                             ${cOrdersHtml}
                         </div>
                     `;
@@ -1291,79 +1565,156 @@
             }
         }
 
-        let shipmentsHtml = "";
-        if (!systemData.shipments || systemData.shipments.length === 0) {
-            shipmentsHtml = '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص مسجلة.</p>';
+        /* متابعة الشحنات الحالية + حذف بالضغط المطوّل */
+        const shipmentsList = (systemData.shipments || []).filter((s) => isWithinDateRange(s.date, fromVal, toVal));
+        const shipmentsContainer = document.getElementById("admin-shipments-list");
+        if (shipmentsList.length === 0) {
+            shipmentsContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص حالية.</p>';
         } else {
-            systemData.shipments.forEach((s, idx) => {
-                const isDelivered = s.status === "تم التسليم";
+            shipmentsContainer.innerHTML = shipmentsList.map((s) => {
                 const isPostponed = s.status === "أوردر مؤجل";
-                const badgeClass = isDelivered ? "status-delivered" : (isPostponed ? "status-postponed" : "status-pending");
+                const badgeClass = isPostponed ? "status-postponed" : "status-pending";
                 const courierLabel = s.courierName ? "المندوب: " + s.courierName : "المندوب: غير محدد";
                 const actorLabel = s.lastActionBy ? "آخر إجراء بواسطة: " + s.lastActionBy : "";
-
-                shipmentsHtml += `
-                    <div class="item-card">
-                        <div>
-                            <strong>بوليصة #${s.id} - ${s.recipient}</strong><br>
-                            <small style="color: var(--gray-text);">للعميل: ${s.owner} | المبلغ: ${s.price} ج.م | ${courierLabel}</small><br>
-                            <small style="color: var(--primary-blue); font-weight: 600;">${actorLabel}</small>
+                const armed = armedDeleteKey === "shipment:" + s.id;
+                return `
+                    <div style="margin-bottom: 10px;">
+                        <div class="item-card"
+                            onmousedown="startLongPress('shipment:${s.id}', event)"
+                            ontouchstart="startLongPress('shipment:${s.id}', event)"
+                            onmouseup="cancelLongPress()" ontouchend="cancelLongPress()" ontouchcancel="cancelLongPress()">
+                            <div>
+                                <strong>بوليصة #${s.id} [${s.orderCategoryLabel || "تحصيل"}] - ${s.recipientName || s.recipient}</strong><br>
+                                <small style="color: var(--gray-text);">العنوان: ${s.recipientAddress || "-"} | الهاتف: ${s.recipientPhone || "-"}</small><br>
+                                <small style="color: var(--gray-text);">العميل: ${s.owner} | المبلغ: ${s.price} ج.م | ${courierLabel}</small><br>
+                                <small style="color: var(--primary-blue); font-weight: 600;">${actorLabel}</small>
+                                         </div>
+                            <div class="action-row">
+                                <span class="status-badge ${badgeClass}">${s.status}</span>
+                                <button class="small-btn" onclick="adminDeliverOrder('${s.id}')">تم التسليم</button>
+                                <button class="small-btn postpone-btn" onclick="adminPostponeOrder('${s.id}')">أوردر مؤجل</button>
+                            </div>
                         </div>
-                        <div class="action-row">
-                            <span class="status-badge ${badgeClass}">${s.status}</span>
-                            ${!isDelivered ? `<button class="small-btn" onclick="adminDeliverOrder(${idx})">تم التسليم</button>` : ""}
-                            ${!isDelivered ? `<button class="small-btn postpone-btn" onclick="adminPostponeOrder(${idx})">أوردر مؤجل</button>` : ""}
-                        </div>
+                        ${armed ? `<button type="button" class="small-btn delete-chip-btn" onclick="requestDeleteWithPin('shipment', '${s.id}', 'بوليصة #${s.id}')">حذف البوليصة #${s.id} (يتطلب رمز الأمان)</button>` : ""}
                     </div>
                 `;
-            });
+            }).join("");
         }
-        document.getElementById("admin-shipments-list").innerHTML = shipmentsHtml;
+
+        /* أرشيف الإدارة */
+        const archiveList = (systemData.archive || []).filter((s) => isWithinDateRange(s.deliveredAtDate || s.date, fromVal, toVal));
+        const archiveContainer = document.getElementById("admin-archive-list");
+        archiveContainer.innerHTML = archiveList.length === 0
+            ? '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص في الأرشيف حالياً.</p>'
+            : archiveList.map((s) => `
+                <div class="item-card">
+                    <div>
+                        <strong>بوليصة #${s.id} [${s.orderCategoryLabel || "تحصيل"}] - ${s.recipientName || s.recipient}</strong><br>
+                        <small style="color: var(--gray-text);">العميل: ${s.owner} | المندوب: ${s.courierName || s.deliveredBy || "-"} | المبلغ: ${s.price} ج.م</small><br>
+                        <small style="color: var(--primary-blue); font-weight: 600;">تم التسليم بواسطة: ${s.deliveredBy || s.lastActionBy || "-"} (${s.deliveredAtTime || ""})</small>
+                    </div>
+                    <span class="status-badge status-archived">تم التسليم</span>
+                </div>
+            `).join("");
     }
 
     function updateClientDashboard() {
         const user = systemData.users[currentLoggedInUser];
+        if (!user) return;
         document.getElementById("client-welcome").innerText = "مرحباً، " + user.name;
         document.getElementById("client-id-display").innerText = "رقم التعريف (ID): " + user.id;
         document.getElementById("wallet-balance").innerText = Number(user.balance || 0).toFixed(2) + " EGP";
 
         const notifContainer = document.getElementById("client-notifications-list");
         const notifs = user.notifications || [];
-        if (notifs.length === 0) {
-            notifContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات جديدة.</p>';
-        } else {
-            notifContainer.innerHTML = notifs.slice(0, 15).map((n) => `
+        notifContainer.innerHTML = notifs.length === 0
+            ? '<p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات جديدة.</p>'
+            : notifs.slice(0, 20).map((n) => `
                 <div class="notif-item">
                     <strong>${n.message}</strong>
                     <span class="notif-time">${n.time}</span>
                 </div>
             `).join("");
-        }
 
         const listContainer = document.getElementById("client-shipments-list");
         const shipments = user.shipments || [];
-        if (shipments.length === 0) {
-            listContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد شحنات حتى الآن.</p>';
-            return;
-        }
+        listContainer.innerHTML = shipments.length === 0
+            ? '<p style="color: var(--gray-text); text-align: center;">لا توجد شحنات حالية.</p>'
+            : shipments.map((s) => {
+                const isPostponed = s.status === "أوردر مؤجل";
+                const badgeClass = isPostponed ? "status-postponed" : "status-pending";
+                return `
+                    <div class="item-card">
+                        <div>
+                            <strong>بوليصة #${s.id} [${s.orderCategoryLabel || "تحصيل"}] - ${s.recipientName || s.recipient}</strong><br>
+                            <small style="color: var(--gray-text);">العنوان: ${s.recipientAddress || "-"} | المبلغ: ${s.price} ج.م</small>
+                        </div>
+                        <span class="status-badge ${badgeClass}">${s.status}</span>
+                    </div>
+                `;
+            }).join("");
 
-        let html = "";
-        shipments.forEach((s) => {
-            const isDelivered = s.status === "تم التسليم";
-            const isPostponed = s.status === "أوردر مؤجل";
-            const badgeClass = isDelivered ? "status-delivered" : (isPostponed ? "status-postponed" : "status-pending");
-            html += `
+        const archiveContainer = document.getElementById("client-archive-list");
+        const cArchive = user.archive || [];
+        archiveContainer.innerHTML = cArchive.length === 0
+            ? '<p style="color: var(--gray-text); text-align: center;">لا توجد شحنات في الأرشيف بعد.</p>'
+            : cArchive.map((s) => `
                 <div class="item-card">
                     <div>
-                        <strong>بوليصة #${s.id} - ${s.recipient}</strong><br>
-                                                <small style="color: var(--gray-text);">المبلغ: ${s.price} ج.م</small>
+                        <strong>بوليصة #${s.id} - ${s.recipientName || s.recipient}</strong><br>
+                        <small style="color: var(--gray-text);">المبلغ: ${s.price} ج.م | المندوب: ${s.courierName || s.deliveredBy || "-"}</small><br>
+                        <small style="color: var(--primary-blue); font-weight: 600;">تم التسليم (${s.deliveredAtTime || ""})</small>
                     </div>
-                    <span class="status-badge ${badgeClass}">${s.status}</span>
+                    <span class="status-badge status-archived">تم التسليم</span>
                 </div>
-            `;
-        });
-        listContainer.innerHTML = html;
+            `).join("");
+    }
+
+    function updateCourierDashboard() {
+        const cUser = systemData.users[currentLoggedInUser];
+        if (!cUser || cUser.role !== "courier") return;
+        document.getElementById("courier-welcome").innerText = "مرحباً، " + cUser.name;
+        document.getElementById("courier-meta-display").innerText = "كود المندوب: " + cUser.courierCode + " | الخط: " + (cUser.zone || "-");
+
+        const myActive = (systemData.shipments || []).filter((s) => s.courierCode === cUser.courierCode);
+        const activeContainer = document.getElementById("courier-shipments-list");
+        activeContainer.innerHTML = myActive.length === 0
+            ? '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص مسندة إليك حالياً.</p>'
+            : myActive.map((s) => {
+                const isPostponed = s.status === "أوردر مؤجل";
+                const badgeClass = isPostponed ? "status-postponed" : "status-pending";
+                return `
+                    <div class="item-card">
+                        <div>
+                            <strong>بوليصة #${s.id} [${s.orderCategoryLabel || "تحصيل"}] - ${s.recipientName || s.recipient}</strong><br>
+                            <small style="color: var(--gray-text);">العنوان: ${s.recipientAddress || "-"} | الهاتف: ${s.recipientPhone || "-"}</small><br>
+                            <small style="color: var(--primary-blue); font-weight: 600;">المبلغ: ${s.price} ج.م</small>
+                        </div>
+                        <div class="action-row">
+                            <span class="status-badge ${badgeClass}">${s.status}</span>
+                            <button class="small-btn" onclick="courierConfirmDelivery('${s.id}')">تم التسليم</button>
+                            <button class="small-btn postpone-btn" onclick="courierPostponeOrder('${s.id}')">أوردر مؤجل</button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+        const myArchive = (systemData.archive || []).filter((s) => s.courierCode === cUser.courierCode);
+        const archiveContainer = document.getElementById("courier-archive-list");
+        archiveContainer.innerHTML = myArchive.length === 0
+            ? '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص في الأرشيف بعد.</p>'
+            : myArchive.map((s) => `
+                <div class="item-card">
+                    <div>
+                        <strong>بوليصة #${s.id} - ${s.recipientName || s.recipient}</strong><br>
+                        <small style="color: var(--gray-text);">العنوان: ${s.recipientAddress || "-"} | المبلغ: ${s.price} ج.م</small><br>
+                        <small style="color: var(--primary-blue); font-weight: 600;">تم التسليم (${s.deliveredAtTime || ""})</small>
+                    </div>
+                    <span class="status-badge status-archived">تم التسليم</span>
+                </div>
+            `).join("");
     }
 </script>
 </body>
 </html>
+        

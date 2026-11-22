@@ -24,7 +24,7 @@
             padding: 20px;
             overscroll-behavior-y: none;
         }
-        .container { max-width: 720px; margin: 0 auto; }
+        .container { max-width: 740px; margin: 0 auto; }
 
         /* شاشة الترحيب */
         #welcome-screen {
@@ -128,8 +128,7 @@
         .staff-btn { background: var(--light-sky); color: var(--primary-blue); border: 1px solid var(--border-sky); }
         .staff-btn.active { background: var(--primary-blue); color: #FFFFFF; border-color: var(--primary-blue); }
 
-        #pin-modal-box, #delete-pin-modal {
-            display: none;
+        #pin-modal-box, #delete-pin-modal, #waybill-modal {
             background: var(--ice-white);
             border: 1px solid var(--border-sky);
             padding: 16px;
@@ -137,7 +136,8 @@
             margin-top: 10px;
             text-align: center;
         }
-        #delete-pin-modal {
+        #pin-modal-box { display: none; }
+        #delete-pin-modal, #waybill-modal {
             position: fixed;
             inset: 0;
             background: rgba(15, 41, 66, 0.55);
@@ -152,9 +152,12 @@
             border: 1px solid var(--border-sky);
             border-radius: 16px;
             padding: 22px;
-            max-width: 390px;
+            max-width: 430px;
             width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
             box-shadow: 0 12px 30px rgba(10, 74, 143, 0.25);
+            text-align: right;
         }
         .pin-boxes { display: flex; justify-content: center; gap: 10px; direction: ltr; margin: 12px 0; }
         .pin-digit {
@@ -270,11 +273,11 @@
             user-select: none;
             -webkit-user-select: none;
         }
-        .action-row { display: flex; flex-direction: column; gap: 6px; min-width: 118px; text-align: left; }
+        .action-row { display: flex; flex-direction: column; gap: 6px; min-width: 122px; text-align: left; }
         .small-btn { padding: 6px 10px; font-size: 12px; border-radius: 7px; }
         .postpone-btn { background: #0369A1; }
-        .delete-chip-btn { background: #1E3A8A; margin-bottom: 10px; }
-        .delete-chip-btn:hover { background: #172554; }
+        .return-btn { background: #1E40AF; }
+        .delete-chip-btn { background: #172554; margin-bottom: 10px; }
         .order-type-btn { padding: 14px; font-size: 15px; border-radius: 12px; }
         .order-type-btn.active { background: var(--primary-blue); outline: 3px solid var(--light-sky); }
 
@@ -290,6 +293,7 @@
         .status-delivered { background: #DCFCE7; color: #166534; }
         .status-pending { background: #E0F2FE; color: #0369A1; }
         .status-postponed { background: #FEF3C7; color: #92400E; }
+        .status-returned { background: #FEE2E2; color: #991B1B; }
         .status-archived { background: #DBEAFE; color: #1E40AF; }
 
         .notif-item {
@@ -303,24 +307,47 @@
         .notif-time { display: block; font-size: 11px; color: var(--gray-text); margin-top: 4px; }
         .logout-btn { background: #2563EB; margin-top: 14px; }
         .logout-btn:hover:not(:disabled) { background: #1D4ED8; }
+        .contact-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
         .phone-link {
             display: inline-block;
-            margin-top: 4px;
             color: var(--primary-blue);
             background: var(--light-sky);
             padding: 5px 10px;
             border-radius: 8px;
             font-weight: 700;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 12px;
         }
         .phone-link:hover { background: #BAE6FD; }
+        .wa-link {
+            display: inline-block;
+            color: #FFFFFF;
+            background: #0284C7;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        .edit-box {
+            background: #FFFFFF;
+            border: 1px solid var(--border-sky);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 8px;
+        }
+        @media print {
+            body * { visibility: hidden; }
+            #waybill-modal, #waybill-modal * { visibility: visible; }
+            #waybill-modal { position: static; background: #FFFFFF; padding: 0; }
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
 <body>
     <!-- نافذة رمز الأمان عند الحذف بالضغط المطوّل -->
 <div id="delete-pin-modal">
-    <div class="modal-card">
+    <div class="modal-card" style="text-align: center;">
         <h4 style="color: var(--primary-blue); margin-bottom: 8px;">تأكيد حذف العنصر</h4>
         <p id="delete-target-label" style="font-size: 13px; color: var(--gray-text); margin-bottom: 10px;"></p>
         <p id="delete-pin-prompt" style="font-size: 13px; font-weight: 700; color: var(--primary-blue);"></p>
@@ -334,6 +361,17 @@
         <div class="grid-2">
             <button type="button" onclick="confirmDeleteWithPin()">تأكيد الحذف</button>
             <button type="button" class="back-btn" style="margin-bottom: 0;" onclick="closeDeletePinModal()">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<!-- نافذة طباعة ومشاركة البوليصة -->
+<div id="waybill-modal">
+    <div class="modal-card">
+        <div id="waybill-print-content"></div>
+        <div class="grid-2 no-print" style="margin-top: 14px;">
+            <button type="button" onclick="window.print()">طباعة / حفظ PDF</button>
+            <button type="button" class="back-btn" style="margin-bottom: 0;" onclick="closeWaybillModal()">إغلاق</button>
         </div>
     </div>
 </div>
@@ -432,7 +470,7 @@
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('add-client')">1. إضافة عميل جديد</button>
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('add-order')">2. إضافة بوليصة / أوردر جديد</button>
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('couriers')">3. إضافة دليفري (مندوب التوصيل) وبوالصه</button>
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('notifications')">4. الإشعارات وسجل المنفّذين</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('notifications')">4. الإشعارات وطلبات العملاء</button>
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('clients')">5. قائمة العملاء وحساباتهم</button>
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('shipments')">6. متابعة الشحنات</button>
                 <button type="button" class="admin-nav-btn" onclick="openAdminSection('archive')">7. الأرشيف</button>
@@ -519,7 +557,7 @@
                     <label>عنوان المستلم</label>
                     <input type="text" id="order-recipient-address" placeholder="عنوان المستلم بالتفصيل">
                 </div>
-                <div class="grid-2">
+                <div class="grid-3">
                     <div class="input-group">
                         <label>رقم الهاتف</label>
                         <input type="tel" id="order-recipient-phone" placeholder="رقم هاتف المستلم">
@@ -527,6 +565,10 @@
                     <div class="input-group">
                         <label>مبلغ التحصيل</label>
                         <input type="number" id="order-price" placeholder="المبلغ (ج.م)">
+                    </div>
+                    <div class="input-group">
+                        <label>مصاريف الشحن</label>
+                        <input type="number" id="order-shipping-fee" placeholder="0">
                     </div>
                 </div>
                 <div class="input-group">
@@ -571,15 +613,21 @@
             </div>
 
             <div class="section">
-                <h4>أزرار المناديب (اضغط لفتح بياناته وشغله، أو اضغط مطوّلاً للحذف)</h4>
+                <h4>أزرار المناديب (اضغط لفتح بياناته وعُهدته وبوالصه، أو اضغط مطوّلاً للحذف)</h4>
                 <div id="admin-couriers-list"></div>
                 <div id="courier-detail-box" style="display: none; margin-top: 14px;"></div>
             </div>
         </div>
 
-        <!-- قسم 4: الإشعارات وسجل المنفذين -->
+        <!-- قسم 4: الإشعارات وسجل المنفذين وطلبات العملاء -->
         <div id="admin-view-notifications" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
+            <div class="section">
+                <h4>طلبات إضافة أوردرات من العملاء (بانتظار الاعتماد)</h4>
+                <div id="admin-pickup-requests-list">
+                    <p style="color: var(--gray-text); text-align: center;">لا توجد طلبات جديدة من العملاء.</p>
+                </div>
+            </div>
             <div class="section">
                 <h4>إشعارات الإدارة وسجل المنفّذين</h4>
                 <div id="admin-notifications-list">
@@ -603,6 +651,9 @@
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
                 <h4>متابعة الشحنات الحالية (اضغط مطوّلاً على بوليصة للحذف)</h4>
+                <div class="input-group">
+                    <input type="text" id="admin-shipments-search" placeholder="بحث برقم البوليصة، اسم المستلم، الهاتف، أو العميل..." oninput="updateAdminDashboard()">
+                </div>
                 <div id="admin-shipments-list"></div>
             </div>
         </div>
@@ -612,6 +663,9 @@
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
                 <h4>أرشيف البوالص المسلّمة</h4>
+                <div class="input-group">
+                    <input type="text" id="admin-archive-search" placeholder="بحث في الأرشيف برقم البوليصة أو المستلم أو المندوب..." oninput="updateAdminDashboard()">
+                </div>
                 <div id="admin-archive-list"></div>
             </div>
         </div>
@@ -635,11 +689,41 @@
         </div>
 
         <div class="grid-2" style="margin-bottom: 14px;">
-            <button type="button" id="client-tab-active" onclick="switchClientTab('active')">الشحنات الحالية والإشعارات</button>
+            <button type="button" id="client-tab-active" onclick="switchClientTab('active')">الشحنات والإشعارات</button>
             <button type="button" id="client-tab-archive" class="back-btn" style="margin-bottom: 0;" onclick="switchClientTab('archive')">الأرشيف</button>
         </div>
 
         <div id="client-active-view">
+            <div class="section">
+                <h4>إرسال طلب أوردر جديد للإدارة</h4>
+                <div class="input-group">
+                    <label>نوع البوليصة</label>
+                    <select id="client-req-category">
+                        <option value="cod">تحصيل (COD)</option>
+                        <option value="prepaid">دفع مقدم</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>اسم المستلم</label>
+                    <input type="text" id="client-req-name" placeholder="اسم المستلم">
+                </div>
+                <div class="input-group">
+                    <label>عنوان المستلم</label>
+                    <input type="text" id="client-req-address" placeholder="عنوان المستلم بالتفصيل">
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>رقم الهاتف</label>
+                        <input type="tel" id="client-req-phone" placeholder="رقم هاتف المستلم">
+                    </div>
+                    <div class="input-group">
+                        <label>مبلغ التحصيل</label>
+                        <input type="number" id="client-req-price" placeholder="المبلغ (ج.م)">
+                    </div>
+                </div>
+                <button type="button" id="client-req-btn" onclick="submitClientOrderRequest()">إرسال الطلب للإدارة</button>
+            </div>
+
             <div class="section">
                 <h4>إشعارات شحناتك</h4>
                 <div id="client-notifications-list">
@@ -649,6 +733,9 @@
 
             <div class="section">
                 <h4>شحناتك وبوالصك الحالية</h4>
+                <div class="input-group">
+                    <input type="text" id="client-shipments-search" placeholder="بحث برقم البوليصة أو اسم المستلم..." oninput="updateClientDashboard()">
+                </div>
                 <div id="client-shipments-list">
                     <p style="color: var(--gray-text); text-align: center;">لا توجد شحنات حتى الآن.</p>
                 </div>
@@ -677,6 +764,11 @@
             <button style="width: auto; padding: 7px 14px; font-size: 12px; background: #1D4ED8;" onclick="logout()">خروج</button>
         </div>
 
+        <div class="wallet-card" style="padding: 14px;">
+            <h3>إجمالي عهدة التحصيل الحالية</h3>
+            <div class="amount" id="courier-cod-total" style="font-size: 24px;">0.00 EGP</div>
+        </div>
+
         <div class="grid-2" style="margin-bottom: 14px;">
             <button type="button" id="courier-tab-active" onclick="switchCourierTab('active')">البوالص المسندة إليك</button>
             <button type="button" id="courier-tab-archive" class="back-btn" style="margin-bottom: 0;" onclick="switchCourierTab('archive')">الأرشيف</button>
@@ -685,6 +777,9 @@
         <div id="courier-active-view">
             <div class="section">
                 <h4>البوالص المطلوب توصيلها</h4>
+                <div class="input-group">
+                    <input type="text" id="courier-shipments-search" placeholder="بحث برقم البوليصة أو اسم المستلم أو الهاتف..." oninput="updateCourierDashboard()">
+                </div>
                 <div id="courier-shipments-list">
                     <p style="color: var(--gray-text); text-align: center;">لا توجد بوالص مسندة إليك حالياً.</p>
                 </div>
@@ -702,9 +797,8 @@
 
         <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
     </div>
-</div>
-
-<script type="module">
+        </div>
+        <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
@@ -726,12 +820,20 @@
         couriers: [],
         shipments: [],
         archive: [],
+        pickupRequests: [],
         adminNotifications: []
     };
 
     function formatNow() { return new Date().toLocaleString("ar-EG", { dateStyle: "short", timeStyle: "short" }); }
     function todayIso() { return new Date().toISOString().slice(0, 10); }
     function normalizeClientCode(val) { return String(val || "").trim().toUpperCase().replace(/^C-?/, "C-"); }
+    function cleanPhoneForWa(phone) {
+        const digits = String(phone || "").replace(/[^0-9]/g, "");
+        if (!digits) return "";
+        if (digits.startsWith("20")) return digits;
+        if (digits.startsWith("0")) return "2" + digits;
+        return digits;
+    }
 
     function normalizeData(raw) {
         if (!raw || typeof raw !== "object") return JSON.parse(JSON.stringify(defaultData));
@@ -749,6 +851,7 @@
             couriers: Array.isArray(raw.couriers) ? raw.couriers : [],
             shipments: Array.isArray(raw.shipments) ? raw.shipments : [],
             archive: Array.isArray(raw.archive) ? raw.archive : [],
+            pickupRequests: Array.isArray(raw.pickupRequests) ? raw.pickupRequests : [],
             adminNotifications: Array.isArray(raw.adminNotifications) ? raw.adminNotifications : []
         };
     }
@@ -761,6 +864,7 @@
     let orderCategory = "prepaid";
     let selectedCourierCode = null;
     let selectedClientKey = null;
+    let editingShipmentId = null;
     let armedDeleteKey = null;
     let pendingDeletePayload = null;
     let clientTab = "active";
@@ -809,7 +913,7 @@
         document.getElementById("btn-type-cod").classList.toggle("active", cat === "cod");
         document.getElementById("order-category-hint").innerText = cat === "prepaid"
             ? "وضع «دفع مقدم»: تُضاف البوليصة للعميل ولا يُضاف مبلغ التحصيل إلى حساب العميل."
-            : "وضع «تحصيل»: بوليصة تحصيل (COD) يُضاف مبلغها إلى حساب العميل عند التسليم/التأكيد حسب الرصيد.";
+            : "وضع «تحصيل»: بوليصة تحصيل (COD) يُضاف صافي مبلغها إلى حساب العميل عند التسليم.";
     };
 
     window.switchClientTab = function (tab) {
@@ -834,6 +938,7 @@
         activeAdminSection = sectionName;
         selectedCourierCode = null;
         selectedClientKey = null;
+        editingShipmentId = null;
         armedDeleteKey = null;
         persistSessionState();
         document.getElementById("admin-home-view").style.display = sectionName === "home" ? "block" : "none";
@@ -844,7 +949,8 @@
         });
         updateAdminDashboard();
     };
-        function setSyncStatus(text, isOk = true) {
+
+    function setSyncStatus(text, isOk = true) {
         document.getElementById("sync-status").innerText = text;
         document.getElementById("sync-dot").style.background = isOk ? "#16A34A" : "#EF4444";
     }
@@ -910,7 +1016,7 @@
             operator: currentAdminOperator || "الأدمن",
             time: formatNow()
         });
-        systemData.adminNotifications = systemData.adminNotifications.slice(0, 50);
+        systemData.adminNotifications = systemData.adminNotifications.slice(0, 60);
     }
 
     function pushClientNotification(clientKey, message) {
@@ -918,7 +1024,7 @@
         if (!client) return;
         if (!Array.isArray(client.notifications)) client.notifications = [];
         client.notifications.unshift({ message, time: formatNow() });
-        client.notifications = client.notifications.slice(0, 40);
+        client.notifications = client.notifications.slice(0, 50);
     }
 
     function refreshActiveView() {
@@ -941,19 +1047,16 @@
         el.value = el.value.replace(/[^0-9]/g, "").slice(0, 1);
         if (el.value && index < 3) document.getElementById("pin-" + (index + 1)).focus();
     };
-
     window.handlePinKeydown = function (index, event) {
         if (event.key === "Backspace" && !document.getElementById("pin-" + index).value && index > 0) {
             document.getElementById("pin-" + (index - 1)).focus();
         }
     };
-
     window.handleDelPinInput = function (index) {
         const el = document.getElementById("del-pin-" + index);
         el.value = el.value.replace(/[^0-9]/g, "").slice(0, 1);
         if (el.value && index < 3) document.getElementById("del-pin-" + (index + 1)).focus();
     };
-
     window.handleDelPinKeydown = function (index, event) {
         if (event.key === "Backspace" && !document.getElementById("del-pin-" + index).value && index > 0) {
             document.getElementById("del-pin-" + (index - 1)).focus();
@@ -1043,6 +1146,7 @@
         activeAdminSection = "home";
         selectedCourierCode = null;
         selectedClientKey = null;
+        editingShipmentId = null;
         armedDeleteKey = null;
         sessionStorage.removeItem("swiftdrop_user");
         sessionStorage.removeItem("swiftdrop_operator");
@@ -1056,7 +1160,7 @@
         document.getElementById("login-screen").style.display = "block";
     };
 
-    /* الضغط المطوّل وطلب رمز الأمان للحذف */
+    /* الحذف بالضغط المطوّل ورمز الأمان */
     let longPressTimer = null;
     window.startLongPress = function (key, event) {
         if (event && event.type === "mousedown" && event.button !== 0) return;
@@ -1101,9 +1205,7 @@
         if (type === "courier") {
             systemData.couriers = (systemData.couriers || []).filter((c) => c.code !== targetId);
             Object.keys(systemData.users).forEach((k) => {
-                if (systemData.users[k].role === "courier" && systemData.users[k].courierCode === targetId) {
-                    delete systemData.users[k];
-                }
+                if (systemData.users[k].role === "courier" && systemData.users[k].courierCode === targetId) delete systemData.users[k];
             });
             if (selectedCourierCode === targetId) selectedCourierCode = null;
             pushAdminNotification("قام (" + currentAdminOperator + ") بحذف المندوب: " + labelText);
@@ -1132,11 +1234,115 @@
         if (ok) updateAdminDashboard();
     };
 
+    /* نافذة طباعة البوليصة */
+    window.openWaybillModal = function (orderId) {
+        const s = [...(systemData.shipments || []), ...(systemData.archive || [])].find((o) => String(o.id) === String(orderId));
+        if (!s) return;
+        const clientName = (systemData.users[s.owner] && systemData.users[s.owner].name) || s.owner;
+        const netCod = Math.max(0, Number(s.price || 0) - Number(s.shippingFee || 0));
+        document.getElementById("waybill-print-content").innerHTML = `
+            <h3 style="color: var(--primary-blue); margin-bottom: 4px;">SwiftDrop Logistics - بوليصة شحن</h3>
+            <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 10px;">رقم البوليصة: <b>#${s.id}</b> | التاريخ: <b>${s.date || "-"}</b></p>
+            <div class="notif-item">
+                <b>الراسل (العميل):</b> ${clientName} (${s.owner})<br>
+                <b>نوع البوليصة:</b> ${s.orderCategoryLabel || "تحصيل"} | <b>الحالة:</b> ${s.status}
+            </div>
+            <div class="notif-item">
+                <b>المستلم:</b> ${s.recipientName || s.recipient}<br>
+                <b>العنوان:</b> ${s.recipientAddress || "-"}<br>
+                <b>الهاتف:</b> ${s.recipientPhone || "-"}
+            </div>
+            <div class="notif-item">
+                <b>مبلغ التحصيل:</b> ${Number(s.price || 0).toFixed(2)} EGP<br>
+                <b>مصاريف الشحن:</b> ${Number(s.shippingFee || 0).toFixed(2)} EGP<br>
+                <b>الصافي المستحق للعميل:</b> ${netCod.toFixed(2)} EGP<br>
+                <b>المندوب المسند:</b> ${s.courierName || "غير محدد"}
+            </div>
+        `;
+        document.getElementById("waybill-modal").style.display = "flex";
+    };
+    window.closeWaybillModal = function () { document.getElementById("waybill-modal").style.display = "none"; };
+
+    /* تعديل بوليصة / تغيير مندوب */
+    window.toggleEditShipment = function (orderId) {
+        editingShipmentId = editingShipmentId === String(orderId) ? null : String(orderId);
+        updateAdminDashboard();
+    };
+
+    window.saveEditedShipment = async function (orderId) {
+        if (isSaving || !currentAdminOperator) return;
+        const order = (systemData.shipments || []).find((s) => String(s.id) === String(orderId));
+        if (!order) return;
+
+        const rName = document.getElementById("edit-rname-" + orderId).value.trim();
+        const rAddr = document.getElementById("edit-raddr-" + orderId).value.trim();
+        const rPhone = document.getElementById("edit-rphone-" + orderId).value.trim();
+        const rPrice = parseFloat(document.getElementById("edit-rprice-" + orderId).value);
+        const rFee = parseFloat(document.getElementById("edit-rfee-" + orderId).value) || 0;
+        const cCode = document.getElementById("edit-rcourier-" + orderId).value;
+
+        if (!rName || !rAddr || !rPhone || isNaN(rPrice) || rPrice < 0) {
+            alert("برجاء إدخال بيانات المستلم والمبلغ بشكل صحيح.");
+            return;
+        }
+
+            const cObj = (systemData.couriers || []).find((c) => c.code === cCode) || null;
+        order.recipientName = rName;
+        order.recipientAddress = rAddr;
+        order.recipientPhone = rPhone;
+        order.recipient = rName + " - " + rAddr + " (" + rPhone + ")";
+        order.price = rPrice;
+        order.shippingFee = rFee;
+        order.courierCode = cObj ? cObj.code : "";
+        order.courierName = cObj ? cObj.name : "";
+        order.lastActionBy = currentAdminOperator;
+
+        if (systemData.users[order.owner]) {
+            const cOrd = (systemData.users[order.owner].shipments || []).find((o) => String(o.id) === String(orderId));
+            if (cOrd) Object.assign(cOrd, order);
+        }
+
+        pushAdminNotification("قام (" + currentAdminOperator + ") بتعديل البوليصة #" + orderId);
+        editingShipmentId = null;
+        const ok = await saveData();
+        if (ok) updateAdminDashboard();
+    };
+
+    /* تسوية / خصم رصيد العميل */
+    window.settleClientBalance = async function (clientKey) {
+        if (isSaving || !currentAdminOperator) return;
+        const client = systemData.users[clientKey];
+        if (!client) return;
+        const amtInput = document.getElementById("settle-amount-" + clientKey);
+        const noteInput = document.getElementById("settle-note-" + clientKey);
+        const amount = parseFloat(amtInput.value);
+        const note = (noteInput.value || "تحويل/تسوية رصيد").trim();
+
+        if (isNaN(amount) || amount <= 0) {
+            alert("أدخل مبلغ التسوية/السحب بشكل صحيح.");
+            return;
+        }
+        if (amount > Number(client.balance || 0)) {
+            alert("مبلغ التسوية أكبر من رصيد المحفظة الحالي!");
+            return;
+        }
+
+        client.balance = Number(client.balance || 0) - amount;
+        pushClientNotification(clientKey, "تم خصم/تسوية مبلغ " + amount.toFixed(2) + " EGP من محفظتك (" + note + ").");
+        pushAdminNotification("قام (" + currentAdminOperator + ") بتسوية مبلغ " + amount.toFixed(2) + " EGP للعميل " + client.name + " (" + note + ")");
+
+        const ok = await saveData();
+        if (ok) {
+            amtInput.value = "";
+            noteInput.value = "";
+            updateAdminDashboard();
+        }
+    };
+
     window.openCourierWorkspace = function (courierCode) {
         selectedCourierCode = courierCode || null;
         updateAdminDashboard();
     };
-
     window.openClientWorkspace = function (clientKey) {
         selectedClientKey = clientKey || null;
         updateAdminDashboard();
@@ -1166,12 +1372,8 @@
         const btn = document.getElementById("add-courier-btn");
         btn.disabled = true;
 
-        systemData.couriers.push({
-            code, name, phone, zone, username: cUser, addedBy: currentAdminOperator
-        });
-        systemData.users[cUser] = {
-            pass: cPass, name, role: "courier", courierCode: code, phone, zone
-        };
+        systemData.couriers.push({ code, name, phone, zone, username: cUser, addedBy: currentAdminOperator });
+        systemData.users[cUser] = { pass: cPass, name, role: "courier", courierCode: code, phone, zone };
         pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة المندوب: " + name + " (" + code + ")");
 
         const ok = await saveData();
@@ -1243,6 +1445,7 @@
         const recipientAddress = document.getElementById("order-recipient-address").value.trim();
         const recipientPhone = document.getElementById("order-recipient-phone").value.trim();
         const price = parseFloat(document.getElementById("order-price").value);
+        const shippingFee = parseFloat(document.getElementById("order-shipping-fee").value) || 0;
         const selectedCourierCodeVal = document.getElementById("order-courier").value;
 
         if (!rawClientId || !recipientName || !recipientAddress || !recipientPhone || isNaN(price) || price < 0) {
@@ -1265,16 +1468,15 @@
         const courierObj = (systemData.couriers || []).find((c) => c.code === selectedCourierCodeVal) || null;
         const btn = document.getElementById("add-order-btn");
         btn.disabled = true;
-const isCod = orderCategory === "cod";
+
+        const isCod = orderCategory === "cod";
         const newOrder = {
             id: Math.floor(1000 + Math.random() * 9000),
             orderCategory: orderCategory,
             orderCategoryLabel: isCod ? "تحصيل" : "دفع مقدم",
-            recipientName,
-            recipientAddress,
-            recipientPhone,
+            recipientName, recipientAddress, recipientPhone,
             recipient: recipientName + " - " + recipientAddress + " (" + recipientPhone + ")",
-            price,
+            price, shippingFee,
             status: "قيد التوصيل",
             date: todayIso(),
             owner: targetUserKey,
@@ -1283,25 +1485,13 @@ const isCod = orderCategory === "cod";
             lastActionBy: currentAdminOperator
         };
 
-        if (!Array.isArray(systemData.users[targetUserKey].shipments)) systemData.users[targetUserKey].shipments = [];
-        if (!Array.isArray(systemData.shipments)) systemData.shipments = [];
         systemData.users[targetUserKey].shipments.push(newOrder);
         systemData.shipments.push(newOrder);
-
-        pushClientNotification(targetUserKey, "تم إضافة بوليصة (" + newOrder.orderCategoryLabel + ") #" + newOrder.id + " للمستلم " + recipientName + " بمبلغ " + price + " ج.م");
-        const courierNote = courierObj ? " وإسنادها للمندوب: " + courierObj.name : "";
-        pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة بوليصة (" + newOrder.orderCategoryLabel + ") #" + newOrder.id + " للعميل " + systemData.users[targetUserKey].name + courierNote);
+        pushClientNotification(targetUserKey, "تم اعتماد طلبك وتحويله إلى بوليصة #" + newOrder.id);
+        pushAdminNotification("قام (" + currentAdminOperator + ") باعتماد طلب العميل " + reqObj.clientName + " وإصدار بوليصة #" + newOrder.id);
 
         const ok = await saveData();
-        btn.disabled = false;
-        if (ok) {
-            ["order-client-id", "order-recipient-name", "order-recipient-address", "order-recipient-phone", "order-price"].forEach((id) => {
-                document.getElementById(id).value = "";
-            });
-            document.getElementById("order-courier").value = "";
-            alert("تم إضافة البوليصة بنجاح (" + newOrder.orderCategoryLabel + ")!");
-            updateAdminDashboard();
-        }
+        if (ok) updateAdminDashboard();
     };
 
     function archiveDeliveredShipment(orderId, actorName) {
@@ -1328,10 +1518,11 @@ const isCod = orderCategory === "cod";
             cUser.archive.unshift(archivedOrder);
 
             if (order.orderCategory === "cod") {
-                cUser.balance = Number(cUser.balance || 0) + Number(order.price || 0);
+                const netAmount = Math.max(0, Number(order.price || 0) - Number(order.shippingFee || 0));
+                cUser.balance = Number(cUser.balance || 0) + netAmount;
             }
-            const courierText = archivedOrder.courierName ? " بواسطة المندوب (" + archivedOrder.courierName + ")" : "";
-            pushClientNotification(clientKey, "تم التسليم: المندوب " + (archivedOrder.courierName || actorName) + " سلم البوليصة #" + archivedOrder.id + " تم التسليم" + (order.orderCategory === "cod" ? " وتم إضافة " + order.price + " ج.م إلى محفظتك." : "."));
+            const mName = archivedOrder.courierName || actorName;
+            pushClientNotification(clientKey, "المندوب " + mName + " سلم الأوردر (بوليصة #" + archivedOrder.id + ") تم التسليم.");
         }
         return archivedOrder;
     }
@@ -1340,7 +1531,8 @@ const isCod = orderCategory === "cod";
         if (isSaving || !currentAdminOperator) return;
         const archived = archiveDeliveredShipment(orderId, currentAdminOperator);
         if (!archived) return;
-        pushAdminNotification("قام (" + currentAdminOperator + ") بتأكيد تسليم البوليصة #" + archived.id + (archived.courierName ? " (المندوب: " + archived.courierName + ")" : "") + " - تم التسليم");
+        const mName = archived.courierName || currentAdminOperator;
+        pushAdminNotification("المندوب " + mName + " سلم البوليصة #" + archived.id + " تم التسليم (بواسطة: " + currentAdminOperator + ")");
         const ok = await saveData();
         if (ok) updateAdminDashboard();
     };
@@ -1353,13 +1545,26 @@ const isCod = orderCategory === "cod";
         order.lastActionBy = currentAdminOperator;
         if (systemData.users[order.owner]) {
             const found = (systemData.users[order.owner].shipments || []).find((o) => String(o.id) === String(orderId));
-            if (found) {
-                found.status = "أوردر مؤجل";
-                found.lastActionBy = currentAdminOperator;
-            }
+            if (found) { found.status = "أوردر مؤجل"; found.lastActionBy = currentAdminOperator; }
             pushClientNotification(order.owner, "أوردر مؤجل: تم تأجيل البوليصة #" + order.id + " (" + order.recipientName + ").");
         }
         pushAdminNotification("قام (" + currentAdminOperator + ") بتأجيل البوليصة #" + order.id + " (أوردر مؤجل)");
+        const ok = await saveData();
+        if (ok) updateAdminDashboard();
+    };
+
+    window.adminReturnOrder = async function (orderId) {
+        if (isSaving || !currentAdminOperator) return;
+        const order = (systemData.shipments || []).find((s) => String(s.id) === String(orderId));
+        if (!order) return;
+        order.status = "مرتجع";
+        order.lastActionBy = currentAdminOperator;
+        if (systemData.users[order.owner]) {
+            const found = (systemData.users[order.owner].shipments || []).find((o) => String(o.id) === String(orderId));
+            if (found) { found.status = "مرتجع"; found.lastActionBy = currentAdminOperator; }
+            pushClientNotification(order.owner, "مرتجع: تم تسجيل البوليصة #" + order.id + " كمرتجع.");
+        }
+        pushAdminNotification("قام (" + currentAdminOperator + ") بتسجيل البوليصة #" + order.id + " كمرتجع");
         const ok = await saveData();
         if (ok) updateAdminDashboard();
     };
@@ -1372,7 +1577,7 @@ const isCod = orderCategory === "cod";
         const archived = archiveDeliveredShipment(orderId, courierDisplayName);
         if (!archived) return;
 
-        pushAdminNotification("المندوب (" + courierDisplayName + ") سلم البوليصة #" + archived.id + " تم التسليم");
+        pushAdminNotification("المندوب " + courierDisplayName + " سلم البوليصة #" + archived.id + " تم التسليم");
         const ok = await saveData();
         if (ok) updateCourierDashboard();
     };
@@ -1387,13 +1592,28 @@ const isCod = orderCategory === "cod";
         order.lastActionBy = courierUser.name;
         if (systemData.users[order.owner]) {
             const found = (systemData.users[order.owner].shipments || []).find((o) => String(o.id) === String(orderId));
-            if (found) {
-                found.status = "أوردر مؤجل";
-                found.lastActionBy = courierUser.name;
-            }
-            pushClientNotification(order.owner, "أوردر مؤجل: أفاد المندوب (" + courierUser.name + ") بتأجيل البوليصة #" + order.id + ".");
+            if (found) { found.status = "أوردر مؤجل"; found.lastActionBy = courierUser.name; }
+            pushClientNotification(order.owner, "أوردر مؤجل: أفاد المندوب " + courierUser.name + " بتأجيل البوليصة #" + order.id + ".");
         }
-        pushAdminNotification("أفاد المندوب (" + courierUser.name + ") بتأجيل البوليصة #" + order.id + " (أوردر مؤجل)");
+        pushAdminNotification("أفاد المندوب " + courierUser.name + " بتأجيل البوليصة #" + order.id + " (أوردر مؤجل)");
+        const ok = await saveData();
+        if (ok) updateCourierDashboard();
+    };
+
+    window.courierReturnOrder = async function (orderId) {
+        if (isSaving || !currentLoggedInUser) return;
+        const courierUser = systemData.users[currentLoggedInUser];
+        if (!courierUser || courierUser.role !== "courier") return;
+        const order = (systemData.shipments || []).find((s) => String(s.id) === String(orderId));
+        if (!order) return;
+        order.status = "مرتجع";
+        order.lastActionBy = courierUser.name;
+        if (systemData.users[order.owner]) {
+            const found = (systemData.users[order.owner].shipments || []).find((o) => String(o.id) === String(orderId));
+            if (found) { found.status = "مرتجع"; found.lastActionBy = courierUser.name; }
+            pushClientNotification(order.owner, "مرتجع: أفاد المندوب " + courierUser.name + " بارتجاع البوليصة #" + order.id + ".");
+        }
+        pushAdminNotification("أفاد المندوب " + courierUser.name + " بارتجاع البوليصة #" + order.id + " (مرتجع)");
         const ok = await saveData();
         if (ok) updateCourierDashboard();
     };
@@ -1417,6 +1637,24 @@ const isCod = orderCategory === "cod";
         return true;
     }
 
+    function matchesQuery(obj, q) {
+        if (!q) return true;
+        const hay = [obj.id, obj.recipientName, obj.recipient, obj.recipientAddress, obj.recipientPhone, obj.owner, obj.courierName, obj.courierCode].join(" ").toLowerCase();
+        return hay.includes(q.toLowerCase());
+    }
+
+    function buildContactLinks(phone, recipientName, orderId) {
+        if (!phone) return "";
+        const waDigits = cleanPhoneForWa(phone);
+        const waText = encodeURIComponent("أهلاً بحضرتك، معاك مندوب شركة SwiftDrop بخصوص بوليصة رقم #" + orderId + " (" + (recipientName || "") + ").");
+        return `
+            <div class="contact-bar">
+                <a class="phone-link" href="tel:${phone}">📞 اتصال: ${phone}</a>
+                ${waDigits ? `<a class="wa-link" target="_blank" rel="noopener" href="https://wa.me/${waDigits}?text=${waText}">واتساب</a>` : ""}
+            </div>
+        `;
+    }
+
     function updateAdminDashboard() {
         const clientKeys = Object.keys(systemData.users).filter((k) => systemData.users[k].role !== "admin" && systemData.users[k].role !== "courier");
         const fromVal = document.getElementById("filter-date-from").value;
@@ -1431,7 +1669,7 @@ const isCod = orderCategory === "cod";
 
         renderCourierSelect();
 
-        /* أزرار المناديب + حذف بالضغط المطوّل + اتصال مباشر */
+        /* أزرار المناديب + عهدة + اتصال مباشر + حذف بالضغط المطوّل */
         const couriers = systemData.couriers || [];
         const couriersContainer = document.getElementById("admin-couriers-list");
         const courierDetailBox = document.getElementById("courier-detail-box");
@@ -1461,13 +1699,13 @@ const isCod = orderCategory === "cod";
                 const activeCourier = couriers.find((c) => c.code === selectedCourierCode);
                 if (activeCourier) {
                     const assigned = (systemData.shipments || []).filter((s) => s.courierCode === activeCourier.code);
-                    const totalCod = assigned.reduce((sum, o) => sum + Number(o.price || 0), 0);
+                    const totalCod = assigned.filter((o) => o.orderCategory !== "prepaid" && o.status !== "مرتجع").reduce((sum, o) => sum + Number(o.price || 0), 0);
                     const ordersHtml = assigned.length === 0
                         ? '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص مسندة لهذا المندوب حالياً.</p>'
                         : assigned.map((o) => `
                             <div class="notif-item" style="margin-top: 6px;">
                                 <strong>بوليصة #${o.id} (${o.orderCategoryLabel || "تحصيل"}) - ${o.recipientName || o.recipient}</strong><br>
-                                <small style="color: var(--gray-text);">العنوان: ${o.recipientAddress || "-"} | الهاتف: ${o.recipientPhone || "-"} | المبلغ: ${o.price} ج.م</small><br>
+                                <small style="color: var(--gray-text);">العنوان: ${o.recipientAddress || "-"} | المبلغ: ${o.price} ج.م</small><br>
                                 <span class="status-badge">${o.status}</span>
                             </div>
                         `).join("");
@@ -1481,7 +1719,7 @@ const isCod = orderCategory === "cod";
                                 <span style="font-size: 12px; color: var(--gray-text);">رقم التليفون (اضغط للاتصال المباشر / فتح جهات الاتصال):</span><br>
                                 <a class="phone-link" href="tel:${activeCourier.phone}">📞 ${activeCourier.phone}</a>
                             </div>
-                            <p style="font-size: 13px; color: var(--gray-text); margin-bottom: 8px;">إجمالي مبالغ البوالص الحالية: <b>${totalCod} ج.م</b></p>
+                            <p style="font-size: 13px; color: var(--primary-blue); margin-bottom: 8px;">إجمالي عهدة التحصيل الحالية: <b>${totalCod.toFixed(2)} EGP</b></p>
                             ${ordersHtml}
                         </div>
                     `;
@@ -1491,18 +1729,37 @@ const isCod = orderCategory === "cod";
             }
         }
 
+        /* طلبات العملاء بانتظار الاعتماد */
+        const reqList = systemData.pickupRequests || [];
+        const reqContainer = document.getElementById("admin-pickup-requests-list");
+        reqContainer.innerHTML = reqList.length === 0
+            ? '<p style="color: var(--gray-text); text-align: center;">لا توجد طلبات جديدة من العملاء.</p>'
+            : reqList.map((r) => `
+                <div class="item-card">
+                    <div>
+                        <strong>طلب ${r.reqId} [${r.orderCategoryLabel}] من ${r.clientName} (${r.clientId})</strong><br>
+                        <small style="color: var(--gray-text);">المستلم: ${r.recipientName} — ${r.recipientAddress} (${r.recipientPhone})</small><br>
+                        <small style="color: var(--primary-blue); font-weight: 600;">المبلغ: ${r.price} ج.م | ${r.time || ""}</small>
+                    </div>
+                    <div class="action-row">
+                        <button class="small-btn" onclick="approvePickupRequest('${r.reqId}')">اعتماد وإصدار بوليصة</button>
+                    </div>
+                </div>
+            `).join("");
+
+        /* إشعارات الإدارة */
         const notifs = systemData.adminNotifications || [];
         const notifContainer = document.getElementById("admin-notifications-list");
         notifContainer.innerHTML = notifs.length === 0
             ? '<p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات بعد.</p>'
-            : notifs.slice(0, 20).map((n) => `
+            : notifs.slice(0, 25).map((n) => `
                 <div class="notif-item">
                     <strong>${n.message}</strong>
                     <span class="notif-time">المنفّذ: ${n.operator} | ${n.time}</span>
                 </div>
             `).join("");
 
-        /* أزرار العملاء + حذف بالضغط المطوّل */
+        /* أزرار العملاء + تسوية الرصيد + حذف بالضغط المطوّل */
         const clientsContainer = document.getElementById("admin-clients-list");
         const clientDetailBox = document.getElementById("client-detail-box");
         if (clientsContainer && clientDetailBox) {
@@ -1554,8 +1811,16 @@ const isCod = orderCategory === "cod";
                             <button type="button" class="back-btn" onclick="openClientWorkspace(null)">← إغلاق حساب العميل</button>
                             <h4>حساب العميل: ${activeClient.name} (${activeClient.id})</h4>
                             <p style="font-size: 13px; color: var(--primary-blue); margin-bottom: 4px;">رصيد المحفظة: <b>${Number(activeClient.balance || 0).toFixed(2)} EGP</b> | اليوزر: <b>${selectedClientKey}</b></p>
-                            <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 4px;">التليفون: <b>${phonesText}</b></p>
-                            <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 8px;">العنوان: <b>${addrParts || "غير مسجل"}</b></p>
+                          <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 4px;">التليفون: <b>${phonesText}</b></p>
+                            <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 10px;">العنوان: <b>${addrParts || "غير مسجل"}</b></p>
+                            <div class="edit-box" style="margin-bottom: 10px;">
+                                <p style="font-size: 12px; font-weight: 700; color: var(--primary-blue); margin-bottom: 6px;">تسوية / خصم رصيد محفظة العميل</p>
+                                <div class="grid-2">
+                                    <input type="number" id="settle-amount-${selectedClientKey}" placeholder="المبلغ (EGP)" style="padding: 8px; border: 1px solid var(--border-sky); border-radius: 8px;">
+                                    <input type="text" id="settle-note-${selectedClientKey}" placeholder="ملاحظة (فودافون كاش / نقدي)" style="padding: 8px; border: 1px solid var(--border-sky); border-radius: 8px;">
+                                </div>
+                                <button type="button" class="small-btn" style="margin-top: 8px;" onclick="settleClientBalance('${selectedClientKey}')">تأكيد خصم / تسوية الرصيد</button>
+                            </div>
                             ${cOrdersHtml}
                         </div>
                     `;
@@ -1565,18 +1830,21 @@ const isCod = orderCategory === "cod";
             }
         }
 
-        /* متابعة الشحنات الحالية + حذف بالضغط المطوّل */
-        const shipmentsList = (systemData.shipments || []).filter((s) => isWithinDateRange(s.date, fromVal, toVal));
+        /* متابعة الشحنات الحالية + بحث + تعديل + طباعة + حذف بالضغط المطوّل */
+        const sSearch = (document.getElementById("admin-shipments-search")?.value || "").trim();
+        const shipmentsList = (systemData.shipments || []).filter((s) => isWithinDateRange(s.date, fromVal, toVal) && matchesQuery(s, sSearch));
         const shipmentsContainer = document.getElementById("admin-shipments-list");
         if (shipmentsList.length === 0) {
-            shipmentsContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص حالية.</p>';
+            shipmentsContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص حالية مطابقة.</p>';
         } else {
             shipmentsContainer.innerHTML = shipmentsList.map((s) => {
-                const isPostponed = s.status === "أوردر مؤجل";
-                const badgeClass = isPostponed ? "status-postponed" : "status-pending";
+                const badgeClass = s.status === "أوردر مؤجل" ? "status-postponed" : (s.status === "مرتجع" ? "status-returned" : "status-pending");
                 const courierLabel = s.courierName ? "المندوب: " + s.courierName : "المندوب: غير محدد";
                 const actorLabel = s.lastActionBy ? "آخر إجراء بواسطة: " + s.lastActionBy : "";
                 const armed = armedDeleteKey === "shipment:" + s.id;
+                const isEditing = editingShipmentId === String(s.id);
+                const courierOptions = '<option value="">بدون مندوب</option>' + couriers.map((c) => `<option value="${c.code}" ${s.courierCode === c.code ? "selected" : ""}>${c.name} (${c.code})</option>`).join("");
+
                 return `
                     <div style="margin-bottom: 10px;">
                         <div class="item-card"
@@ -1585,16 +1853,35 @@ const isCod = orderCategory === "cod";
                             onmouseup="cancelLongPress()" ontouchend="cancelLongPress()" ontouchcancel="cancelLongPress()">
                             <div>
                                 <strong>بوليصة #${s.id} [${s.orderCategoryLabel || "تحصيل"}] - ${s.recipientName || s.recipient}</strong><br>
-                                <small style="color: var(--gray-text);">العنوان: ${s.recipientAddress || "-"} | الهاتف: ${s.recipientPhone || "-"}</small><br>
+                                <small style="color: var(--gray-text);">العنوان: ${s.recipientAddress || "-"} | مصاريف الشحن: ${s.shippingFee || 0} ج.م</small><br>
                                 <small style="color: var(--gray-text);">العميل: ${s.owner} | المبلغ: ${s.price} ج.م | ${courierLabel}</small><br>
                                 <small style="color: var(--primary-blue); font-weight: 600;">${actorLabel}</small>
-                                         </div>
+                                ${buildContactLinks(s.recipientPhone, s.recipientName, s.id)}
+                            </div>
                             <div class="action-row">
                                 <span class="status-badge ${badgeClass}">${s.status}</span>
                                 <button class="small-btn" onclick="adminDeliverOrder('${s.id}')">تم التسليم</button>
                                 <button class="small-btn postpone-btn" onclick="adminPostponeOrder('${s.id}')">أوردر مؤجل</button>
+                                <button class="small-btn return-btn" onclick="adminReturnOrder('${s.id}')">مرتجع</button>
+                                <button class="small-btn back-btn" style="margin-bottom: 0;" onclick="toggleEditShipment('${s.id}')">تعديل / مندوب</button>
+                                <button class="small-btn back-btn" style="margin-bottom: 0;" onclick="openWaybillModal('${s.id}')">طباعة بوليصة</button>
                             </div>
                         </div>
+                        ${isEditing ? `
+                            <div class="edit-box">
+                                <div class="grid-2">
+                                    <input type="text" id="edit-rname-${s.id}" value="${(s.recipientName || "").replace(/"/g, "&quot;")}" placeholder="اسم المستلم" style="padding: 8px; border: 1px solid var(--border-sky); border-radius: 8px;">
+                                    <input type="tel" id="edit-rphone-${s.id}" value="${(s.recipientPhone || "").replace(/"/g, "&quot;")}" placeholder="رقم الهاتف" style="padding: 8px; border: 1px solid var(--border-sky); border-radius: 8px;">
+                                </div>
+                                <input type="text" id="edit-raddr-${s.id}" value="${(s.recipientAddress || "").replace(/"/g, "&quot;")}" placeholder="العنوان" style="width:100%; margin-top:8px; padding: 8px; border: 1px solid var(--border-sky); border-radius: 8px;">
+                                <div class="grid-3" style="margin-top:8px;">
+                                    <input type="number" id="edit-rprice-${s.id}" value="${s.price || 0}" placeholder="المبلغ" style="padding: 8px; border: 1px solid var(--border-sky); border-radius: 8px;">
+                                    <input type="number" id="edit-rfee-${s.id}" value="${s.shippingFee || 0}" placeholder="مصاريف الشحن" style="padding: 8px; border: 1px solid var(--border-sky); border-radius: 8px;">
+                                    <select id="edit-rcourier-${s.id}" style="padding: 8px; border: 1px solid var(--border-sky); border-radius: 8px;">${courierOptions}</select>
+                                </div>
+                                <button type="button" class="small-btn" style="margin-top: 8px;" onclick="saveEditedShipment('${s.id}')">حفظ التعديلات</button>
+                            </div>
+                        ` : ""}
                         ${armed ? `<button type="button" class="small-btn delete-chip-btn" onclick="requestDeleteWithPin('shipment', '${s.id}', 'بوليصة #${s.id}')">حذف البوليصة #${s.id} (يتطلب رمز الأمان)</button>` : ""}
                     </div>
                 `;
@@ -1602,7 +1889,8 @@ const isCod = orderCategory === "cod";
         }
 
         /* أرشيف الإدارة */
-        const archiveList = (systemData.archive || []).filter((s) => isWithinDateRange(s.deliveredAtDate || s.date, fromVal, toVal));
+        const aSearch = (document.getElementById("admin-archive-search")?.value || "").trim();
+        const archiveList = (systemData.archive || []).filter((s) => isWithinDateRange(s.deliveredAtDate || s.date, fromVal, toVal) && matchesQuery(s, aSearch));
         const archiveContainer = document.getElementById("admin-archive-list");
         archiveContainer.innerHTML = archiveList.length === 0
             ? '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص في الأرشيف حالياً.</p>'
@@ -1613,7 +1901,10 @@ const isCod = orderCategory === "cod";
                         <small style="color: var(--gray-text);">العميل: ${s.owner} | المندوب: ${s.courierName || s.deliveredBy || "-"} | المبلغ: ${s.price} ج.م</small><br>
                         <small style="color: var(--primary-blue); font-weight: 600;">تم التسليم بواسطة: ${s.deliveredBy || s.lastActionBy || "-"} (${s.deliveredAtTime || ""})</small>
                     </div>
-                    <span class="status-badge status-archived">تم التسليم</span>
+                    <div class="action-row">
+                        <span class="status-badge status-archived">تم التسليم</span>
+                        <button class="small-btn back-btn" style="margin-bottom: 0;" onclick="openWaybillModal('${s.id}')">طباعة بوليصة</button>
+                    </div>
                 </div>
             `).join("");
     }
@@ -1636,20 +1927,23 @@ const isCod = orderCategory === "cod";
                 </div>
             `).join("");
 
+        const cSearch = (document.getElementById("client-shipments-search")?.value || "").trim();
         const listContainer = document.getElementById("client-shipments-list");
-        const shipments = user.shipments || [];
+        const shipments = (user.shipments || []).filter((s) => matchesQuery(s, cSearch));
         listContainer.innerHTML = shipments.length === 0
             ? '<p style="color: var(--gray-text); text-align: center;">لا توجد شحنات حالية.</p>'
             : shipments.map((s) => {
-                const isPostponed = s.status === "أوردر مؤجل";
-                const badgeClass = isPostponed ? "status-postponed" : "status-pending";
+                const badgeClass = s.status === "أوردر مؤجل" ? "status-postponed" : (s.status === "مرتجع" ? "status-returned" : "status-pending");
                 return `
                     <div class="item-card">
                         <div>
                             <strong>بوليصة #${s.id} [${s.orderCategoryLabel || "تحصيل"}] - ${s.recipientName || s.recipient}</strong><br>
                             <small style="color: var(--gray-text);">العنوان: ${s.recipientAddress || "-"} | المبلغ: ${s.price} ج.م</small>
                         </div>
-                        <span class="status-badge ${badgeClass}">${s.status}</span>
+                        <div class="action-row">
+                            <span class="status-badge ${badgeClass}">${s.status}</span>
+                            <button class="small-btn back-btn" style="margin-bottom: 0;" onclick="openWaybillModal('${s.id}')">طباعة بوليصة</button>
+                        </div>
                     </div>
                 `;
             }).join("");
@@ -1665,7 +1959,10 @@ const isCod = orderCategory === "cod";
                         <small style="color: var(--gray-text);">المبلغ: ${s.price} ج.م | المندوب: ${s.courierName || s.deliveredBy || "-"}</small><br>
                         <small style="color: var(--primary-blue); font-weight: 600;">تم التسليم (${s.deliveredAtTime || ""})</small>
                     </div>
-                    <span class="status-badge status-archived">تم التسليم</span>
+                    <div class="action-row">
+                        <span class="status-badge status-archived">تم التسليم</span>
+                        <button class="small-btn back-btn" style="margin-bottom: 0;" onclick="openWaybillModal('${s.id}')">طباعة بوليصة</button>
+                    </div>
                 </div>
             `).join("");
     }
@@ -1676,24 +1973,29 @@ const isCod = orderCategory === "cod";
         document.getElementById("courier-welcome").innerText = "مرحباً، " + cUser.name;
         document.getElementById("courier-meta-display").innerText = "كود المندوب: " + cUser.courierCode + " | الخط: " + (cUser.zone || "-");
 
-        const myActive = (systemData.shipments || []).filter((s) => s.courierCode === cUser.courierCode);
+        const crSearch = (document.getElementById("courier-shipments-search")?.value || "").trim();
+        const myActive = (systemData.shipments || []).filter((s) => s.courierCode === cUser.courierCode && matchesQuery(s, crSearch));
+        const codTotal = myActive.filter((o) => o.orderCategory !== "prepaid" && o.status !== "مرتجع").reduce((sum, o) => sum + Number(o.price || 0), 0);
+        document.getElementById("courier-cod-total").innerText = codTotal.toFixed(2) + " EGP";
+
         const activeContainer = document.getElementById("courier-shipments-list");
         activeContainer.innerHTML = myActive.length === 0
             ? '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص مسندة إليك حالياً.</p>'
             : myActive.map((s) => {
-                const isPostponed = s.status === "أوردر مؤجل";
-                const badgeClass = isPostponed ? "status-postponed" : "status-pending";
+                const badgeClass = s.status === "أوردر مؤجل" ? "status-postponed" : (s.status === "مرتجع" ? "status-returned" : "status-pending");
                 return `
                     <div class="item-card">
                         <div>
                             <strong>بوليصة #${s.id} [${s.orderCategoryLabel || "تحصيل"}] - ${s.recipientName || s.recipient}</strong><br>
-                            <small style="color: var(--gray-text);">العنوان: ${s.recipientAddress || "-"} | الهاتف: ${s.recipientPhone || "-"}</small><br>
+                            <small style="color: var(--gray-text);">العنوان: ${s.recipientAddress || "-"}</small><br>
                             <small style="color: var(--primary-blue); font-weight: 600;">المبلغ: ${s.price} ج.م</small>
+                            ${buildContactLinks(s.recipientPhone, s.recipientName, s.id)}
                         </div>
                         <div class="action-row">
                             <span class="status-badge ${badgeClass}">${s.status}</span>
                             <button class="small-btn" onclick="courierConfirmDelivery('${s.id}')">تم التسليم</button>
                             <button class="small-btn postpone-btn" onclick="courierPostponeOrder('${s.id}')">أوردر مؤجل</button>
+                            <button class="small-btn return-btn" onclick="courierReturnOrder('${s.id}')">مرتجع</button>
                         </div>
                     </div>
                 `;
@@ -1717,4 +2019,3 @@ const isCod = orderCategory === "cod";
 </script>
 </body>
 </html>
-        

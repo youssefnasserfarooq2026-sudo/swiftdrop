@@ -825,6 +825,15 @@
     let messagingInstance = null;
     try { messagingInstance = getMessaging(app); } catch (e) {}
 
+    window.addEventListener("error", function (e) {
+    const loc = e.filename ? `${e.filename.split("/").pop()}:${e.lineno}` : `سطر ${e.lineno}`;
+    alert(`خطأ في الكود (${loc}): ${e.message}`);
+});
+
+window.addEventListener("unhandledrejection", function (e) {
+    const reason = e.reason && e.reason.message ? e.reason.message : String(e.reason);
+    alert(`خطأ في عملية غير متزامنة: ${reason}`);
+});
     const STAFF_PINS = { "أستاذ يوسف": "1010", "أستاذ صبري": "1111" };
     const defaultData = {
         users: {

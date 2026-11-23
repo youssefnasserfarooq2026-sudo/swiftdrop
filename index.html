@@ -201,7 +201,6 @@
         }
         .stat-card h3 { font-size: 24px; color: var(--primary-blue); margin-bottom: 4px; }
         .stat-card p { font-size: 13px; color: var(--gray-text); }
-
         .section {
             background: var(--card-bg);
             border: 1px solid var(--border-sky);
@@ -465,7 +464,6 @@
             </div>
             <button type="button" class="back-btn" style="margin-top: 10px; margin-bottom: 0;" onclick="clearDateFilter()">عرض كل الفترات</button>
         </div>
-
         <div class="stats-grid">
             <div class="stat-card">
                 <h3 id="total-clients-count">0</h3>
@@ -533,7 +531,7 @@
                     <div class="input-group">
                         <label>رقم تليفون إضافي (اختياري)</label>
                         <input type="tel" id="new-client-phone2" placeholder="01xxxxxxxxx">
-                    </div>
+                        </div>
                 </div>
                 <div class="grid-2">
                     <div class="input-group">
@@ -605,7 +603,7 @@
                 <div class="input-group">
                     <label>اسم المندوب</label>
                     <input type="text" id="new-courier-name" placeholder="اسم مندوب التوصيل">
-                </div>
+                    </div>
                 <div class="grid-2">
                     <div class="input-group">
                         <label>رقم تليفون المندوب</label>
@@ -634,7 +632,7 @@
                 <div id="admin-couriers-list"></div>
                 <div id="courier-detail-box" style="display: none; margin-top: 14px;"></div>
             </div>
-                            </div>
+        </div>
         <!-- قسم 4: الإشعارات وسجل المنفذين وطلبات العملاء -->
         <div id="admin-view-notifications" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
@@ -791,7 +789,7 @@
 
         <div id="courier-active-view">
             <div class="section">
-                <h4>البوالص المطلوب توصيلها</h4>
+               <h4>البوالص المطلوب توصيلها</h4>
                 <div class="input-group">
                     <input type="text" id="courier-shipments-search" placeholder="بحث برقم البوليصة أو اسم المستلم أو الهاتف..." oninput="updateCourierDashboard()">
                 </div>
@@ -813,102 +811,20 @@
         <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
     </div>
 </div>
-    
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
-import {
-  getDatabase,
-  ref,
-  set,
-  get,
-  onValue,
-  push
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-    import {
-        getMessaging,
-        getToken
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyCZeiD4L0wvkdDgaRhvIcb95_o_fNleeZA",
-        authDomain: "swiftdrop-sync.firebaseapp.com",
-        databaseURL: "https://swiftdrop-sync-default-rtdb.firebaseio.com",
-        projectId: "swiftdrop-sync",
-        storageBucket: "swiftdrop-sync.firebasestorage.app",
-        messagingSenderId: "555313413479",
-        appId: "1:555313413479:web:17ce2ed205807456b203c2"
-    };
-
+    const firebaseConfig = { databaseURL: "https://swiftdrop-sync-default-rtdb.firebaseio.com/" };
     const VAPID_KEY = "BP7cmfH9bv8nvE2JTQe1Xe9kbDBABUkApkr2IHLRr4dczPgdMrSsaesosC_CGcwGZTFfQSgDreRKePT0hMIqs3E";
-
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const dataRef = ref(db, "swiftdrop_data");
-
     let messagingInstance = null;
-    let currentDeviceToken = "";
+    try { messagingInstance = getMessaging(app); } catch (e) {}
 
-    try {
-        messagingInstance = getMessaging(app);
-    } catch (e) {
-        console.error("Firebase Messaging error:", e);
-    }
-
-    async function registerPushToken() {
-        try {
-            if (!messagingInstance || typeof Notification === "undefined") {
-                return "";
-            }
-
-            let permission = Notification.permission;
-
-            if (permission === "default") {
-                permission = await Notification.requestPermission();
-            }
-
-            if (permission !== "granted") {
-                return "";
-            }
-
-            const token = await getToken(messagingInstance, {
-                vapidKey: VAPID_KEY
-            });
-
-            if (token) {
-                currentDeviceToken = token;
-                return token;
-            }
-
-        } catch (err) {
-            console.error("Push token error:", err);
-        }
-
-        return "";
-    }
-
-    async function enqueuePushNotification(title, body) {
-        const token = currentDeviceToken || await registerPushToken();
-
-        if (!token) return;
-
-          const pushQueueRef = ref(db, "swiftdrop_data/pushQueue");
-  const snap = await get(pushQueueRef);
-  const currentQueue = snap.val();
-  const nextQueue = Array.isArray(currentQueue) ? currentQueue : [];
-
-  nextQueue.push({
-    token: token,
-    title: title,
-    body: body
-  });
-
-  await set(pushQueueRef, nextQueue);
-        });
-    }
-    window.registerPushToken = registerPushToken;
-    window.enqueuePushNotification = enqueuePushNotification;
     const STAFF_PINS = { "أستاذ يوسف": "1010", "أستاذ صبري": "1111" };
     const defaultData = {
         users: {
@@ -979,7 +895,7 @@ import {
     if (sessionStorage.getItem("swiftdrop_welcomed") === "1") {
         document.getElementById("welcome-screen").style.display = "none";
     }
-        function persistSessionState() {
+    function persistSessionState() {
         if (currentLoggedInUser) sessionStorage.setItem("swiftdrop_user", currentLoggedInUser);
         else sessionStorage.removeItem("swiftdrop_user");
         if (currentAdminOperator) sessionStorage.setItem("swiftdrop_operator", currentAdminOperator);
@@ -1061,7 +977,6 @@ import {
         if (!isDbReady || !currentLoggedInUser) return;
         const userObj = systemData.users[currentLoggedInUser];
         if (!userObj) return;
-
         document.getElementById("login-screen").style.display = "none";
         document.getElementById("admin-dashboard").style.display = "none";
         document.getElementById("client-dashboard").style.display = "none";
@@ -1156,7 +1071,6 @@ import {
         client.notifications = client.notifications.slice(0, 50);
         queuePushNotification(clientKey, "SwiftDrop Logistics", message);
     }
-
     function refreshActiveView() {
         if (!currentLoggedInUser || !systemData.users[currentLoggedInUser]) return;
         const role = systemData.users[currentLoggedInUser].role;
@@ -1238,8 +1152,7 @@ import {
         if (!isDbReady) {
             err.innerText = "جاري تحميل البيانات من السحابة، انتظر لحظة...";
             return;
-        }
-
+    }
         if (systemData.users[u] && systemData.users[u].pass === p) {
             currentLoggedInUser = u;
             persistSessionState();
@@ -1292,7 +1205,7 @@ import {
         document.getElementById("courier-dashboard").style.display = "none";
         document.getElementById("login-screen").style.display = "block";
     };
-        /* الحذف بالضغط المطوّل ورمز الأمان */
+    /* الحذف بالضغط المطوّل ورمز الأمان */
     let longPressTimer = null;
     window.startLongPress = function (key, event) {
         if (event && event.type === "mousedown" && event.button !== 0) return;
@@ -1324,7 +1237,7 @@ import {
     };
 
     window.confirmDeleteWithPin = async function () {
-        if (!pendingDeletePayload || !currentAdminOperator || isSaving) return;
+        if (!pendingDeletePayload  !currentAdminOperator  isSaving) return;
         const entered = [0, 1, 2, 3].map((i) => document.getElementById("del-pin-" + i).value).join("");
         if (entered !== STAFF_PINS[currentAdminOperator]) {
             document.getElementById("delete-pin-error").innerText = "رمز الأمان غير صحيح!";
@@ -1365,8 +1278,7 @@ import {
         const ok = await saveData();
         if (ok) updateAdminDashboard();
     };
-
-    /* نافذة طباعة البوليصة */
+        /* نافذة طباعة البوليصة */
     window.openWaybillModal = function (orderId) {
         const s = [...(systemData.shipments || []), ...(systemData.archive || [])].find((o) => String(o.id) === String(orderId));
         if (!s) return;
@@ -1439,8 +1351,7 @@ import {
         const ok = await saveData();
         if (ok) updateAdminDashboard();
     };
-
-    /* تسوية / خصم رصيد العميل */
+        /* تسوية / خصم رصيد العميل */
     window.settleClientBalance = async function (clientKey) {
         if (isSaving || !currentAdminOperator) return;
         const client = systemData.users[clientKey];
@@ -1524,7 +1435,7 @@ import {
         const name = document.getElementById("new-client-name").value.trim();
         const building = document.getElementById("new-client-building").value.trim();
         const floor = document.getElementById("new-client-floor").value.trim();
-        const apt = document.getElementById("new-client-apt").value.trim();
+                const apt = document.getElementById("new-client-apt").value.trim();
         const street = document.getElementById("new-client-street").value.trim();
         const area = document.getElementById("new-client-area").value.trim();
         const phone = document.getElementById("new-client-phone").value.trim();
@@ -1554,6 +1465,7 @@ import {
             balance: 0, shipments: [], archive: [],
             notifications: [{ message: "تم إنشاء حسابك في شركة SwiftDrop Logistics برقم " + randomId, time: formatNow() }]
         };
+        queuePushNotification(user, "SwiftDrop Logistics", "تم إنشاء حسابك في شركة SwiftDrop Logistics برقم " + randomId);
         pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة العميل: " + name + " (" + randomId + ")");
 
         const ok = await saveData();
@@ -1621,11 +1533,13 @@ import {
         systemData.shipments.push(newOrder);
 
         pushClientNotification(targetUserKey, "تم إضافة بوليصة (" + newOrder.orderCategoryLabel + ") #" + newOrder.id + " للمستلم " + recipientName + " بمبلغ " + price + " ج.م");
+        if (courierObj && courierObj.username) {
+            queuePushNotification(courierObj.username, "SwiftDrop Logistics", "تم إسناد بوليصة جديدة #" + newOrder.id + " للمستلم " + recipientName);
+        }
         const courierNote = courierObj ? " وإسنادها للمندوب: " + courierObj.name : "";
         pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة بوليصة (" + newOrder.orderCategoryLabel + ") #" + newOrder.id + " للعميل " + systemData.users[targetUserKey].name + courierNote);
 
         const ok = await saveData();
-            await enqueuePushNotification("شحنة جديدة", `تم إضافة شحنة جديدة برقم ${newOrder.id}`);
         btn.disabled = false;
         if (ok) {
             ["order-client-id", "order-recipient-name", "order-recipient-address", "order-recipient-phone", "order-price", "order-shipping-fee"].forEach((id) => {
@@ -1642,8 +1556,7 @@ import {
         if (isSaving || !currentLoggedInUser) return;
         const client = systemData.users[currentLoggedInUser];
         if (!client) return;
-
-        const cat = document.getElementById("client-req-category").value;
+                const cat = document.getElementById("client-req-category").value;
         const rName = document.getElementById("client-req-name").value.trim();
         const rAddr = document.getElementById("client-req-address").value.trim();
         const rPhone = document.getElementById("client-req-phone").value.trim();
@@ -1734,8 +1647,7 @@ import {
         systemData.shipments.splice(idx, 1);
         if (!Array.isArray(systemData.archive)) systemData.archive = [];
         systemData.archive.unshift(archivedOrder);
-
-        const clientKey = order.owner;
+                const clientKey = order.owner;
         if (systemData.users[clientKey]) {
             const cUser = systemData.users[clientKey];
             cUser.shipments = (cUser.shipments || []).filter((o) => String(o.id) !== String(orderId));
@@ -1805,8 +1717,7 @@ import {
         const ok = await saveData();
         if (ok) updateCourierDashboard();
     };
-
-    window.courierPostponeOrder = async function (orderId) {
+        window.courierPostponeOrder = async function (orderId) {
         if (isSaving || !currentLoggedInUser) return;
         const courierUser = systemData.users[currentLoggedInUser];
         if (!courierUser || courierUser.role !== "courier") return;
@@ -1877,9 +1788,8 @@ import {
                 ${waDigits ? `<a class="wa-link" target="_blank" rel="noopener" href="https://wa.me/${waDigits}?text=${waText}">واتساب</a>` : ""}
             </div>
         `;
-    }
-
-    function updateAdminDashboard() {
+            }
+        function updateAdminDashboard() {
         const clientKeys = Object.keys(systemData.users).filter((k) => systemData.users[k].role !== "admin" && systemData.users[k].role !== "courier");
         const fromVal = document.getElementById("filter-date-from").value;
         const toVal = document.getElementById("filter-date-to").value;
@@ -1930,7 +1840,7 @@ import {
                             <div class="notif-item" style="margin-top: 6px;">
                                 <strong>بوليصة #${o.id} (${o.orderCategoryLabel || "تحصيل"}) - ${o.recipientName || o.recipient}</strong><br>
                                 <small style="color: var(--gray-text);">العنوان: ${o.recipientAddress || "-"} | المبلغ: ${o.price} ج.م</small><br>
-                                <span class="status-badge">${o.status}</span>
+                                                            <span class="status-badge">${o.status}</span>
                             </div>
                         `).join("");
                     courierDetailBox.style.display = "block";
@@ -1938,7 +1848,7 @@ import {
                         <div class="section" style="margin-bottom: 0; background: var(--ice-white);">
                             <button type="button" class="back-btn" onclick="openCourierWorkspace(null)">← إغلاق بيانات وشغل المندوب</button>
                             <h4>المندوب: ${activeCourier.name}</h4>
-                             <p style="font-size: 13px; color: var(--primary-blue); margin-bottom: 6px;">الكود: <b>${activeCourier.code}</b> | المنطقة: <b>${activeCourier.zone || "-"}</b> | يوزر الدخول: <b>${activeCourier.username || "-"}</b></p>
+                            <p style="font-size: 13px; color: var(--primary-blue); margin-bottom: 6px;">الكود: <b>${activeCourier.code}</b> | المنطقة: <b>${activeCourier.zone || "-"}</b> | يوزر الدخول: <b>${activeCourier.username || "-"}</b></p>
                             <div style="margin-bottom: 10px;">
                                 <span style="font-size: 12px; color: var(--gray-text);">رقم التليفون (اضغط للاتصال المباشر / فتح جهات الاتصال):</span><br>
                                 <a class="phone-link" href="tel:${activeCourier.phone}">📞 ${activeCourier.phone}</a>
@@ -1989,7 +1899,7 @@ import {
             if (clientKeys.length === 0) {
                 clientsContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا يوجد عملاء مضافون بعد.</p>';
                 clientDetailBox.style.display = "none";
-            } else {
+                            } else {
                 clientsContainer.innerHTML = clientKeys.map((key) => {
                     const u = systemData.users[key];
                     const count = (u.shipments || []).length;
@@ -2037,7 +1947,7 @@ import {
                             <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 4px;">التليفون: <b>${phonesText}</b></p>
                             <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 10px;">العنوان: <b>${addrParts || "غير مسجل"}</b></p>
                             <div class="edit-box" style="margin-bottom: 10px;">
-                                <p style="font-size: 12px; font-weight: 700; color: var(--primary-blue); margin-bottom: 6px;">تسوية / خصم رصيد محفظة العميل</p>
+                                                        <p style="font-size: 12px; font-weight: 700; color: var(--primary-blue); margin-bottom: 6px;">تسوية / خصم رصيد محفظة العميل</p>
                                 <div class="grid-2">
                                     <input type="number" id="settle-amount-${selectedClientKey}" placeholder="المبلغ (EGP)" style="padding: 8px; border: 1px solid var(--border-sky); border-radius: 8px;">
                                     <input type="text" id="settle-note-${selectedClientKey}" placeholder="ملاحظة (فودافون كاش / نقدي)" style="padding: 8px; border: 1px solid var(--border-sky); border-radius: 8px;">
@@ -2051,8 +1961,9 @@ import {
                     clientDetailBox.style.display = "none";
                 }
             }
-    }
-                /* متابعة الشحنات الحالية + بحث + تعديل + طباعة + حذف بالضغط المطوّل */
+        }
+
+        /* متابعة الشحنات الحالية + بحث + تعديل + طباعة + حذف بالضغط المطوّل */
         const sSearch = (document.getElementById("admin-shipments-search")?.value || "").trim();
         const shipmentsList = (systemData.shipments || []).filter((s) => isWithinDateRange(s.date, fromVal, toVal) && matchesQuery(s, sSearch));
         const shipmentsContainer = document.getElementById("admin-shipments-list");
@@ -2083,7 +1994,7 @@ import {
                             <div class="action-row">
                                 <span class="status-badge ${badgeClass}">${s.status}</span>
                                 <button class="small-btn" onclick="adminDeliverOrder('${s.id}')">تم التسليم</button>
-                                <button class="small-btn postpone-btn" onclick="adminPostponeOrder('${s.id}')">أوردر مؤجل</button>
+                                                                <button class="small-btn postpone-btn" onclick="adminPostponeOrder('${s.id}')">أوردر مؤجل</button>
                                 <button class="small-btn return-btn" onclick="adminReturnOrder('${s.id}')">مرتجع</button>
                                 <button class="small-btn back-btn" style="margin-bottom: 0;" onclick="toggleEditShipment('${s.id}')">تعديل / مندوب</button>
                                 <button class="small-btn back-btn" style="margin-bottom: 0;" onclick="openWaybillModal('${s.id}')">طباعة بوليصة</button>
@@ -2122,7 +2033,7 @@ import {
                         <strong>بوليصة #${s.id} [${s.orderCategoryLabel || "تحصيل"}] - ${s.recipientName || s.recipient}</strong><br>
                         <small style="color: var(--gray-text);">العميل: ${s.owner} | المندوب: ${s.courierName || s.deliveredBy || "-"} | المبلغ: ${s.price} ج.م</small><br>
                         <small style="color: var(--primary-blue); font-weight: 600;">تم التسليم بواسطة: ${s.deliveredBy || s.lastActionBy || "-"} (${s.deliveredAtTime || ""})</small>
-                    </div>
+                                            </div>
                     <div class="action-row">
                         <span class="status-badge status-archived">تم التسليم</span>
                         <button class="small-btn back-btn" style="margin-bottom: 0;" onclick="openWaybillModal('${s.id}')">طباعة بوليصة</button>
@@ -2130,7 +2041,8 @@ import {
                 </div>
             `).join("");
     }
-        function updateClientDashboard() {
+
+    function updateClientDashboard() {
         const user = systemData.users[currentLoggedInUser];
         if (!user) return;
         document.getElementById("client-welcome").innerText = "مرحباً، " + user.name;
@@ -2187,8 +2099,7 @@ import {
                 </div>
             `).join("");
     }
-
-    function updateCourierDashboard() {
+        function updateCourierDashboard() {
         const cUser = systemData.users[currentLoggedInUser];
         if (!cUser || cUser.role !== "courier") return;
         document.getElementById("courier-welcome").innerText = "مرحباً، " + cUser.name;

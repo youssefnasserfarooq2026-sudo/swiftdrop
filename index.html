@@ -817,13 +817,14 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-    import {
-        getDatabase,
-        ref,
-        set,
-        onValue,
-        push
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  onValue,
+  push
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     import {
         getMessaging,
@@ -892,12 +893,18 @@
 
         if (!token) return;
 
-        const pushQueueRef = ref(db, "swiftdrop_data/pushQueue");
+          const pushQueueRef = ref(db, "swiftdrop_data/pushQueue");
+  const snap = await get(pushQueueRef);
+  const currentQueue = snap.val();
+  const nextQueue = Array.isArray(currentQueue) ? currentQueue : [];
 
-        await set(push(pushQueueRef), {
-            token: token,
-            title: title,
-            body: body
+  nextQueue.push({
+    token: token,
+    title: title,
+    body: body
+  });
+
+  await set(pushQueueRef, nextQueue);
         });
     }
     window.registerPushToken = registerPushToken;

@@ -92,282 +92,307 @@
             border-radius: 8px;
             font-size: 14px;
         }
-        .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: var(--sky-blue);
-            background: #FFFFFF;
-        }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-
-        button, .link-btn {
-            background: var(--sky-blue);
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-blue);
             color: #FFFFFF;
             border: none;
-            padding: 12px 16px;
-            width: 100%;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.2s;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
         }
-        button:hover:not(:disabled), .link-btn:hover { background: var(--primary-blue); }
+        button:hover { background: var(--sky-blue); }
         button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .error-msg { color: #DC2626; font-size: 13px; margin-top: 10px; min-height: 18px; }
 
-        #staff-select-box {
-            display: none;
-            margin-top: 18px;
-            padding-top: 18px;
-            border-top: 2px dashed var(--border-sky);
-        }
-        .staff-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-        .staff-btn { background: var(--light-sky); color: var(--primary-blue); border: 1px solid var(--border-sky); }
-        .staff-btn.active { background: var(--primary-blue); color: #FFFFFF; border-color: var(--primary-blue); }
-
-        #pin-modal-box, #delete-pin-modal, #waybill-modal {
+        /* اختيار المنفّذ ورمز الأمان */
+        .staff-select-box, .pin-modal-box {
+            margin-top: 14px;
+            padding: 16px;
             background: var(--ice-white);
             border: 1px solid var(--border-sky);
-            padding: 16px;
             border-radius: 12px;
-            margin-top: 10px;
             text-align: center;
         }
-        #pin-modal-box { display: none; }
-        #delete-pin-modal, #waybill-modal {
+                .staff-select-box h4, .pin-modal-box h4 { color: var(--primary-blue); margin-bottom: 10px; font-size: 14px; }
+        .staff-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .staff-btn { background: var(--light-sky); color: var(--primary-blue); border: 1px solid var(--border-sky); font-size: 14px; padding: 10px; }
+        .staff-btn.active, .staff-btn:hover { background: var(--primary-blue); color: #FFFFFF; }
+        .pin-inputs { display: flex; justify-content: center; gap: 8px; direction: ltr; margin: 10px 0; }
+        .pin-box {
+            width: 46px;
+            height: 50px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            border: 2px solid var(--sky-blue);
+            border-radius: 10px;
+            background: #FFFFFF;
+            color: var(--primary-blue);
+        }
+
+        /* نوافذ منبثقة (حذف برمز الأمان + طباعة بوليصة) */
+        .modal-backdrop {
             position: fixed;
             inset: 0;
             background: rgba(15, 41, 66, 0.55);
-            z-index: 9500;
             display: none;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            z-index: 10000;
         }
         .modal-card {
             background: #FFFFFF;
             border: 1px solid var(--border-sky);
             border-radius: 16px;
             padding: 22px;
-            max-width: 430px;
+            max-width: 440px;
             width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 12px 30px rgba(10, 74, 143, 0.25);
-            text-align: right;
-        }
-        .pin-boxes { display: flex; justify-content: center; gap: 10px; direction: ltr; margin: 12px 0; }
-        .pin-digit {
-            width: 46px;
-            height: 50px;
             text-align: center;
-            font-size: 21px;
-            font-weight: bold;
-            border: 2px solid var(--border-sky);
-            border-radius: 10px;
-            background: #FFFFFF;
-            color: var(--primary-blue);
+            box-shadow: 0 16px 35px rgba(10, 74, 143, 0.25);
         }
-        .pin-digit:focus { outline: none; border-color: var(--sky-blue); }
 
+        /* اللوحات */
         .dashboard-screen { display: none; }
         .header-box {
-            background: linear-gradient(135deg, var(--primary-blue), var(--sky-blue));
+            background: var(--primary-blue);
             color: #FFFFFF;
-            padding: 20px;
-            border-radius: 16px;
+            padding: 18px 20px;
+            border-radius: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-            box-shadow: 0 6px 18px rgba(10, 74, 143, 0.16);
+            margin-bottom: 14px;
+            box-shadow: 0 6px 18px rgba(10, 74, 143, 0.18);
         }
+        .operator-badge {
+            display: inline-block;
+            margin-top: 6px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .wallet-card {
+            background: linear-gradient(135deg, var(--primary-blue), var(--sky-blue));
+            color: #FFFFFF;
+            padding: 22px;
+            border-radius: 14px;
+            margin-bottom: 16px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.2);
+        }
+        .wallet-card .amount { font-size: 30px; font-weight: bold; margin-top: 6px; }
+
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 14px; }
         .stat-card {
             background: var(--card-bg);
             border: 1px solid var(--border-sky);
-            border-radius: 14px;
-            padding: 14px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .stat-card:hover { background: var(--ice-white); border-color: var(--sky-blue); }
-        .stat-card span { display: block; font-size: 12px; color: var(--gray-text); margin-bottom: 4px; }
-        .stat-card strong { font-size: 22px; color: var(--primary-blue); display: block; }
-        .stat-card small { font-size: 11px; color: var(--sky-blue); font-weight: 600; }
-
-        .admin-menu-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 14px; }
-        .admin-nav-btn {
-            background: var(--card-bg);
-            color: var(--primary-blue);
-            border: 1px solid var(--border-sky);
-            text-align: right;
-            padding: 14px 16px;
-            border-radius: 14px;
-            font-size: 14px;
-            box-shadow: 0 3px 10px rgba(2, 132, 199, 0.05);
-        }
-        .admin-nav-btn:hover:not(:disabled) { background: var(--light-sky); }
-        .entity-btn {
-            background: var(--ice-white);
-            color: var(--primary-blue);
-            border: 1px solid var(--border-sky);
-            text-align: right;
-            padding: 13px 15px;
+            padding: 16px;
             border-radius: 12px;
-            font-size: 14px;
-            margin-bottom: 6px;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .entity-btn:hover:not(:disabled) { background: var(--light-sky); }
-        .back-btn { background: var(--light-sky); color: var(--primary-blue); border: 1px solid var(--border-sky); margin-bottom: 14px; }
-        .back-btn:hover:not(:disabled) { background: #BAE6FD; }
-        .admin-subview { display: none; }
-
-        .wallet-card {
-            background: linear-gradient(135deg, #0284C7, #38BDF8);
-            color: #FFFFFF;
-            padding: 20px;
-            border-radius: 16px;
             text-align: center;
-            margin-bottom: 16px;
-            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.25);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.05);
         }
-        .wallet-card h3 { font-size: 14px; opacity: 0.95; margin-bottom: 5px; }
-        .wallet-card .amount { font-size: 32px; font-weight: bold; }
+        .stat-card h3 { font-size: 24px; color: var(--primary-blue); margin-bottom: 4px; }
+        .stat-card p { font-size: 13px; color: var(--gray-text); }
 
         .section {
             background: var(--card-bg);
             border: 1px solid var(--border-sky);
             padding: 18px;
-            border-radius: 16px;
+            border-radius: 14px;
             margin-bottom: 14px;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.04);
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.05);
         }
         .section h4 {
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             color: var(--primary-blue);
-            border-bottom: 2px solid var(--light-sky);
+            border-bottom: 1px solid var(--light-sky);
             padding-bottom: 8px;
+            font-size: 15px;
         }
 
+        .admin-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .admin-nav-btn {
+            background: var(--ice-white);
+            color: var(--primary-blue);
+            border: 1px solid var(--border-sky);
+            padding: 14px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.45;
+        }
+        .admin-nav-btn:hover { background: var(--primary-blue); color: #FFFFFF; border-color: var(--primary-blue); }
+        .admin-nav-btn.full-span { grid-column: span 2; background: var(--light-sky); }
+        .admin-nav-btn.full-span:hover { background: var(--primary-blue); color: #FFFFFF; }
+                .admin-subview { display: none; }
+        .back-btn {
+            background: var(--light-sky);
+            color: var(--primary-blue);
+            border: 1px solid var(--border-sky);
+            margin-bottom: 12px;
+            font-size: 13px;
+            padding: 9px 12px;
+        }
+        .back-btn:hover { background: #BAE6FD; }
+
+        .category-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        .cat-btn { background: var(--light-sky); color: var(--primary-blue); border: 1px solid var(--border-sky); font-size: 13px; padding: 10px; }
+        .cat-btn.active { background: var(--primary-blue); color: #FFFFFF; border-color: var(--primary-blue); }
+        .category-hint { font-size: 12px; color: var(--primary-blue); background: var(--ice-white); border: 1px dashed var(--border-sky); padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; }
+
+        .entity-btn {
+            width: 100%;
+            text-align: right;
+            background: var(--ice-white);
+            color: var(--text-dark);
+            border: 1px solid var(--border-sky);
+            padding: 11px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .entity-btn:hover { background: var(--light-sky); border-color: var(--sky-blue); }
+        .phone-link {
+            display: inline-block;
+            color: var(--primary-blue);
+            font-weight: bold;
+            text-decoration: none;
+            background: var(--light-sky);
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-sky);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        .wa-link {
+            display: inline-block;
+            color: #15803D;
+            font-weight: bold;
+            text-decoration: none;
+            background: #DCFCE7;
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid #86EFAC;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .contact-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+
         .item-card {
+            background: var(--ice-white);
+            border: 1px solid var(--border-sky);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 10px;
-            padding: 12px;
-            background: var(--ice-white);
-            border-radius: 10px;
-            margin-bottom: 8px;
-            border-right: 4px solid var(--sky-blue);
-            border-top: 1px solid var(--light-sky);
-            border-left: 1px solid var(--light-sky);
-            border-bottom: 1px solid var(--light-sky);
+            flex-wrap: wrap;
             user-select: none;
             -webkit-user-select: none;
         }
-        .action-row { display: flex; flex-direction: column; gap: 6px; min-width: 122px; text-align: left; }
-        .small-btn { padding: 6px 10px; font-size: 12px; border-radius: 7px; }
-        .postpone-btn { background: #0369A1; }
-        .return-btn { background: #1E40AF; }
-        .delete-chip-btn { background: #172554; margin-bottom: 10px; }
-        .order-type-btn { padding: 14px; font-size: 15px; border-radius: 12px; }
-        .order-type-btn.active { background: var(--primary-blue); outline: 3px solid var(--light-sky); }
-
         .status-badge {
-            display: inline-block;
-            background: var(--light-sky);
-            color: var(--primary-blue);
             padding: 4px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
+            display: inline-block;
         }
-        .status-delivered { background: #DCFCE7; color: #166534; }
-        .status-pending { background: #E0F2FE; color: #0369A1; }
-        .status-postponed { background: #FEF3C7; color: #92400E; }
-        .status-returned { background: #FEE2E2; color: #991B1B; }
-        .status-archived { background: #DBEAFE; color: #1E40AF; }
+        .status-pending { background: var(--light-sky); color: var(--primary-blue); border: 1px solid var(--border-sky); }
+        .status-postponed { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+        .status-returned { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+        .status-archived { background: #DCFCE7; color: #166534; }
+
+        .action-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; width: 100%; }
+        .small-btn { padding: 7px 11px; font-size: 12px; width: auto; border-radius: 7px; }
+        .postpone-btn { background: #D97706; }
+        .postpone-btn:hover { background: #B45309; }
+        .return-btn { background: #DC2626; }
+        .return-btn:hover { background: #B91C1C; }
+        .delete-chip-btn { background: #B91C1C; color: #FFFFFF; margin-top: 6px; font-size: 12px; }
+        .delete-chip-btn:hover { background: #991B1B; }
+
+        .edit-box {
+            background: #FFFFFF;
+            border: 1px solid var(--sky-blue);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 8px;
+        }
 
         .notif-item {
-            padding: 10px 12px;
-            border-radius: 10px;
             background: var(--ice-white);
-            border: 1px solid var(--border-sky);
+            border-right: 4px solid var(--sky-blue);
+            padding: 10px 12px;
+            border-radius: 8px;
             margin-bottom: 8px;
             font-size: 13px;
         }
         .notif-time { display: block; font-size: 11px; color: var(--gray-text); margin-top: 4px; }
-        .logout-btn { background: #2563EB; margin-top: 14px; }
-        .logout-btn:hover:not(:disabled) { background: #1D4ED8; }
-        .contact-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-        .phone-link {
-            display: inline-block;
-            color: var(--primary-blue);
-            background: var(--light-sky);
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-weight: 700;
-            text-decoration: none;
-            font-size: 12px;
-        }
-        .phone-link:hover { background: #BAE6FD; }
-        .wa-link {
-            display: inline-block;
-            color: #FFFFFF;
-            background: #0284C7;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-weight: 700;
-            text-decoration: none;
-            font-size: 12px;
-        }
-        .edit-box {
-            background: #FFFFFF;
-            border: 1px solid var(--border-sky);
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 8px;
-        }
+
+        .logout-btn { background: var(--sky-blue); margin-top: 10px; }
+        .logout-btn:hover { background: var(--primary-blue); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
         @media print {
-            body * { visibility: hidden; }
-            #waybill-modal, #waybill-modal * { visibility: visible; }
-            #waybill-modal { position: static; background: #FFFFFF; padding: 0; }
+            body { background: #FFFFFF !important; padding: 0 !important; }
             .no-print { display: none !important; }
+            #waybill-modal { position: static !important; background: transparent !important; display: block !important; padding: 0 !important; }
+            .modal-card { box-shadow: none !important; border: 1px solid #000 !important; max-width: 100% !important; }
+        }
+        @media (max-width: 520px) {
+            .grid-2, .grid-3, .stats-grid, .admin-nav-grid { grid-template-columns: 1fr; }
+            .admin-nav-btn.full-span { grid-column: span 1; }
+            .header-box { flex-direction: column; align-items: flex-start; gap: 10px; }
         }
     </style>
 </head>
 <body>
-    <!-- نافذة رمز الأمان عند الحذف بالضغط المطوّل -->
-<div id="delete-pin-modal">
-    <div class="modal-card" style="text-align: center;">
-        <h4 style="color: var(--primary-blue); margin-bottom: 8px;">تأكيد حذف العنصر</h4>
-        <p id="delete-target-label" style="font-size: 13px; color: var(--gray-text); margin-bottom: 10px;"></p>
-        <p id="delete-pin-prompt" style="font-size: 13px; font-weight: 700; color: var(--primary-blue);"></p>
-        <div class="pin-boxes">
-            <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="del-pin-0" oninput="handleDelPinInput(0)" onkeydown="handleDelPinKeydown(0, event)">
-            <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="del-pin-1" oninput="handleDelPinInput(1)" onkeydown="handleDelPinKeydown(1, event)">
-            <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="del-pin-2" oninput="handleDelPinInput(2)" onkeydown="handleDelPinKeydown(2, event)">
-            <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="del-pin-3" oninput="handleDelPinInput(3)" onkeydown="handleDelPinKeydown(3, event)">
+<!-- شاشة الترحيب -->
+<div id="welcome-screen">
+    <div class="welcome-box">
+        <h1>مرحباً بكم في SwiftDrop Logistics</h1>
+        <p>منصة إدارة الشحن والمناديب وحسابات العملاء والمحافظ المالية — متزامنة لحظياً عبر السحابة.</p>
+        <button class="welcome-btn" onclick="enterApp()">دخول إلى النظام</button>
+    </div>
+</div>
+
+<!-- نافذة تأكيد الحذف برمز الأمان -->
+<div id="delete-pin-modal" class="modal-backdrop">
+    <div class="modal-card">
+        <h3 style="color: #B91C1C; margin-bottom: 6px;">تأكيد حذف العنصر</h3>
+        <p id="delete-target-label" style="font-size: 13px; font-weight: bold; color: var(--text-dark); margin-bottom: 6px;"></p>
+        <p id="delete-pin-prompt" style="font-size: 13px; color: var(--gray-text);"></p>
+        <div class="pin-inputs">
+            <input type="password" maxlength="1" inputmode="numeric" class="pin-box" id="del-pin-0" oninput="handleDelPinInput(0)" onkeydown="handleDelPinKeydown(0, event)">
+            <input type="password" maxlength="1" inputmode="numeric" class="pin-box" id="del-pin-1" oninput="handleDelPinInput(1)" onkeydown="handleDelPinKeydown(1, event)">
+            <input type="password" maxlength="1" inputmode="numeric" class="pin-box" id="del-pin-2" oninput="handleDelPinInput(2)" onkeydown="handleDelPinKeydown(2, event)">
+            <input type="password" maxlength="1" inputmode="numeric" class="pin-box" id="del-pin-3" oninput="handleDelPinInput(3)" onkeydown="handleDelPinKeydown(3, event)">
         </div>
-        <p id="delete-pin-error" style="color: #0369A1; font-size: 12px; font-weight: 600; margin-bottom: 10px;"></p>
-        <div class="grid-2">
-            <button type="button" onclick="confirmDeleteWithPin()">تأكيد الحذف</button>
+        <p id="delete-pin-error" class="error-msg"></p>
+        <div class="grid-2" style="margin-top: 10px;">
+            <button type="button" class="return-btn" onclick="confirmDeleteWithPin()">تأكيد الحذف</button>
             <button type="button" class="back-btn" style="margin-bottom: 0;" onclick="closeDeletePinModal()">إلغاء</button>
         </div>
     </div>
 </div>
 
-<!-- نافذة طباعة ومشاركة البوليصة -->
-<div id="waybill-modal">
-    <div class="modal-card">
+<!-- نافذة طباعة البوليصة -->
+<div id="waybill-modal" class="modal-backdrop">
+    <div class="modal-card" style="text-align: right;">
         <div id="waybill-print-content"></div>
         <div class="grid-2 no-print" style="margin-top: 14px;">
             <button type="button" onclick="window.print()">طباعة / حفظ PDF</button>
@@ -376,104 +401,95 @@
     </div>
 </div>
 
-<!-- شاشة الترحيب -->
-<div id="welcome-screen">
-    <div class="welcome-box">
-        <h1>أهلاً بك في شركة SwiftDrop Logistics للشحن</h1>
-        <p>نظام متكامل لإدارة العملاء، البوالص، المحافظ، والإشعارات الفورية</p>
-        <button class="welcome-btn" onclick="enterApp()">دخول إلى النظام</button>
-    </div>
-</div>
-
 <div class="container">
-    <div class="sync-bar">
-        <span><span class="sync-dot" id="sync-dot"></span><span id="sync-status">جاري الاتصال بقاعدة البيانات...</span></span>
-        <span>مزامنة مباشرة</span>
+    <div class="sync-bar no-print">
+        <div><span class="sync-dot" id="sync-dot"></span><span id="sync-status">جاري الاتصال بقاعدة البيانات السحابية...</span></div>
+        <span>SwiftDrop Cloud</span>
     </div>
 
-    <!-- شاشة تسجيل الدخول الموحدة -->
-    <div id="login-screen">
-        <h2>SwiftDrop Logistics</h2>
-        <p style="color: var(--gray-text); margin-bottom: 18px;">تسجيل الدخول للنظام</p>
+    <!-- شاشة تسجيل الدخول -->
+    <div id="login-screen" class="no-print">
+        <h2>تسجيل الدخول</h2>
         <div class="input-group">
-            <label>اسم المستخدم (Username)</label>
+            <label>اسم المستخدم</label>
             <input type="text" id="username" placeholder="أدخل اسم المستخدم">
         </div>
         <div class="input-group">
-            <label>كلمة المرور (Password)</label>
+            <label>كلمة المرور</label>
             <input type="password" id="password" placeholder="أدخل كلمة المرور">
         </div>
-        <button id="login-btn" onclick="login()">دخول</button>
+        <button onclick="login()">دخول</button>
+        <p id="error-msg" class="error-msg"></p>
 
-        <div id="staff-select-box">
-            <p style="color: var(--primary-blue); font-weight: 700; margin-bottom: 10px;">اختر هوية المنفّذ لمتابعة العمل:</p>
-            <div class="staff-buttons">
+        <div id="staff-select-box" class="staff-select-box" style="display: none;">
+            <h4>اختر اسم المنفّذ للدخول إلى لوحة الإدارة</h4>
+            <div class="staff-btns">
                 <button type="button" id="btn-youssef" class="staff-btn" onclick="selectStaff('أستاذ يوسف')">أستاذ يوسف</button>
                 <button type="button" id="btn-sabry" class="staff-btn" onclick="selectStaff('أستاذ صبري')">أستاذ صبري</button>
             </div>
-
-            <div id="pin-modal-box">
-                <p id="pin-prompt-text" style="font-size: 14px; font-weight: 700; color: var(--primary-blue);"></p>
-                <div class="pin-boxes">
-                    <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="pin-0" oninput="handlePinInput(0)" onkeydown="handlePinKeydown(0, event)">
-                    <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="pin-1" oninput="handlePinInput(1)" onkeydown="handlePinKeydown(1, event)">
-                    <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="pin-2" oninput="handlePinInput(2)" onkeydown="handlePinKeydown(2, event)">
-                    <input type="password" inputmode="numeric" maxlength="1" class="pin-digit" id="pin-3" oninput="handlePinInput(3)" onkeydown="handlePinKeydown(3, event)">
-                </div>
-                <button type="button" onclick="verifyStaffPin()">تأكيد رمز الأمان والدخول</button>
-            </div>
         </div>
 
-        <p id="error-msg" style="color: #0369A1; margin-top: 12px; font-size: 14px; font-weight: 600;"></p>
+        <div id="pin-modal-box" class="pin-modal-box" style="display: none;">
+            <h4 id="pin-prompt-text">أدخل رمز الأمان المكون من 4 أرقام</h4>
+            <div class="pin-inputs">
+                <input type="password" maxlength="1" inputmode="numeric" class="pin-box" id="pin-0" oninput="handlePinInput(0)" onkeydown="handlePinKeydown(0, event)">
+                <input type="password" maxlength="1" inputmode="numeric" class="pin-box" id="pin-1" oninput="handlePinInput(1)" onkeydown="handlePinKeydown(1, event)">
+                <input type="password" maxlength="1" inputmode="numeric" class="pin-box" id="pin-2" oninput="handlePinInput(2)" onkeydown="handlePinKeydown(2, event)">
+                <input type="password" maxlength="1" inputmode="numeric" class="pin-box" id="pin-3" oninput="handlePinInput(3)" onkeydown="handlePinKeydown(3, event)">
+            </div>
+            <button type="button" onclick="verifyStaffPin()">تأكيد الرمز والدخول</button>
+        </div>
     </div>
 
-    <!-- 1. لوحة تحكم المدير (ADMIN DASHBOARD) -->
-    <div id="admin-dashboard" class="dashboard-screen">
+    <!-- 1. لوحة تحكم الإدارة (ADMIN DASHBOARD) -->
+    <div id="admin-dashboard" class="dashboard-screen no-print">
         <div class="header-box">
             <div>
-                <h3>شركة SwiftDrop Logistics</h3>
-                <p id="admin-active-operator" style="font-size: 12px; opacity: 0.95; margin-top: 3px;">المنفّذ الحالي: -</p>
+                <h3>لوحة تحكم الإدارة</h3>
+                <p style="font-size: 13px; opacity: 0.9;">إدارة العملاء والمناديب والبوالص والمحافظ</p>
+                <span id="admin-active-operator" class="operator-badge">المنفّذ الحالي: -</span>
             </div>
-            <button style="width: auto; padding: 7px 14px; font-size: 12px; background: #1D4ED8;" onclick="logout()">خروج</button>
+            <button style="width: auto; padding: 8px 16px; font-size: 13px; background: #1D4ED8;" onclick="logout()">تسجيل الخروج</button>
         </div>
 
-        <div id="admin-home-view">
-            <div class="section" style="padding: 14px 16px;">
-                <h4>فلترة الإحصائيات والبوالص المنفّذة بالتاريخ</h4>
-                <div class="grid-2">
-                    <div class="input-group" style="margin-bottom: 6px;">
-                        <label>من تاريخ</label>
-                        <input type="date" id="filter-date-from" onchange="updateAdminDashboard()">
-                    </div>
-                    <div class="input-group" style="margin-bottom: 6px;">
-                        <label>إلى تاريخ</label>
-                        <input type="date" id="filter-date-to" onchange="updateAdminDashboard()">
-                    </div>
+        <div class="section">
+            <h4>فلترة حسب الفترة الزمنية</h4>
+            <div class="grid-2">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>من تاريخ</label>
+                    <input type="date" id="filter-date-from" onchange="updateAdminDashboard()">
                 </div>
-                <button type="button" class="back-btn" style="margin-bottom: 0; padding: 8px 12px; font-size: 12px;" onclick="clearDateFilter()">عرض الكل (إلغاء تحديد التاريخ)</button>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card" onclick="openAdminSection('clients')">
-                    <span>إجمالي عدد العملاء</span>
-                    <strong id="total-clients-count">0</strong>
-                    <small id="clients-range-note">الكل</small>
-                </div>
-                <div class="stat-card" onclick="openAdminSection('shipments')">
-                    <span>إجمالي البوالص المنفّذة</span>
-                    <strong id="total-shipments-count">0</strong>
-                    <small>اضغط لفتح البوالص</small>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>إلى تاريخ</label>
+                    <input type="date" id="filter-date-to" onchange="updateAdminDashboard()">
                 </div>
             </div>
+            <button type="button" class="back-btn" style="margin-top: 10px; margin-bottom: 0;" onclick="clearDateFilter()">عرض كل الفترات</button>
+        </div>
 
-            <div class="admin-menu-grid">
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('add-client')">1. إضافة عميل جديد</button>
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('add-order')">2. إضافة بوليصة / أوردر جديد</button>
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('couriers')">3. إضافة دليفري (مندوب التوصيل) وبوالصه</button>
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('notifications')">4. الإشعارات وطلبات العملاء</button>
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('clients')">5. قائمة العملاء وحساباتهم</button>
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('shipments')">6. متابعة الشحنات</button>
-                <button type="button" class="admin-nav-btn" onclick="openAdminSection('archive')">7. الأرشيف</button>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="total-clients-count">0</h3>
+                <p>عدد العملاء</p>
+                <small id="clients-range-note" style="color: var(--gray-text); font-size: 11px;">الكل</small>
+            </div>
+            <div class="stat-card">
+                <h3 id="total-shipments-count">0</h3>
+                <p>إجمالي الشحنات المنفذة</p>
+                <small style="color: var(--gray-text); font-size: 11px;">حسب الفترة المحددة</small>
+            </div>
+        </div>
+                <!-- القائمة الرئيسية للإدارة -->
+        <div id="admin-home-view" class="section">
+            <h4>أقسام لوحة الإدارة</h4>
+            <div class="admin-nav-grid">
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('add-client')">➕ إضافة عميل جديد</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('add-order')">📦 إضافة بوليصة شحن</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('couriers')">🛵 إضافة دليفري وأزرار المناديب</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('notifications')">🔔 الإشعارات وطلبات العملاء</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('clients')">👥 أزرار العملاء وحساباتهم</button>
+                <button type="button" class="admin-nav-btn" onclick="openAdminSection('shipments')">🚚 متابعة الشحنات الحالية</button>
+                <button type="button" class="admin-nav-btn full-span" onclick="openAdminSection('archive')">🗄️ أرشيف البوالص المسلّمة</button>
             </div>
         </div>
 
@@ -481,10 +497,10 @@
         <div id="admin-view-add-client" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
-                <h4>إضافة عميل جديد للنظام</h4>
+                <h4>إضافة عميل جديد</h4>
                 <div class="input-group">
-                    <label>اسم العميل أو الشركة</label>
-                    <input type="text" id="new-client-name" placeholder="اسم العميل أو الشركة">
+                    <label>اسم العميل / الشركة</label>
+                    <input type="text" id="new-client-name" placeholder="مثال: شركة النور">
                 </div>
                 <div class="grid-3">
                     <div class="input-group">
@@ -503,84 +519,86 @@
                 <div class="grid-2">
                     <div class="input-group">
                         <label>اسم الشارع</label>
-                        <input type="text" id="new-client-street" placeholder="اسم الشارع">
+                        <input type="text" id="new-client-street" placeholder="مثال: عباس العقاد">
                     </div>
                     <div class="input-group">
                         <label>المنطقة</label>
-                        <input type="text" id="new-client-area" placeholder="المنطقة">
+                        <input type="text" id="new-client-area" placeholder="مثال: مدينة نصر">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div class="input-group">
-                        <label>رقم التليفون</label>
-                        <input type="tel" id="new-client-phone" placeholder="رقم التليفون الأساسي">
+                        <label>رقم التليفون الأساسي</label>
+                        <input type="tel" id="new-client-phone" placeholder="01xxxxxxxxx">
                     </div>
                     <div class="input-group">
-                        <label>رقم تليفون آخر (اختياري)</label>
-                        <input type="tel" id="new-client-phone2" placeholder="اختياري">
+                        <label>رقم تليفون إضافي (اختياري)</label>
+                        <input type="tel" id="new-client-phone2" placeholder="01xxxxxxxxx">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div class="input-group">
                         <label>اسم المستخدم (Username)</label>
-                        <input type="text" id="new-client-user" placeholder="اسم المستخدم للدخول">
+                        <input type="text" id="new-client-user" placeholder="يوزر العميل">
                     </div>
                     <div class="input-group">
-                        <label>كلمة المرور (Password)</label>
-                        <input type="password" id="new-client-pass" placeholder="كلمة المرور">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="new-client-pass" placeholder="باسورد العميل">
                     </div>
                 </div>
                 <button id="add-client-btn" onclick="addNewClient()">إضافة العميل وتوليد ID</button>
             </div>
         </div>
 
-        <!-- قسم 2: إضافة بوليصة / أوردر جديد -->
+        <!-- قسم 2: إضافة بوليصة شحن -->
         <div id="admin-view-add-order" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
-                <h4>اختر نوع البوليصة</h4>
-                <div class="grid-2" style="margin-bottom: 14px;">
-                    <button type="button" id="btn-type-prepaid" class="order-type-btn active" onclick="selectOrderCategory('prepaid')">دفع مقدم</button>
-                    <button type="button" id="btn-type-cod" class="order-type-btn" onclick="selectOrderCategory('cod')">تحصيل</button>
+                <h4>إضافة بوليصة شحن لعميل</h4>
+                <div class="category-toggle">
+                    <button type="button" id="btn-type-prepaid" class="cat-btn active" onclick="selectOrderCategory('prepaid')">دفع مقدم</button>
+                    <button type="button" id="btn-type-cod" class="cat-btn" onclick="selectOrderCategory('cod')">تحصيل (COD)</button>
                 </div>
-                <p id="order-category-hint" style="font-size: 12px; color: var(--gray-text); margin-bottom: 14px;">وضع «دفع مقدم»: تُضاف البوليصة للعميل ولا يُضاف مبلغ التحصيل إلى حساب العميل.</p>
-
+                <div id="order-category-hint" class="category-hint">
+                    وضع «دفع مقدم»: تُضاف البوليصة للعميل ولا يُضاف مبلغ التحصيل إلى حساب العميل.
+                </div>
                 <div class="input-group">
-                    <label>رقم ID العميل</label>
+                    <label>رقم الـ ID الخاص بالعميل</label>
                     <input type="text" id="order-client-id" placeholder="مثال: C-101">
                 </div>
                 <div class="input-group">
                     <label>اسم المستلم</label>
-                    <input type="text" id="order-recipient-name" placeholder="اسم المستلم">
+                    <input type="text" id="order-recipient-name" placeholder="اسم المستلم الثلاثي">
                 </div>
                 <div class="input-group">
                     <label>عنوان المستلم</label>
-                    <input type="text" id="order-recipient-address" placeholder="عنوان المستلم بالتفصيل">
+                    <input type="text" id="order-recipient-address" placeholder="العنوان بالتفصيل">
                 </div>
-                <div class="grid-3">
+                <div class="input-group">
+                    <label>رقم هاتف المستلم</label>
+                    <input type="tel" id="order-recipient-phone" placeholder="01xxxxxxxxx">
+                </div>
+                <div class="grid-2">
                     <div class="input-group">
-                        <label>رقم الهاتف</label>
-                        <input type="tel" id="order-recipient-phone" placeholder="رقم هاتف المستلم">
+                        <label>مبلغ التحصيل (ج.م)</label>
+                        <input type="number" id="order-price" placeholder="مثال: 500">
                     </div>
                     <div class="input-group">
-                        <label>مبلغ التحصيل</label>
-                        <input type="number" id="order-price" placeholder="المبلغ (ج.م)">
-                    </div>
-                    <div class="input-group">
-                        <label>مصاريف الشحن</label>
-                        <input type="number" id="order-shipping-fee" placeholder="0">
+                        <label>مصاريف الشحن (ج.م)</label>
+                        <input type="number" id="order-shipping-fee" placeholder="مثال: 50">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>اختيار مندوب التوصيل (الدليفري)</label>
+                    <label>إسناد إلى مندوب دليفري (اختياري)</label>
                     <select id="order-courier">
                         <option value="">بدون مندوب حالياً</option>
                     </select>
                 </div>
-                <button id="add-order-btn" onclick="addOrderAsAdmin()">حفظ وإضافة البوليصة</button>
+                <button id="add-order-btn" onclick="addOrderAsAdmin()">إضافة البوليصة</button>
             </div>
         </div>
-                <!-- قسم 3: إضافة دليفري وأزرار المناديب -->
+
+        <!-- قسم 3: إضافة دليفري وأزرار المناديب -->
         <div id="admin-view-couriers" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
@@ -618,8 +636,7 @@
                 <div id="courier-detail-box" style="display: none; margin-top: 14px;"></div>
             </div>
         </div>
-
-        <!-- قسم 4: الإشعارات وسجل المنفذين وطلبات العملاء -->
+                <!-- قسم 4: الإشعارات وسجل المنفذين وطلبات العملاء -->
         <div id="admin-view-notifications" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
@@ -723,8 +740,7 @@
                 </div>
                 <button type="button" id="client-req-btn" onclick="submitClientOrderRequest()">إرسال الطلب للإدارة</button>
             </div>
-
-            <div class="section">
+                        <div class="section">
                 <h4>إشعارات شحناتك</h4>
                 <div id="client-notifications-list">
                     <p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات جديدة.</p>
@@ -797,8 +813,9 @@
 
         <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
     </div>
-        </div>
-        <script type="module">
+</div>
+
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
@@ -823,8 +840,7 @@
         pickupRequests: [],
         adminNotifications: []
     };
-
-    function formatNow() { return new Date().toLocaleString("ar-EG", { dateStyle: "short", timeStyle: "short" }); }
+        function formatNow() { return new Date().toLocaleString("ar-EG", { dateStyle: "short", timeStyle: "short" }); }
     function todayIso() { return new Date().toISOString().slice(0, 10); }
     function normalizeClientCode(val) { return String(val || "").trim().toUpperCase().replace(/^C-?/, "C-"); }
     function cleanPhoneForWa(phone) {
@@ -992,8 +1008,7 @@
     }, () => {
         setSyncStatus("خطأ في مزامنة قاعدة البيانات", false);
     });
-
-    async function saveData() {
+        async function saveData() {
         isSaving = true;
         setSyncStatus("جاري حفظ البيانات ومزامنتها...", true);
         try {
@@ -1159,8 +1174,7 @@
         document.getElementById("courier-dashboard").style.display = "none";
         document.getElementById("login-screen").style.display = "block";
     };
-
-    /* الحذف بالضغط المطوّل ورمز الأمان */
+        /* الحذف بالضغط المطوّل ورمز الأمان */
     let longPressTimer = null;
     window.startLongPress = function (key, event) {
         if (event && event.type === "mousedown" && event.button !== 0) return;
@@ -1286,7 +1300,7 @@
             return;
         }
 
-            const cObj = (systemData.couriers || []).find((c) => c.code === cCode) || null;
+        const cObj = (systemData.couriers || []).find((c) => c.code === cCode) || null;
         order.recipientName = rName;
         order.recipientAddress = rAddr;
         order.recipientPhone = rPhone;
@@ -1338,8 +1352,7 @@
             updateAdminDashboard();
         }
     };
-
-    window.openCourierWorkspace = function (courierCode) {
+        window.openCourierWorkspace = function (courierCode) {
         selectedCourierCode = courierCode || null;
         updateAdminDashboard();
     };
@@ -1485,6 +1498,100 @@
             lastActionBy: currentAdminOperator
         };
 
+        if (!Array.isArray(systemData.users[targetUserKey].shipments)) systemData.users[targetUserKey].shipments = [];
+        if (!Array.isArray(systemData.shipments)) systemData.shipments = [];
+        systemData.users[targetUserKey].shipments.push(newOrder);
+        systemData.shipments.push(newOrder);
+
+        pushClientNotification(targetUserKey, "تم إضافة بوليصة (" + newOrder.orderCategoryLabel + ") #" + newOrder.id + " للمستلم " + recipientName + " بمبلغ " + price + " ج.م");
+        const courierNote = courierObj ? " وإسنادها للمندوب: " + courierObj.name : "";
+        pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة بوليصة (" + newOrder.orderCategoryLabel + ") #" + newOrder.id + " للعميل " + systemData.users[targetUserKey].name + courierNote);
+
+        const ok = await saveData();
+        btn.disabled = false;
+        if (ok) {
+            ["order-client-id", "order-recipient-name", "order-recipient-address", "order-recipient-phone", "order-price", "order-shipping-fee"].forEach((id) => {
+                document.getElementById(id).value = "";
+            });
+            document.getElementById("order-courier").value = "";
+            alert("تم إضافة البوليصة بنجاح (" + newOrder.orderCategoryLabel + ")!");
+            updateAdminDashboard();
+        }
+    };
+
+    /* طلب أوردر من التاجر واعتماده من الإدارة */
+    window.submitClientOrderRequest = async function () {
+        if (isSaving || !currentLoggedInUser) return;
+        const client = systemData.users[currentLoggedInUser];
+        if (!client) return;
+
+        const cat = document.getElementById("client-req-category").value;
+        const rName = document.getElementById("client-req-name").value.trim();
+        const rAddr = document.getElementById("client-req-address").value.trim();
+        const rPhone = document.getElementById("client-req-phone").value.trim();
+        const rPrice = parseFloat(document.getElementById("client-req-price").value);
+
+        if (!rName || !rAddr || !rPhone || isNaN(rPrice) || rPrice < 0) {
+            alert("برجاء استكمال بيانات المستلم والمبلغ.");
+            return;
+        }
+
+        if (!Array.isArray(systemData.pickupRequests)) systemData.pickupRequests = [];
+        const reqObj = {
+            reqId: "REQ-" + Math.floor(1000 + Math.random() * 9000),
+            owner: currentLoggedInUser,
+            clientName: client.name,
+            clientId: client.id,
+            orderCategory: cat,
+            orderCategoryLabel: cat === "cod" ? "تحصيل" : "دفع مقدم",
+            recipientName: rName,
+            recipientAddress: rAddr,
+            recipientPhone: rPhone,
+            price: rPrice,
+            date: todayIso(),
+            time: formatNow()
+        };
+        systemData.pickupRequests.unshift(reqObj);
+        pushAdminNotification("طلب بوليصة جديد من العميل " + client.name + " (" + client.id + ") للمستلم " + rName + " بمبلغ " + rPrice + " ج.م");
+
+        const ok = await saveData();
+        if (ok) {
+            ["client-req-name", "client-req-address", "client-req-phone", "client-req-price"].forEach((id) => {
+                document.getElementById(id).value = "";
+            });
+            alert("تم إرسال طلب البوليصة للإدارة بنجاح.");
+            updateClientDashboard();
+        }
+    };
+
+    window.approvePickupRequest = async function (reqId) {
+        if (isSaving || !currentAdminOperator) return;
+        const idx = (systemData.pickupRequests || []).findIndex((r) => r.reqId === reqId);
+        if (idx === -1) return;
+        const reqObj = systemData.pickupRequests[idx];
+        systemData.pickupRequests.splice(idx, 1);
+
+        const targetUserKey = reqObj.owner;
+        if (!systemData.users[targetUserKey]) return;
+
+        const newOrder = {
+            id: Math.floor(1000 + Math.random() * 9000),
+            orderCategory: reqObj.orderCategory || "cod",
+            orderCategoryLabel: reqObj.orderCategoryLabel || "تحصيل",
+            recipientName: reqObj.recipientName,
+            recipientAddress: reqObj.recipientAddress,
+            recipientPhone: reqObj.recipientPhone,
+            recipient: reqObj.recipientName + " - " + reqObj.recipientAddress + " (" + reqObj.recipientPhone + ")",
+            price: Number(reqObj.price || 0),
+            shippingFee: 0,
+            status: "قيد التوصيل",
+            date: todayIso(),
+            owner: targetUserKey,
+            courierCode: "",
+            courierName: "",
+            lastActionBy: currentAdminOperator
+        };
+
         systemData.users[targetUserKey].shipments.push(newOrder);
         systemData.shipments.push(newOrder);
         pushClientNotification(targetUserKey, "تم اعتماد طلبك وتحويله إلى بوليصة #" + newOrder.id);
@@ -1526,8 +1633,7 @@
         }
         return archivedOrder;
     }
-
-    window.adminDeliverOrder = async function (orderId) {
+        window.adminDeliverOrder = async function (orderId) {
         if (isSaving || !currentAdminOperator) return;
         const archived = archiveDeliveredShipment(orderId, currentAdminOperator);
         if (!archived) return;
@@ -1727,9 +1833,8 @@
                     courierDetailBox.style.display = "none";
                 }
             }
-        }
-
-        /* طلبات العملاء بانتظار الاعتماد */
+    }
+                /* طلبات العملاء بانتظار الاعتماد */
         const reqList = systemData.pickupRequests || [];
         const reqContainer = document.getElementById("admin-pickup-requests-list");
         reqContainer.innerHTML = reqList.length === 0
@@ -1811,7 +1916,7 @@
                             <button type="button" class="back-btn" onclick="openClientWorkspace(null)">← إغلاق حساب العميل</button>
                             <h4>حساب العميل: ${activeClient.name} (${activeClient.id})</h4>
                             <p style="font-size: 13px; color: var(--primary-blue); margin-bottom: 4px;">رصيد المحفظة: <b>${Number(activeClient.balance || 0).toFixed(2)} EGP</b> | اليوزر: <b>${selectedClientKey}</b></p>
-                          <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 4px;">التليفون: <b>${phonesText}</b></p>
+                            <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 4px;">التليفون: <b>${phonesText}</b></p>
                             <p style="font-size: 12px; color: var(--gray-text); margin-bottom: 10px;">العنوان: <b>${addrParts || "غير مسجل"}</b></p>
                             <div class="edit-box" style="margin-bottom: 10px;">
                                 <p style="font-size: 12px; font-weight: 700; color: var(--primary-blue); margin-bottom: 6px;">تسوية / خصم رصيد محفظة العميل</p>
@@ -1838,7 +1943,7 @@
             shipmentsContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص حالية مطابقة.</p>';
         } else {
             shipmentsContainer.innerHTML = shipmentsList.map((s) => {
-                const badgeClass = s.status === "أوردر مؤجل" ? "status-postponed" : (s.status === "مرتجع" ? "status-returned" : "status-pending");
+                                const badgeClass = s.status === "أوردر مؤجل" ? "status-postponed" : (s.status === "مرتجع" ? "status-returned" : "status-pending");
                 const courierLabel = s.courierName ? "المندوب: " + s.courierName : "المندوب: غير محدد";
                 const actorLabel = s.lastActionBy ? "آخر إجراء بواسطة: " + s.lastActionBy : "";
                 const armed = armedDeleteKey === "shipment:" + s.id;

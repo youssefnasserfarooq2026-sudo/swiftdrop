@@ -813,51 +813,95 @@
         <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
     </div>
 </div>
-
+    
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
-    import { push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import {
+        getDatabase,
+        ref,
+        set,
+        onValue,
+        push
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    const firebaseConfig = { databaseURL: "https://swiftdrop-sync-default-rtdb.firebaseio.com/" };
+    import {
+        getMessaging,
+        getToken
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCZeiD4L0wvkdDgaRhvIcb95_o_fNleeZA",
+        authDomain: "swiftdrop-sync.firebaseapp.com",
+        databaseURL: "https://swiftdrop-sync-default-rtdb.firebaseio.com",
+        projectId: "swiftdrop-sync",
+        storageBucket: "swiftdrop-sync.firebasestorage.app",
+        messagingSenderId: "555313413479",
+        appId: "1:555313413479:web:17ce2ed205807456b203c2"
+    };
+
     const VAPID_KEY = "BP7cmfH9bv8nvE2JTQe1Xe9kbDBABUkApkr2IHLRr4dczPgdMrSsaesosC_CGcwGZTFfQSgDreRKePT0hMIqs3E";
+
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const dataRef = ref(db, "swiftdrop_data");
-    let messagingInstance = null;
-    try { messagingInstance = getMessaging(app); } catch (e) {}
-let currentDeviceToken = "";
 
-async function registerPushToken() {
-  try {
-    if (!messagingInstance || typeof Notification === "undefined") return "";
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-      const token = await getToken(messagingInstance, { vapidKey: VAPID_KEY });
-      if (token) {
-        currentDeviceToken = token;
-        return token;
-      }
+    let messagingInstance = null;
+    let currentDeviceToken = "";
+
+    try {
+        messagingInstance = getMessaging(app);
+    } catch (e) {
+        console.error("Firebase Messaging error:", e);
     }
-  } catch (err) {
-    console.error("Push token error:", err);
-  }
-  return "";
+
+    async function registerPushToken() {
+        try {
+            if (!messagingInstance || typeof Notification === "undefined") {
+                return "";
+            }
+
+            let permission = Notification.permission;
+
+            if (permission === "default") {
+                permission = await Notification.requestPermission();
+            }
+
+            if (permission !== "granted") {
+                return "";
+            }
+
+            const token = await getToken(messagingInstance, {
+                vapidKey: VAPID_KEY
+            });
+
+            if (token) {
+                currentDeviceToken = token;
+                return token;
+            }
+
+        } catch (err) {
+            console.error("Push token error:", err);
         }
-async function enqueuePushNotification(title, body) {
-  const token = currentDeviceToken || await registerPushToken();
-  if (!token) return;
-  const pushQueueRef = ref(db, "swiftdrop_data/pushQueue");
-  await set(push(pushQueueRef), {
-    token,
-    title,
-    body
-  });
+
+        return "";
     }
-    registerPushToken();
-window.enqueuePushNotification = enqueuePushNotification;
+
+    async function enqueuePushNotification(title, body) {
+        const token = currentDeviceToken || await registerPushToken();
+
+        if (!token) return;
+
+        const pushQueueRef = ref(db, "swiftdrop_data/pushQueue");
+
+        await set(push(pushQueueRef), {
+            token: token,
+            title: title,
+            body: body
+        });
+    }
+    window.registerPushToken = registerPushToken;
+    window.enqueuePushNotification = enqueuePushNotification;
     const STAFF_PINS = { "أستاذ يوسف": "1010", "أستاذ صبري": "1111" };
     const defaultData = {
         users: {

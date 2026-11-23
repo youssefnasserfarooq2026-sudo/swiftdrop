@@ -1625,6 +1625,7 @@ import {
         pushAdminNotification("قام (" + currentAdminOperator + ") بإضافة بوليصة (" + newOrder.orderCategoryLabel + ") #" + newOrder.id + " للعميل " + systemData.users[targetUserKey].name + courierNote);
 
         const ok = await saveData();
+            await enqueuePushNotification("شحنة جديدة", `تم إضافة شحنة جديدة برقم ${newOrder.id}`);
         btn.disabled = false;
         if (ok) {
             ["order-client-id", "order-recipient-name", "order-recipient-address", "order-recipient-phone", "order-price", "order-shipping-fee"].forEach((id) => {

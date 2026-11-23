@@ -819,6 +819,8 @@
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
     import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
+    import { push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
     const firebaseConfig = { databaseURL: "https://swiftdrop-sync-default-rtdb.firebaseio.com/" };
     const VAPID_KEY = "BP7cmfH9bv8nvE2JTQe1Xe9kbDBABUkApkr2IHLRr4dczPgdMrSsaesosC_CGcwGZTFfQSgDreRKePT0hMIqs3E";
     const app = initializeApp(firebaseConfig);
@@ -826,7 +828,36 @@
     const dataRef = ref(db, "swiftdrop_data");
     let messagingInstance = null;
     try { messagingInstance = getMessaging(app); } catch (e) {}
+let currentDeviceToken = "";
 
+async function registerPushToken() {
+  try {
+    if (!messagingInstance || typeof Notification === "undefined") return "";
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      const token = await getToken(messagingInstance, { vapidKey: VAPID_KEY });
+      if (token) {
+        currentDeviceToken = token;
+        return token;
+      }
+    }
+  } catch (err) {
+    console.error("Push token error:", err);
+  }
+  return "";
+        }
+async function enqueuePushNotification(title, body) {
+  const token = currentDeviceToken || await registerPushToken();
+  if (!token) return;
+  const pushQueueRef = ref(db, "swiftdrop_data/pushQueue");
+  await set(push(pushQueueRef), {
+    token,
+    title,
+    body
+  });
+    }
+    registerPushToken();
+window.enqueuePushNotification = enqueuePushNotification;
     const STAFF_PINS = { "أستاذ يوسف": "1010", "أستاذ صبري": "1111" };
     const defaultData = {
         users: {

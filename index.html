@@ -117,7 +117,7 @@
             border-radius: 12px;
             text-align: center;
         }
-                .staff-select-box h4, .pin-modal-box h4 { color: var(--primary-blue); margin-bottom: 10px; font-size: 14px; }
+        .staff-select-box h4, .pin-modal-box h4 { color: var(--primary-blue); margin-bottom: 10px; font-size: 14px; }
         .staff-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .staff-btn { background: var(--light-sky); color: var(--primary-blue); border: 1px solid var(--border-sky); font-size: 14px; padding: 10px; }
         .staff-btn.active, .staff-btn:hover { background: var(--primary-blue); color: #FFFFFF; }
@@ -233,7 +233,7 @@
         .admin-nav-btn:hover { background: var(--primary-blue); color: #FFFFFF; border-color: var(--primary-blue); }
         .admin-nav-btn.full-span { grid-column: span 2; background: var(--light-sky); }
         .admin-nav-btn.full-span:hover { background: var(--primary-blue); color: #FFFFFF; }
-                .admin-subview { display: none; }
+        .admin-subview { display: none; }
         .back-btn {
             background: var(--light-sky);
             color: var(--primary-blue);
@@ -389,7 +389,6 @@
         </div>
     </div>
 </div>
-
 <!-- نافذة طباعة البوليصة -->
 <div id="waybill-modal" class="modal-backdrop">
     <div class="modal-card" style="text-align: right;">
@@ -479,7 +478,7 @@
                 <small style="color: var(--gray-text); font-size: 11px;">حسب الفترة المحددة</small>
             </div>
         </div>
-                <!-- القائمة الرئيسية للإدارة -->
+        <!-- القائمة الرئيسية للإدارة -->
         <div id="admin-home-view" class="section">
             <h4>أقسام لوحة الإدارة</h4>
             <div class="admin-nav-grid">
@@ -635,8 +634,8 @@
                 <div id="admin-couriers-list"></div>
                 <div id="courier-detail-box" style="display: none; margin-top: 14px;"></div>
             </div>
-        </div>
-                <!-- قسم 4: الإشعارات وسجل المنفذين وطلبات العملاء -->
+                            </div>
+        <!-- قسم 4: الإشعارات وسجل المنفذين وطلبات العملاء -->
         <div id="admin-view-notifications" class="admin-subview">
             <button type="button" class="back-btn" onclick="openAdminSection('home')">← رجوع للقائمة الرئيسية</button>
             <div class="section">
@@ -740,7 +739,7 @@
                 </div>
                 <button type="button" id="client-req-btn" onclick="submitClientOrderRequest()">إرسال الطلب للإدارة</button>
             </div>
-                        <div class="section">
+            <div class="section">
                 <h4>إشعارات شحناتك</h4>
                 <div id="client-notifications-list">
                     <p style="color: var(--gray-text); text-align: center;">لا توجد إشعارات جديدة.</p>
@@ -818,11 +817,15 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
     const firebaseConfig = { databaseURL: "https://swiftdrop-sync-default-rtdb.firebaseio.com/" };
+    const VAPID_KEY = "BP7cmfH9bv8nvE2JTQe1Xe9kbDBABUkApkr2IHLRr4dczPgdMrSsaesosC_CGcwGZTFfQSgDreRKePT0hMIqs3E";
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const dataRef = ref(db, "swiftdrop_data");
+    let messagingInstance = null;
+    try { messagingInstance = getMessaging(app); } catch (e) {}
 
     const STAFF_PINS = { "أستاذ يوسف": "1010", "أستاذ صبري": "1111" };
     const defaultData = {
@@ -838,9 +841,10 @@
         shipments: [],
         archive: [],
         pickupRequests: [],
-        adminNotifications: []
+        adminNotifications: [],
+        pushQueue: []
     };
-        function formatNow() { return new Date().toLocaleString("ar-EG", { dateStyle: "short", timeStyle: "short" }); }
+    function formatNow() { return new Date().toLocaleString("ar-EG", { dateStyle: "short", timeStyle: "short" }); }
     function todayIso() { return new Date().toISOString().slice(0, 10); }
     function normalizeClientCode(val) { return String(val || "").trim().toUpperCase().replace(/^C-?/, "C-"); }
     function cleanPhoneForWa(phone) {
@@ -868,7 +872,8 @@
             shipments: Array.isArray(raw.shipments) ? raw.shipments : [],
             archive: Array.isArray(raw.archive) ? raw.archive : [],
             pickupRequests: Array.isArray(raw.pickupRequests) ? raw.pickupRequests : [],
-            adminNotifications: Array.isArray(raw.adminNotifications) ? raw.adminNotifications : []
+            adminNotifications: Array.isArray(raw.adminNotifications) ? raw.adminNotifications : [],
+            pushQueue: Array.isArray(raw.pushQueue) ? raw.pushQueue : []
         };
     }
 
@@ -892,8 +897,7 @@
     if (sessionStorage.getItem("swiftdrop_welcomed") === "1") {
         document.getElementById("welcome-screen").style.display = "none";
     }
-
-    function persistSessionState() {
+        function persistSessionState() {
         if (currentLoggedInUser) sessionStorage.setItem("swiftdrop_user", currentLoggedInUser);
         else sessionStorage.removeItem("swiftdrop_user");
         if (currentAdminOperator) sessionStorage.setItem("swiftdrop_operator", currentAdminOperator);
@@ -994,6 +998,21 @@
         }
     }
 
+    async function registerPushTokenForCurrentUser() {
+        if (!messagingInstance || !currentLoggedInUser) return;
+        if (!("Notification" in window) || !("serviceWorker" in navigator)) return;
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission !== "granted") return;
+            const swReg = await navigator.serviceWorker.register("./firebase-messaging-sw.js");
+            const token = await getToken(messagingInstance, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+            if (token && systemData.users[currentLoggedInUser]) {
+                systemData.users[currentLoggedInUser].fcmToken = token;
+                await saveData();
+            }
+        } catch (e) {}
+    }
+
     onValue(dataRef, (snapshot) => {
         if (snapshot.exists()) {
             systemData = normalizeData(snapshot.val());
@@ -1008,7 +1027,7 @@
     }, () => {
         setSyncStatus("خطأ في مزامنة قاعدة البيانات", false);
     });
-        async function saveData() {
+    async function saveData() {
         isSaving = true;
         setSyncStatus("جاري حفظ البيانات ومزامنتها...", true);
         try {
@@ -1034,12 +1053,26 @@
         systemData.adminNotifications = systemData.adminNotifications.slice(0, 60);
     }
 
+    function queuePushNotification(targetUserKey, title, body) {
+        const target = systemData.users[targetUserKey];
+        if (!target || !target.fcmToken) return;
+        if (!Array.isArray(systemData.pushQueue)) systemData.pushQueue = [];
+        systemData.pushQueue.push({
+            id: "PUSH-" + Date.now() + "-" + Math.floor(Math.random() * 1000),
+            token: target.fcmToken,
+            title,
+            body,
+            createdAt: formatNow()
+        });
+    }
+
     function pushClientNotification(clientKey, message) {
         const client = systemData.users[clientKey];
         if (!client) return;
         if (!Array.isArray(client.notifications)) client.notifications = [];
         client.notifications.unshift({ message, time: formatNow() });
         client.notifications = client.notifications.slice(0, 50);
+        queuePushNotification(clientKey, "SwiftDrop Logistics", message);
     }
 
     function refreshActiveView() {
@@ -1112,6 +1145,7 @@
         document.getElementById("error-msg").innerText = "";
         clearPinInputs("pin-");
         openAdminSection("home");
+        registerPushTokenForCurrentUser();
     };
 
     window.login = function () {
@@ -1144,10 +1178,12 @@
                 document.getElementById("login-screen").style.display = "none";
                 document.getElementById("courier-dashboard").style.display = "block";
                 updateCourierDashboard();
+                registerPushTokenForCurrentUser();
             } else {
                 document.getElementById("login-screen").style.display = "none";
                 document.getElementById("client-dashboard").style.display = "block";
                 updateClientDashboard();
+                registerPushTokenForCurrentUser();
             }
         } else {
             err.innerText = "اسم المستخدم أو كلمة المرور غير صحيحة!";
@@ -1352,7 +1388,7 @@
             updateAdminDashboard();
         }
     };
-        window.openCourierWorkspace = function (courierCode) {
+    window.openCourierWorkspace = function (courierCode) {
         selectedCourierCode = courierCode || null;
         updateAdminDashboard();
     };
@@ -1449,8 +1485,7 @@
             updateAdminDashboard();
         }
     };
-
-    window.addOrderAsAdmin = async function () {
+        window.addOrderAsAdmin = async function () {
         if (isSaving || !currentAdminOperator) return;
         const rawClientId = document.getElementById("order-client-id").value.trim();
         const clientId = normalizeClientCode(rawClientId);
@@ -1633,7 +1668,7 @@
         }
         return archivedOrder;
     }
-        window.adminDeliverOrder = async function (orderId) {
+    window.adminDeliverOrder = async function (orderId) {
         if (isSaving || !currentAdminOperator) return;
         const archived = archiveDeliveredShipment(orderId, currentAdminOperator);
         if (!archived) return;
@@ -1820,7 +1855,7 @@
                         <div class="section" style="margin-bottom: 0; background: var(--ice-white);">
                             <button type="button" class="back-btn" onclick="openCourierWorkspace(null)">← إغلاق بيانات وشغل المندوب</button>
                             <h4>المندوب: ${activeCourier.name}</h4>
-                            <p style="font-size: 13px; color: var(--primary-blue); margin-bottom: 6px;">الكود: <b>${activeCourier.code}</b> | المنطقة: <b>${activeCourier.zone || "-"}</b> | يوزر الدخول: <b>${activeCourier.username || "-"}</b></p>
+                             <p style="font-size: 13px; color: var(--primary-blue); margin-bottom: 6px;">الكود: <b>${activeCourier.code}</b> | المنطقة: <b>${activeCourier.zone || "-"}</b> | يوزر الدخول: <b>${activeCourier.username || "-"}</b></p>
                             <div style="margin-bottom: 10px;">
                                 <span style="font-size: 12px; color: var(--gray-text);">رقم التليفون (اضغط للاتصال المباشر / فتح جهات الاتصال):</span><br>
                                 <a class="phone-link" href="tel:${activeCourier.phone}">📞 ${activeCourier.phone}</a>
@@ -1833,8 +1868,8 @@
                     courierDetailBox.style.display = "none";
                 }
             }
-    }
-                /* طلبات العملاء بانتظار الاعتماد */
+        }
+        /* طلبات العملاء بانتظار الاعتماد */
         const reqList = systemData.pickupRequests || [];
         const reqContainer = document.getElementById("admin-pickup-requests-list");
         reqContainer.innerHTML = reqList.length === 0
@@ -1933,9 +1968,8 @@
                     clientDetailBox.style.display = "none";
                 }
             }
-        }
-
-        /* متابعة الشحنات الحالية + بحث + تعديل + طباعة + حذف بالضغط المطوّل */
+    }
+                /* متابعة الشحنات الحالية + بحث + تعديل + طباعة + حذف بالضغط المطوّل */
         const sSearch = (document.getElementById("admin-shipments-search")?.value || "").trim();
         const shipmentsList = (systemData.shipments || []).filter((s) => isWithinDateRange(s.date, fromVal, toVal) && matchesQuery(s, sSearch));
         const shipmentsContainer = document.getElementById("admin-shipments-list");
@@ -1943,7 +1977,7 @@
             shipmentsContainer.innerHTML = '<p style="color: var(--gray-text); text-align: center;">لا توجد بوالص حالية مطابقة.</p>';
         } else {
             shipmentsContainer.innerHTML = shipmentsList.map((s) => {
-                                const badgeClass = s.status === "أوردر مؤجل" ? "status-postponed" : (s.status === "مرتجع" ? "status-returned" : "status-pending");
+                const badgeClass = s.status === "أوردر مؤجل" ? "status-postponed" : (s.status === "مرتجع" ? "status-returned" : "status-pending");
                 const courierLabel = s.courierName ? "المندوب: " + s.courierName : "المندوب: غير محدد";
                 const actorLabel = s.lastActionBy ? "آخر إجراء بواسطة: " + s.lastActionBy : "";
                 const armed = armedDeleteKey === "shipment:" + s.id;
@@ -2013,8 +2047,7 @@
                 </div>
             `).join("");
     }
-
-    function updateClientDashboard() {
+        function updateClientDashboard() {
         const user = systemData.users[currentLoggedInUser];
         if (!user) return;
         document.getElementById("client-welcome").innerText = "مرحباً، " + user.name;
